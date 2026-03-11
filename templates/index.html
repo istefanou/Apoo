@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Apoo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=7">
+  <!-- Google Cast SDK -->
+  <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+</head>
+
+<body>
+  <header class="header">
+    <h1>Apoo Music</h1>
+    <div class="tabs">
+      <button id="tab-queue" class="tab active">Queue</button>
+      <button id="tab-search" class="tab">Search</button>
+      <button id="tab-favorites" class="tab">Favorites</button>
+      <button id="tab-playlists" class="tab">Playlists</button>
+      <button id="tab-lofi" class="tab">Lofi</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- QUEUE VIEW -->
+    <section id="view-queue" class="view active">
+      <div id="current-track"></div>
+
+      <div class="output-select">
+        <span>Output:</span>
+        <label><input type="radio" name="output-mode" id="output-host" checked> Host</label>
+        <label><input type="radio" name="output-mode" id="output-browser"> Browser</label>
+      </div>
+
+      <div class="seek-container">
+        <span id="time-elapsed">0:00</span>
+        <input id="seek-bar" type="range" min="0" max="1000" value="0" class="seek-slider">
+        <span id="time-total">0:00</span>
+      </div>
+
+    <div class="controls">
+      <button id="btn-prev" class="control-btn">⏮</button>
+      <button id="btn-toggle" class="control-btn">⏯</button>
+      <button id="btn-next" class="control-btn">⏭</button>
+      <button id="btn-shuffle" class="control-btn" title="Shuffle">🔀</button>
+      <label class="toggle-control" title="Auto-add when queue is empty">
+        <input type="checkbox" id="auto-fill-toggle">
+        <span class="toggle-icon">∞</span>
+      </label>
+      <button id="btn-repeat" class="control-btn" title="Repeat: Off" data-mode="off">🔁</button>
+      <button id="btn-clear" class="control-btn">⏹ Stop/Clear</button>
+    </div>
+
+
+      <div class="volume">
+        <label for="volume-slider">Volume</label>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.05">
+      </div>
+
+      <h2>Queue</h2>
+      <ul id="queue-list"></ul>
+    </section>
+
+    <!-- SEARCH VIEW -->
+    <section id="view-search" class="view">
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search title, artist, playlist...">
+        <button id="btn-search">Search</button>
+      </div>
+      <ul id="search-results"></ul>
+    </section>
+
+    <!-- FAVORITES VIEW -->
+    <section id="view-favorites" class="view">
+      <h2>Favorites</h2>
+      <ul id="favorites-list"></ul>
+    </section>
+
+    <!-- PLAYLISTS VIEW -->
+    <section id="view-playlists" class="view">
+      <div class="playlist-header">
+        <input type="text" id="new-playlist-name" placeholder="New playlist name">
+        <button id="btn-create-playlist">Create</button>
+        <button id="btn-import-deezer">Import Deezer Playlist</button>
+      </div>
+      <ul id="playlists-list"></ul>
+    </section>
+
+    <!-- LOFI VIEW -->
+    <section id="view-lofi" class="view">
+      <div class="lofi-header">
+        <input type="text" id="lofi-url-input" placeholder="YouTube URL">
+        <button id="btn-download-lofi">Download</button>
+        <button id="btn-clear-lofi" title="Clear stuck lofi downloads">Empty Queue</button>
+      </div>
+      <div class="lofi-playback-info" style="padding: 10px; background: #1a1a1a; border-radius: 4px; margin: 10px 0; display: none;">
+        <span id="lofi-playback-status">🔊 Playing on server...</span>
+      </div>
+      <div id="lofi-progress-container" style="display:none; margin: 10px 0;">
+        <div id="lofi-progress-label" style="margin-bottom:2px; font-size:0.95em;"><span id="lofi-progress-value">Download Starting Soon</span></div>
+        <div style="background:#222; border-radius:4px; overflow:hidden; height:18px;">
+          <div id="lofi-progress-bar" style="background:#1db954; width:0%; height:18px; transition:width 0.2s;"></div>
+        </div>
+      </div>
+      
+      <div id="lofi-player-container" class="lofi-player hidden">
+        <button id="btn-close-player" class="close-player-btn">✕</button>
+        <button id="btn-fullscreen" class="fullscreen-btn" title="Fullscreen">⛶</button>
+        <button id="btn-cast-lofi" class="cast-btn" title="Cast to device">
+          <img src="https://www.gstatic.com/cast/sdk/icons/button_cast_white.svg" alt="Cast" style="height:24px;vertical-align:middle;">
+        </button>
+        <video id="lofi-video" controls autoplay loop>
+          Your browser does not support video playback.
+        </video>
+      </div>
+      
+      <h2>Lofi Library</h2>
+      <div id="lofi-library" class="lofi-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- Browser audio element (kept playing for output switching) -->
+  <audio id="browser-audio" preload="auto" crossorigin="anonymous"></audio>
+
+  <div id="playlist-picker" class="modal hidden">
+    <div class="modal-content">
+      <h3>Select Playlist</h3>
+      <ul id="playlist-picker-list"></ul>
+      <button id="picker-cancel">Cancel</button>
+    </div>
+  </div>
+
+
+
+  <script src="{{ url_for('static', filename='app.js') }}?v=8"></script>
+</body>
+</html>
