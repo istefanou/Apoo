@@ -1,5 +1,6 @@
 # app.py
 import json
+import html
 import os
 import random
 import re
@@ -12,7 +13,7 @@ from dataclasses import dataclass, asdict
 from typing import List, Optional
 import requests
 import socket
-from flask import Flask, jsonify, request, render_template, send_file
+from flask import Flask, Response, jsonify, request, render_template, send_file
 from config import DEEZER_API_BASE
 import zipfile
 from io import BytesIO
@@ -20,15 +21,27 @@ from io import BytesIO
 import pygame  # make sure it's installed; on Raspberry Pi it's usually available
 import subprocess
 from mutagen import File as MutagenFile
-from mutagen.id3 import ID3, TIT2, TPE1, TALB, TDRC, TPE2, APIC
+from mutagen.id3 import ID3, TIT2, TPE1, TALB, TDRC, TPE2, APIC, TXXX
 from mutagen.mp3 import MP3
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 PLAYLISTS_FILE = os.path.join(DATA_DIR, "playlists.json")
 FAVORITES_FILE = os.path.join(DATA_DIR, "favorites.json")
+SEARCH_SETTINGS_FILE = os.path.join(DATA_DIR, "search_settings.json")
+
+DEFAULT_SEARCH_SETTINGS = {
+    "whitelist_words": ["lyrics", "official audio"],
+    "blacklist_words": ["live", "remix", "extended", "acoustic", "karaoke", "cover", "instrumental"],
+}
 
 # Semaphore to limit ffmpeg/yt-dlp downloads to 1 at a time (important for Raspberry Pi)
 DOWNLOAD_SEMAPHORE = threading.Semaphore(1)
+TRACK_METADATA_CACHE = {}
+TRACK_METADATA_CACHE_LOCK = threading.Lock()
+ARTWORK_EMBED_ATTEMPTED_PATHS = set()
+ARTWORK_EMBED_ATTEMPTED_LOCK = threading.Lock()
+MP3_METADATA_EMBED_ATTEMPTED_PATHS = set()
+MP3_METADATA_EMBED_ATTEMPTED_LOCK = threading.Lock()
 
 def ensure_dir_exists(path):
     """Ensure the directory for a file exists."""
@@ -71,6 +84,104 @@ def save_json(path, data):
         f.flush()
         os.fsync(f.fileno())
     os.replace(tmp_path, path)
+
+
+def normalize_word_list(words) -> list[str]:
+    """Normalize settings word lists for storage and query building."""
+    if not isinstance(words, list):
+        return []
+
+    normalized = []
+    seen = set()
+    for word in words:
+        if not isinstance(word, str):
+            continue
+        cleaned = re.sub(r"\s+", " ", word.strip().lower())
+        if not cleaned or cleaned in seen:
+            continue
+        seen.add(cleaned)
+        normalized.append(cleaned)
+    return normalized
+
+
+def normalize_search_settings(data) -> dict:
+    """Merge incoming search settings with defaults."""
+    data = data or {}
+    return {
+        "whitelist_words": normalize_word_list(data.get("whitelist_words", DEFAULT_SEARCH_SETTINGS["whitelist_words"])),
+        "blacklist_words": normalize_word_list(data.get("blacklist_words", DEFAULT_SEARCH_SETTINGS["blacklist_words"])),
+    }
+
+
+def load_search_settings() -> dict:
+    """Load persisted search settings with sane defaults."""
+    settings = load_json(SEARCH_SETTINGS_FILE, DEFAULT_SEARCH_SETTINGS)
+    normalized = normalize_search_settings(settings)
+    if normalized != settings:
+        save_json(SEARCH_SETTINGS_FILE, normalized)
+    return normalized
+
+
+def format_search_term(term: str, exclude: bool = False) -> str:
+    """Format a positive or negative search term for yt-dlp queries."""
+    cleaned = re.sub(r"\s+", " ", (term or "").strip())
+    if not cleaned:
+        return ""
+    if " " in cleaned:
+        cleaned = f'"{cleaned}"'
+    return f"-{cleaned}" if exclude else cleaned
+
+
+def build_download_queries(title: str, artist: str) -> list[str]:
+    """Build yt-dlp queries from persisted whitelist/blacklist settings."""
+    settings = load_search_settings()
+    base_query = f"{title} {artist}".strip()
+    whitelist = " ".join(filter(None, [format_search_term(term) for term in settings.get("whitelist_words", [])]))
+    blacklist = " ".join(filter(None, [format_search_term(term, exclude=True) for term in settings.get("blacklist_words", [])]))
+
+    queries = []
+    with_whitelist = " ".join(part for part in [base_query, whitelist, blacklist] if part).strip()
+    if with_whitelist:
+        queries.append(with_whitelist)
+
+    fallback = " ".join(part for part in [base_query, blacklist] if part).strip()
+    if fallback and fallback not in queries:
+        queries.append(fallback)
+
+    return queries or [base_query]
+
+
+def get_track_cache_key(track: dict) -> str:
+    """Return a stable cache key for track metadata."""
+    path = track.get("path")
+    if path:
+        return f"path::{os.path.realpath(path)}"
+
+    deezer_id = track.get("deezer_id")
+    if deezer_id:
+        return f"deezer::{deezer_id}"
+
+    spotify_id = track.get("spotify_id")
+    if spotify_id:
+        return f"spotify::{spotify_id}"
+
+    track_id = track.get("id")
+    if track_id:
+        return f"id::{track_id}"
+
+    title = (track.get("title") or "").strip().lower()
+    artist = (track.get("artist") or "").strip().lower()
+    return f"name::{title}::{artist}"
+
+
+def get_cached_track_metadata(cache_key: str) -> dict:
+    with TRACK_METADATA_CACHE_LOCK:
+        return dict(TRACK_METADATA_CACHE.get(cache_key) or {})
+
+
+def set_cached_track_metadata(cache_key: str, metadata: dict):
+    with TRACK_METADATA_CACHE_LOCK:
+        TRACK_METADATA_CACHE[cache_key] = dict(metadata)
 
 
 def sanitize_filename(name: str) -> str:
@@ -153,6 +264,326 @@ def parse_deezer_playlist_id(url_or_id: str) -> Optional[str]:
     return None
 
 
+def parse_spotify_playlist_id(url_or_id: str) -> Optional[str]:
+    """Extract Spotify playlist id from URL/URI or return a raw id."""
+    if not url_or_id:
+        return None
+
+    candidate = str(url_or_id).strip()
+    if re.fullmatch(r"[A-Za-z0-9]{22}", candidate):
+        return candidate
+
+    uri_match = re.search(r"spotify:playlist:([A-Za-z0-9]{22})", candidate)
+    if uri_match:
+        return uri_match.group(1)
+
+    url_match = re.search(r"/playlist/([A-Za-z0-9]{22})", candidate)
+    if url_match:
+        return url_match.group(1)
+
+    return None
+
+
+def _spotify_client_credentials_token() -> Optional[str]:
+    """Get Spotify app token when SPOTIFY_CLIENT_ID/SECRET are configured."""
+    client_id = os.environ.get("SPOTIFY_CLIENT_ID")
+    client_secret = os.environ.get("SPOTIFY_CLIENT_SECRET")
+    if not client_id or not client_secret:
+        return None
+
+    try:
+        res = requests.post(
+            "https://accounts.spotify.com/api/token",
+            data={"grant_type": "client_credentials"},
+            auth=(client_id, client_secret),
+            timeout=20,
+        )
+        res.raise_for_status()
+        data = res.json()
+        token = data.get("access_token")
+        return token if token else None
+    except Exception as e:
+        print(f"Spotify token error: {e}")
+        return None
+
+
+def _spotify_import_via_api(playlist_id: str, token: str):
+    """Fetch all playlist tracks from Spotify Web API using app token."""
+    headers = {"Authorization": f"Bearer {token}"}
+
+    meta_res = requests.get(
+        f"https://api.spotify.com/v1/playlists/{playlist_id}",
+        headers=headers,
+        params={"fields": "name,tracks(total)"},
+        timeout=20,
+    )
+    meta_res.raise_for_status()
+    meta = meta_res.json()
+
+    playlist_name = meta.get("name") or "Imported Spotify Playlist"
+    total = int(((meta.get("tracks") or {}).get("total") or 0))
+
+    tracks = []
+    seen = set()
+    offset = 0
+    limit = 100
+
+    while True:
+        res = requests.get(
+            f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks",
+            headers=headers,
+            params={
+                "offset": offset,
+                "limit": limit,
+                "fields": "items(track(id,name,artists(name))),next,total",
+            },
+            timeout=25,
+        )
+        res.raise_for_status()
+        payload = res.json()
+
+        items = payload.get("items") or []
+        for item in items:
+            track = (item or {}).get("track") or {}
+            tid = track.get("id")
+            title = (track.get("name") or "Unknown title").strip()
+            artists = ", ".join([a.get("name", "") for a in (track.get("artists") or []) if a.get("name")]).strip()
+            artist = artists or "Unknown artist"
+
+            if not tid or tid in seen:
+                continue
+            seen.add(tid)
+
+            tracks.append({
+                "id": tid,
+                "title": title,
+                "artist": artist,
+                "spotify_id": tid,
+                "path": None,
+            })
+
+        if not payload.get("next"):
+            break
+        offset += limit
+
+    return playlist_name, tracks, total
+
+
+def _import_spotify_via_selenium(playlist_id: str):
+    """
+    Use headless Chromium + Selenium to scrape a Spotify playlist,
+    scrolling through the virtualised track list to collect all tracks.
+    Returns (playlist_name, tracks_list, total_count).
+    """
+    import time as _time
+
+    try:
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.chrome.service import Service
+        from selenium.webdriver.common.by import By
+    except ImportError:
+        raise RuntimeError("selenium not installed")
+
+    opts = Options()
+    opts.add_argument("--headless=new")
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-dev-shm-usage")
+    opts.add_argument("--disable-gpu")
+    opts.add_argument("--window-size=1280,900")
+    opts.binary_location = "/usr/bin/chromium-browser"
+
+    svc = Service("/usr/bin/chromedriver")
+    driver = webdriver.Chrome(service=svc, options=opts)
+    try:
+        url = f"https://open.spotify.com/playlist/{playlist_id}"
+        driver.get(url)
+        _time.sleep(6)  # wait for React SPA to mount and render initial tracks
+
+        # Extract playlist name from page title ("Name - playlist by X | Spotify")
+        title_raw = driver.title or ""
+        playlist_name = title_raw.split(" - ")[0].strip() if " - " in title_raw else "Imported Playlist"
+
+        tracks = {}  # keyed by (title, artist) for deduplication
+
+        def collect_visible():
+            """Read currently rendered track rows from the virtual list."""
+            buttons = driver.find_elements(By.CSS_SELECTOR, "button[aria-label^='Play ']")
+            for btn in buttons:
+                label = btn.get_attribute("aria-label") or ""
+                if not label.startswith("Play "):
+                    continue
+                # "Play TITLE by ARTIST" — use rsplit to handle titles containing " by "
+                remainder = label[5:]  # strip leading "Play "
+                parts = remainder.rsplit(" by ", 1)
+                if len(parts) != 2:
+                    continue
+                title, artist = parts[0].strip(), parts[1].strip()
+                if not title or not artist:
+                    continue
+                key = (title, artist)
+                if key in tracks:
+                    continue
+
+                # Try to extract Spotify track ID from a nearby link
+                spotify_id = None
+                try:
+                    row = btn.find_element(By.XPATH,
+                        "./ancestor::div[@data-testid='tracklist-row']")
+                    link = row.find_element(By.CSS_SELECTOR, "a[href*='/track/']")
+                    href = link.get_attribute("href") or ""
+                    m = re.search(r"/track/([A-Za-z0-9]{22})", href)
+                    if m:
+                        spotify_id = m.group(1)
+                except Exception:
+                    pass
+
+                uid = spotify_id or f"sp-{abs(hash(key))}"
+                tracks[key] = {
+                    "id": uid,
+                    "title": title,
+                    "artist": artist,
+                    "spotify_id": spotify_id,
+                    "path": None,
+                }
+
+        # Find the single scrollable container that holds the track list
+        scroll_el = driver.execute_script("""
+            var divs = document.querySelectorAll('div');
+            for (var div of divs) {
+                var style = window.getComputedStyle(div);
+                if (div.scrollHeight > 3000 &&
+                    (style.overflowY === 'scroll' || style.overflowY === 'auto')) {
+                    return div;
+                }
+            }
+            return null;
+        """)
+
+        collect_visible()
+
+        scroll_pos = 0
+        step = 400
+        last_count = 0
+        no_new = 0
+
+        for _ in range(300):  # safety cap — handles playlists with 1000+ tracks
+            scroll_pos += step
+            if scroll_el:
+                driver.execute_script(
+                    f"arguments[0].scrollTop = {scroll_pos}", scroll_el)
+            _time.sleep(0.6)
+            collect_visible()
+
+            if len(tracks) > last_count:
+                last_count = len(tracks)
+                no_new = 0
+            else:
+                no_new += 1
+                if no_new >= 6:
+                    break  # reached end of list
+
+        return playlist_name, list(tracks.values()), len(tracks)
+    finally:
+        driver.quit()
+
+
+def _import_spotify_playlist_impl(url_or_id: str):
+    """
+    Import a Spotify playlist. Tries (in order):
+      1. Spotify Web API (if SPOTIFY_CLIENT_ID/SECRET configured)
+      2. Headless Chromium browser to scroll through the full virtual track list
+      3. Static HTML scrape (fallback, returns at most ~30 tracks)
+    """
+    playlist_id = parse_spotify_playlist_id(url_or_id)
+    if not playlist_id:
+        return jsonify({"error": "Invalid Spotify playlist URL or ID"}), 400
+
+    try:
+        # 1. Official API path (requires env vars)
+        token = _spotify_client_credentials_token()
+        if token:
+            try:
+                playlist_name, tracks, total = _spotify_import_via_api(playlist_id, token)
+                if tracks:
+                    return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
+            except Exception as e:
+                print(f"Spotify API import failed, falling back: {e}")
+
+        # 2. Selenium headless-browser path (gets full playlist, no credentials needed)
+        try:
+            playlist_name, tracks, total = _import_spotify_via_selenium(playlist_id)
+            if tracks:
+                return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
+        except Exception as e:
+            print(f"Selenium Spotify import failed, falling back to HTML scrape: {e}")
+
+        # 3. Static HTML scrape fallback (limited to ~30 tracks)
+        playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
+        header_profiles = [
+            {},
+            {"User-Agent": "Mozilla/5.0"},
+            {
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Accept-Language": "en-US,en;q=0.9",
+            },
+        ]
+        page = ""
+        best_count = -1
+        for headers in header_profiles:
+            try:
+                res = requests.get(playlist_url, headers=headers, timeout=20)
+                res.raise_for_status()
+                candidate = res.text
+                count = len(set(re.findall(r"/track/([A-Za-z0-9]{22})", candidate)))
+                if count > best_count:
+                    page = candidate
+                    best_count = count
+            except Exception:
+                continue
+
+        if not page:
+            return jsonify({"error": "Failed to fetch Spotify playlist page"}), 502
+
+        playlist_name = "Imported Spotify Playlist"
+        tracks = []
+        try:
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(page, "html.parser")
+            h1 = soup.find("h1")
+            if h1:
+                playlist_name = h1.get_text(" ", strip=True) or playlist_name
+            seen = set()
+            for link in soup.select('a[href^="/track/"]'):
+                href = link.get("href") or ""
+                m = re.search(r"/track/([A-Za-z0-9]{22})", href)
+                if not m:
+                    continue
+                track_id = m.group(1)
+                if track_id in seen:
+                    continue
+                seen.add(track_id)
+                title = (link.get_text(" ", strip=True) or "Unknown title").strip()
+                artist = "Unknown artist"
+                tracks.append({"id": track_id, "title": title, "artist": artist,
+                                "spotify_id": track_id, "path": None})
+        except Exception:
+            pass
+
+        if not tracks:
+            return jsonify({"error": "No tracks found on Spotify playlist page"}), 400
+
+        warning = (
+            "Only the first ~30 tracks could be fetched (static HTML limit). "
+            "For the full playlist, ensure chromium-browser and chromedriver are installed."
+        )
+        return jsonify({"name": playlist_name, "tracks": tracks, "warning": warning})
+
+    except Exception as e:
+        print("Spotify import error:", e)
+        return jsonify({"error": "Failed to import Spotify playlist"}), 500
+
+
 def deezer_get(path_or_url: str, params: Optional[dict] = None):
     """Call Deezer API and raise on structured API errors."""
     if path_or_url.startswith("http://") or path_or_url.startswith("https://"):
@@ -185,6 +616,331 @@ def get_deezer_track_metadata(track_id: str) -> tuple[Optional[str], Optional[st
         return None, None, None
 
 
+def get_local_track_duration(path: Optional[str]) -> Optional[float]:
+    """Return local audio duration in seconds when available."""
+    if not path or not os.path.exists(path):
+        return None
+    try:
+        audio = MutagenFile(path)
+        if audio and hasattr(audio, "info") and hasattr(audio.info, "length"):
+            return float(audio.info.length)
+    except Exception:
+        pass
+    return None
+
+
+def get_local_track_artwork(path: Optional[str]) -> tuple[Optional[bytes], Optional[str]]:
+    """Return embedded artwork bytes and mime type from a local audio file."""
+    if not path or not os.path.exists(path):
+        return None, None
+
+    try:
+        audio = MutagenFile(path)
+        if not audio or not getattr(audio, "tags", None):
+            return None, None
+
+        tags = audio.tags
+        if hasattr(tags, "getall"):
+            pictures = tags.getall("APIC")
+            if pictures:
+                picture = pictures[0]
+                return picture.data, picture.mime or "image/jpeg"
+
+            flac_pictures = tags.getall("METADATA_BLOCK_PICTURE")
+            if flac_pictures:
+                picture = flac_pictures[0]
+                return getattr(picture, "data", None), getattr(picture, "mime", None) or "image/jpeg"
+    except Exception:
+        pass
+
+    return None, None
+
+
+def get_local_track_full_metadata(path: Optional[str]) -> dict:
+    """Read all embedded ID3 metadata from a local MP3 in one efficient pass."""
+    result: dict = {}
+    if not path or not os.path.exists(path) or not path.lower().endswith(".mp3"):
+        return result
+    try:
+        audio = MP3(path, ID3=ID3)
+        tags = audio.tags
+        if not tags:
+            return result
+        if tags.get("TIT2"):
+            result["title"] = str(tags["TIT2"])
+        if tags.get("TPE1"):
+            result["artist"] = str(tags["TPE1"])
+        if tags.get("TALB"):
+            result["album"] = str(tags["TALB"])
+        if tags.get("TDRC"):
+            result["year"] = str(tags["TDRC"])
+        for txxx in tags.getall("TXXX"):
+            if getattr(txxx, "desc", "").upper() == "DEEZER_ID" and txxx.text:
+                result["deezer_id"] = str(txxx.text[0])
+                break
+        if tags.getall("APIC"):
+            result["has_artwork"] = True
+        if hasattr(audio, "info") and hasattr(audio.info, "length"):
+            result["duration"] = float(audio.info.length)
+    except Exception:
+        pass
+    return result
+
+
+def mp3_has_embedded_metadata(path: Optional[str]) -> bool:
+    """Check whether MP3 already has key metadata and cover art embedded."""
+    if not path or not os.path.exists(path) or not path.lower().endswith(".mp3"):
+        return False
+
+    try:
+        audio = MP3(path, ID3=ID3)
+        tags = audio.tags
+        if not tags:
+            return False
+
+        has_title = bool(tags.get("TIT2"))
+        has_artist = bool(tags.get("TPE1"))
+        has_cover = bool(tags.getall("APIC"))
+        return has_title and has_artist and has_cover
+    except Exception:
+        return False
+
+
+def upsert_mp3_metadata(path: Optional[str], title: Optional[str], artist: Optional[str], album: Optional[str], year: Optional[str], artwork_url: Optional[str], deezer_id: Optional[str] = None) -> bool:
+    """Write resolved metadata into MP3 once so future UI loads stay local."""
+    if not path or not os.path.exists(path) or not path.lower().endswith(".mp3"):
+        return False
+
+    artwork_bytes = None
+    artwork_mime = None
+    if artwork_url:
+        try:
+            response = requests.get(artwork_url, timeout=12)
+            response.raise_for_status()
+            artwork_bytes = response.content
+            artwork_mime = response.headers.get("Content-Type", "image/jpeg")
+        except Exception as e:
+            print(f"Failed to fetch artwork for metadata upsert ({path}): {e}")
+
+    try:
+        audio = MP3(path, ID3=ID3)
+        try:
+            audio.add_tags()
+        except Exception:
+            pass
+
+        if audio.tags is None:
+            return False
+
+        if title:
+            audio.tags["TIT2"] = TIT2(encoding=3, text=str(title))
+        if artist:
+            audio.tags["TPE1"] = TPE1(encoding=3, text=str(artist))
+            audio.tags["TPE2"] = TPE2(encoding=3, text=str(artist))
+        if album:
+            audio.tags["TALB"] = TALB(encoding=3, text=str(album))
+        if year:
+            audio.tags["TDRC"] = TDRC(encoding=3, text=str(year))
+        if deezer_id:
+            audio.tags.delall("TXXX:DEEZER_ID")
+            audio.tags.add(TXXX(encoding=3, desc="DEEZER_ID", text=[str(deezer_id)]))
+        if artwork_bytes:
+            audio.tags.delall("APIC")
+            audio.tags.add(APIC(
+                encoding=3,
+                mime=artwork_mime or "image/jpeg",
+                type=3,
+                desc="Cover",
+                data=artwork_bytes,
+            ))
+
+        audio.save(v2_version=3)
+        return True
+    except Exception as e:
+        print(f"Failed to upsert MP3 metadata ({path}): {e}")
+        return False
+
+
+def embed_artwork_into_mp3(path: Optional[str], artwork_url: Optional[str]) -> bool:
+    """Fetch artwork once and store it in the MP3's ID3 tags."""
+    if not path or not artwork_url or not os.path.exists(path):
+        return False
+    if not path.lower().endswith(".mp3"):
+        return False
+
+    try:
+        response = requests.get(artwork_url, timeout=12)
+        response.raise_for_status()
+        artwork_bytes = response.content
+        mime = response.headers.get("Content-Type", "image/jpeg")
+    except Exception as e:
+        print(f"Failed to fetch artwork for embedding ({path}): {e}")
+        return False
+
+    try:
+        audio = MP3(path, ID3=ID3)
+        try:
+            audio.add_tags()
+        except Exception:
+            pass
+
+        if audio.tags is None:
+            return False
+
+        audio.tags.delall("APIC")
+        audio.tags.add(APIC(
+            encoding=3,
+            mime=mime,
+            type=3,
+            desc="Cover",
+            data=artwork_bytes,
+        ))
+        audio.save(v2_version=3)
+        return True
+    except Exception as e:
+        print(f"Failed to embed artwork into MP3 ({path}): {e}")
+        return False
+
+
+def search_deezer_track_metadata(title: str, artist: str):
+    """Best-effort Deezer metadata lookup by title + artist."""
+    try:
+        query = f'track:"{title}" artist:"{artist}"'
+        data = deezer_get("search", params={"q": query, "limit": 5})
+        items = data.get("data") or []
+        if not items:
+            fallback = deezer_get("search", params={"q": f"{title} {artist}", "limit": 5})
+            items = fallback.get("data") or []
+        if not items:
+            return None
+
+        best = items[0]
+        duration = best.get("duration")
+        album = (best.get("album") or {}).get("title")
+        release_date = best.get("release_date") or ""
+        year = release_date[:4] if release_date else None
+        cover = (best.get("album") or {}).get("cover_xl") or (best.get("album") or {}).get("cover_big") or (best.get("album") or {}).get("cover_medium")
+        return {
+            "duration": float(duration) if duration else None,
+            "album": album,
+            "year": year,
+            "artwork_url": cover,
+            "deezer_id": str(best.get("id")) if best.get("id") else None,
+        }
+    except Exception as e:
+        print(f"Deezer metadata search failed for {artist} - {title}: {e}")
+        return None
+
+
+def enrich_track_for_ui(track: dict) -> dict:
+    """Return artwork/duration enriched track data for UI lists."""
+    base = dict(track or {})
+    cache_key = get_track_cache_key(base)
+    cached = get_cached_track_metadata(cache_key)
+
+    title = base.get("title", "")
+    artist = base.get("artist", "")
+    source_id = base.get("deezer_id") or base.get("spotify_id") or base.get("id")
+    path = base.get("path") or cached.get("path")
+    deezer_id = base.get("deezer_id") or cached.get("deezer_id")
+    spotify_id = base.get("spotify_id") or cached.get("spotify_id")
+    album = base.get("album") or cached.get("album")
+    year = base.get("year") or cached.get("year")
+    duration = base.get("duration") or cached.get("duration")
+    artwork_url = base.get("artwork_url") or base.get("album_art") or base.get("thumbnail") or cached.get("artwork_url")
+
+    # Fast path: read all needed data from MP3 tags in one pass (avoids remote calls on restart)
+    if path and path.lower().endswith(".mp3"):
+        embedded = get_local_track_full_metadata(path)
+        if embedded:
+            deezer_id = deezer_id or embedded.get("deezer_id")
+            album = album or embedded.get("album")
+            year = year or embedded.get("year")
+            duration = duration or embedded.get("duration")
+            if not artwork_url and embedded.get("has_artwork"):
+                artwork_url = f"/api/artwork/by-path?path={requests.utils.quote(path)}"
+
+    if not path and source_id:
+        path = find_local_track(title, artist, source_id)
+
+    if path and not duration:
+        duration = get_local_track_duration(path)
+
+    if path and not artwork_url:
+        artwork_data, _ = get_local_track_artwork(path)
+        if artwork_data:
+            artwork_url = f"/api/artwork/by-path?path={requests.utils.quote(path)}"
+
+    if deezer_id and (not artwork_url or not album or not year):
+        deezer_album, deezer_year, deezer_art = get_deezer_track_metadata(deezer_id)
+        album = album or deezer_album
+        year = year or deezer_year
+        artwork_url = artwork_url or deezer_art
+
+    if (not artwork_url or not duration) and title and artist:
+        deezer_meta = search_deezer_track_metadata(title, artist)
+        if deezer_meta:
+            duration = duration or deezer_meta.get("duration")
+            album = album or deezer_meta.get("album")
+            year = year or deezer_meta.get("year")
+            artwork_url = artwork_url or deezer_meta.get("artwork_url")
+            deezer_id = deezer_id or deezer_meta.get("deezer_id")
+
+    # Prefer local embedded artwork: if we only have remote art and local MP3, embed it once.
+    if path and artwork_url and artwork_url.startswith("http"):
+        tried_already = False
+        with ARTWORK_EMBED_ATTEMPTED_LOCK:
+            if path in ARTWORK_EMBED_ATTEMPTED_PATHS:
+                tried_already = True
+            else:
+                ARTWORK_EMBED_ATTEMPTED_PATHS.add(path)
+
+        if not tried_already and embed_artwork_into_mp3(path, artwork_url):
+            artwork_data, _ = get_local_track_artwork(path)
+            if artwork_data:
+                artwork_url = f"/api/artwork/by-path?path={requests.utils.quote(path)}"
+
+    # Persist resolved metadata to local MP3 once, so future loads are local-only.
+    if path and path.lower().endswith(".mp3"):
+        should_upsert = False
+        with MP3_METADATA_EMBED_ATTEMPTED_LOCK:
+            if path not in MP3_METADATA_EMBED_ATTEMPTED_PATHS:
+                MP3_METADATA_EMBED_ATTEMPTED_PATHS.add(path)
+                should_upsert = not mp3_has_embedded_metadata(path)
+
+        if should_upsert:
+            upsert_mp3_metadata(path, title, artist, album, year, artwork_url if artwork_url and artwork_url.startswith("http") else None, deezer_id)
+            artwork_data, _ = get_local_track_artwork(path)
+            if artwork_data:
+                artwork_url = f"/api/artwork/by-path?path={requests.utils.quote(path)}"
+
+    enriched = {
+        **base,
+        "path": path,
+        "album": album,
+        "year": year,
+        "duration": duration,
+        "artwork_url": artwork_url,
+        "deezer_id": deezer_id,
+        "spotify_id": spotify_id,
+    }
+    set_cached_track_metadata(cache_key, {
+        "path": path,
+        "album": album,
+        "year": year,
+        "duration": duration,
+        "artwork_url": artwork_url,
+        "deezer_id": deezer_id,
+        "spotify_id": spotify_id,
+    })
+    return enriched
+
+
+def enrich_playlist_track(track: dict) -> dict:
+    """Return a UI-friendly metadata bundle for a playlist track."""
+    return enrich_track_for_ui(track)
+
+
 def download_missing_song_from_youtube(title: str, artist: str, source_id: Optional[str], album: str = None, year: str = None, album_art_url: str = None) -> Optional[str]:
     """
     Try top 5 YouTube search results.
@@ -211,8 +967,8 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
     with DOWNLOAD_SEMAPHORE:
         # Try top 5 results with multiple strategies
         for i in range(1, 6):
-            query = f"ytsearch{i}:{title} {artist}"
-            print(f"Trying YouTube result {i}: {query}")
+            # Prefer lyric/official audio, and avoid common unwanted variants.
+            queries = [f"ytsearch{i}:{query}" for query in build_download_queries(title, artist)]
 
             # Try different extractor strategies to bypass bot detection
             strategies = [
@@ -222,42 +978,47 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
                 [],  # Fallback: no extra args
             ]
             
-            for idx, extra_args in enumerate(strategies):
-                # Download AUDIO ONLY for music (not video like lofi)
-                audio_template = f"{safe_artist} - {safe_title}.%(ext)s"
-                command = [
-                    "yt-dlp",
-                    *extra_args,
-                    "--extract-audio",
-                    "--audio-format", "mp3",
-                    "--audio-quality", "0",
-                    "--no-playlist",
-                    "--max-downloads", "1",
-                    "--no-check-certificate",
-                    "--output", os.path.join(MUSIC_DIR, audio_template),
-                    query
-                ]
+            for query in queries:
+                print(f"Trying YouTube result {i}: {query}")
+                for idx, extra_args in enumerate(strategies):
+                    # Download AUDIO ONLY for music (not video like lofi)
+                    audio_template = f"{safe_artist} - {safe_title}.%(ext)s"
+                    command = [
+                        "yt-dlp",
+                        *extra_args,
+                        "--extract-audio",
+                        "--audio-format", "mp3",
+                        "--audio-quality", "0",
+                        "--no-playlist",
+                        "--max-downloads", "1",
+                        "--no-check-certificate",
+                        "--output", os.path.join(MUSIC_DIR, audio_template),
+                        query
+                    ]
 
-                # Run yt-dlp with timeout to prevent hanging
-                print(f"Running: {' '.join(command)}")
-                try:
-                    result = subprocess.run(command, shell=False, capture_output=True, text=True, timeout=60)
-                    print(f"yt-dlp returned: {result.returncode}")
-                    if result.returncode != 0:
-                        print(f"stderr: {result.stderr[:300]}")
-                    if result.stdout:
-                        print(f"stdout: {result.stdout[:200]}")
-                    
-                    # Check if MP3 was created
-                    if os.path.exists(final_mp3):
-                        print(f"✓ Downloaded MP3: {final_mp3}")
-                        break  # Success, exit strategy loop
-                    else:
-                        print(f"✗ MP3 not found at {final_mp3}")
-                except subprocess.TimeoutExpired:
-                    print(f"✗ Download timeout after 60 seconds")
-                except Exception as e:
-                    print(f"✗ Download error: {e}")
+                    # Run yt-dlp with timeout to prevent hanging
+                    print(f"Running: {' '.join(command)}")
+                    try:
+                        result = subprocess.run(command, shell=False, capture_output=True, text=True, timeout=60)
+                        print(f"yt-dlp returned: {result.returncode}")
+                        if result.returncode != 0:
+                            print(f"stderr: {result.stderr[:300]}")
+                        if result.stdout:
+                            print(f"stdout: {result.stdout[:200]}")
+                        
+                        # Check if MP3 was created
+                        if os.path.exists(final_mp3):
+                            print(f"✓ Downloaded MP3: {final_mp3}")
+                            break  # Success, exit strategy loop
+                        else:
+                            print(f"✗ MP3 not found at {final_mp3}")
+                    except subprocess.TimeoutExpired:
+                        print(f"✗ Download timeout after 60 seconds")
+                    except Exception as e:
+                        print(f"✗ Download error: {e}")
+
+                if os.path.exists(final_mp3):
+                    break
             
             # If we successfully downloaded, break out of result loop
             if os.path.exists(final_mp3):
@@ -336,6 +1097,9 @@ class Track:
     title: str
     artist: str
     path: str          # absolute file path
+    deezer_id: Optional[str] = None
+    spotify_id: Optional[str] = None
+    artwork_url: Optional[str] = None
 
 
 # ---------- Player class ----------
@@ -970,6 +1734,38 @@ def api_download_playlist():
         download_name=f"{safe_name}.zip"
     )
 
+
+@app.route("/api/playlists/enrich", methods=["POST"])
+def api_enrich_playlist_tracks():
+    data = request.get_json() or {}
+    tracks = data.get("tracks") or []
+    if not isinstance(tracks, list):
+        return jsonify({"error": "tracks must be a list"}), 400
+
+    enriched = []
+    for track in tracks:
+        if not isinstance(track, dict):
+            continue
+        enriched.append(enrich_playlist_track(track))
+
+    return jsonify({"tracks": enriched})
+
+
+@app.route("/api/tracks/enrich", methods=["POST"])
+def api_enrich_tracks():
+    data = request.get_json() or {}
+    tracks = data.get("tracks") or []
+    if not isinstance(tracks, list):
+        return jsonify({"error": "tracks must be a list"}), 400
+
+    enriched = []
+    for track in tracks:
+        if not isinstance(track, dict):
+            continue
+        enriched.append(enrich_track_for_ui(track))
+
+    return jsonify({"tracks": enriched})
+
 @app.route("/api/favorites", methods=["GET"])
 def api_get_favorites():
     favs = load_json(FAVORITES_FILE, [])
@@ -980,6 +1776,19 @@ def api_save_favorites():
     data = request.get_json() or []
     save_json(FAVORITES_FILE, data)
     return jsonify({"status": "ok"})
+
+
+@app.route("/api/settings/search", methods=["GET"])
+def api_get_search_settings():
+    return jsonify(load_search_settings())
+
+
+@app.route("/api/settings/search", methods=["POST"])
+def api_save_search_settings():
+    data = request.get_json() or {}
+    normalized = normalize_search_settings(data)
+    save_json(SEARCH_SETTINGS_FILE, normalized)
+    return jsonify(normalized)
 
 
 @app.route("/api/favorites/add", methods=["POST"])
@@ -1073,6 +1882,30 @@ def media_by_path():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+@app.route("/api/artwork/by-path", methods=["GET"])
+def artwork_by_path():
+    """Serve embedded artwork for local audio files restricted to MUSIC_DIR."""
+    path = request.args.get("path")
+    if not path:
+        return jsonify({"error": "missing path"}), 400
+
+    try:
+        real = os.path.realpath(path)
+        music_root = os.path.realpath(MUSIC_DIR)
+        if not real.startswith(music_root):
+            return jsonify({"error": "forbidden"}), 403
+        if not os.path.exists(real):
+            return jsonify({"error": "not found"}), 404
+
+        artwork_data, mime = get_local_track_artwork(real)
+        if not artwork_data:
+            return jsonify({"error": "no artwork"}), 404
+
+        return Response(artwork_data, mimetype=mime or "image/jpeg")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/api/seek", methods=["POST"])
 def api_seek():
     data = request.get_json() or {}
@@ -1117,10 +1950,13 @@ def add_to_queue():
     track_id = data.get("id")
     title = data.get("title", "Unknown title")
     artist = data.get("artist", "Unknown artist")
-    source_id = data.get("deezer_id") or data.get("spotify_id")
+    deezer_id = data.get("deezer_id")
+    spotify_id = data.get("spotify_id")
+    artwork_url = data.get("artwork_url") or data.get("album_art") or data.get("thumbnail")
+    source_id = deezer_id or spotify_id
 
     # Try to find local file
-    path = find_local_track(title, artist, track_id)
+    path = find_local_track(title, artist, track_id or source_id or "")
 
     # If not found → download from YouTube
     if not path:
@@ -1131,7 +1967,10 @@ def add_to_queue():
             id=placeholder_id,
             title=title + " (Downloading)",
             artist=artist,
-            path=None
+            path=None,
+            deezer_id=deezer_id,
+            spotify_id=spotify_id,
+            artwork_url=artwork_url,
         )
         placeholder_track._downloading = True
         player.add_to_queue(placeholder_track)
@@ -1140,8 +1979,8 @@ def add_to_queue():
         album = None
         year = None
         album_art_url = None
-        if source_id:
-            album, year, album_art_url = get_deezer_track_metadata(source_id)
+        if deezer_id:
+            album, year, album_art_url = get_deezer_track_metadata(deezer_id)
 
         def download_and_replace():
             real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url)
@@ -1153,7 +1992,10 @@ def add_to_queue():
                                 id=placeholder_id,
                                 title=title,
                                 artist=artist,
-                                path=real_path
+                                path=real_path,
+                                deezer_id=deezer_id,
+                                spotify_id=spotify_id,
+                                artwork_url=artwork_url or album_art_url,
                             )
                             break
             else:
@@ -1169,6 +2011,9 @@ def add_to_queue():
         title=title,
         artist=artist,
         path=path,
+        deezer_id=deezer_id,
+        spotify_id=spotify_id,
+        artwork_url=artwork_url,
     )
     player.add_to_queue(track)
     return jsonify({"status": "ok"})
@@ -1180,10 +2025,13 @@ def add_to_queue_next():
     track_id = data.get("id")
     title = data.get("title", "Unknown title")
     artist = data.get("artist", "Unknown artist")
-    source_id = data.get("deezer_id") or data.get("spotify_id")
+    deezer_id = data.get("deezer_id")
+    spotify_id = data.get("spotify_id")
+    artwork_url = data.get("artwork_url") or data.get("album_art") or data.get("thumbnail")
+    source_id = deezer_id or spotify_id
 
     # Try to find local file
-    path = find_local_track(title, artist, track_id)
+    path = find_local_track(title, artist, track_id or source_id or "")
 
     # If not found → download from YouTube
     if not path:
@@ -1193,7 +2041,10 @@ def add_to_queue_next():
             id=placeholder_id,
             title=title + " (Downloading)",
             artist=artist,
-            path=None
+            path=None,
+            deezer_id=deezer_id,
+            spotify_id=spotify_id,
+            artwork_url=artwork_url,
         )
         placeholder_track._downloading = True
         with player.lock:
@@ -1207,8 +2058,8 @@ def add_to_queue_next():
         album = None
         year = None
         album_art_url = None
-        if source_id:
-            album, year, album_art_url = get_deezer_track_metadata(source_id)
+        if deezer_id:
+            album, year, album_art_url = get_deezer_track_metadata(deezer_id)
 
         def download_and_replace():
             real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url)
@@ -1220,7 +2071,10 @@ def add_to_queue_next():
                                 id=placeholder_id,
                                 title=title,
                                 artist=artist,
-                                path=real_path
+                                path=real_path,
+                                deezer_id=deezer_id,
+                                spotify_id=spotify_id,
+                                artwork_url=artwork_url or album_art_url,
                             )
                             break
             else:
@@ -1236,6 +2090,9 @@ def add_to_queue_next():
         title=title,
         artist=artist,
         path=path,
+        deezer_id=deezer_id,
+        spotify_id=spotify_id,
+        artwork_url=artwork_url,
     )
     # Insert at front of queue
     with player.lock:
@@ -1274,6 +2131,42 @@ def remove_from_queue():
         return jsonify({"error": "Missing id"}), 400
     player.remove_from_queue(track_id)
     return jsonify({"status": "ok"})
+
+@app.route("/api/track/delete", methods=["POST"])
+def api_delete_track():
+    """Permanently delete a local track file. Restricted to MUSIC_DIR."""
+    data = request.get_json() or {}
+    path = data.get("path")
+    if not path:
+        return jsonify({"error": "path required"}), 400
+
+    real = os.path.realpath(path)
+    music_real = os.path.realpath(MUSIC_DIR)
+    if not real.startswith(music_real + os.sep) and real != music_real:
+        return jsonify({"error": "path not within music directory"}), 403
+
+    if not os.path.isfile(real):
+        return jsonify({"error": "file not found"}), 404
+
+    # Remove from player state so it doesn't keep playing
+    with player.lock:
+        if player.current and os.path.realpath(player.current.path or "") == real:
+            player.current = None
+            player.current_start_ts = None
+            player.current_duration = 0.0
+            if player.playback_mode == "host":
+                import pygame
+                pygame.mixer.music.stop()
+        player.queue = [t for t in player.queue if os.path.realpath(t.path or "") != real]
+        player.played = [t for t in player.played if os.path.realpath(t.path or "") != real]
+
+    try:
+        os.remove(real)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify({"status": "ok"})
+
 
 @app.route("/api/clear", methods=["POST"])
 def api_clear():
@@ -1432,6 +2325,8 @@ def api_search():
             "artist": artist,
             "deezer_id": track_id,
             "path": local_path,
+            "duration": item.get("duration"),
+            "artwork_url": (item.get("album") or {}).get("cover_xl") or (item.get("album") or {}).get("cover_big") or (item.get("album") or {}).get("cover_medium"),
         })
 
     return jsonify({"results": results})
@@ -1483,13 +2378,12 @@ def api_deezer_import():
 
 
 @app.route("/api/spotify/import", methods=["POST"])
-def api_spotify_import_alias():
-    """Legacy route kept for backward compatibility. Uses Deezer now."""
+def api_spotify_import():
     data = request.get_json() or {}
     url = data.get("url")
     if not url:
         return jsonify({"error": "Missing URL"}), 400
-    return _import_deezer_playlist_impl(url)
+    return _import_spotify_playlist_impl(url)
 
 
 import threading

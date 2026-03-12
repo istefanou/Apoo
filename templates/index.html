@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Apoo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=7">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=10">
   <!-- Google Cast SDK -->
   <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 </head>
@@ -17,6 +17,7 @@
       <button id="tab-search" class="tab">Search</button>
       <button id="tab-favorites" class="tab">Favorites</button>
       <button id="tab-playlists" class="tab">Playlists</button>
+      <button id="tab-settings" class="tab">Settings</button>
       <button id="tab-lofi" class="tab">Lofi</button>
     </div>
   </header>
@@ -82,9 +83,31 @@
       <div class="playlist-header">
         <input type="text" id="new-playlist-name" placeholder="New playlist name">
         <button id="btn-create-playlist">Create</button>
+        <button id="btn-import-spotify">Import Spotify Playlist</button>
         <button id="btn-import-deezer">Import Deezer Playlist</button>
       </div>
       <ul id="playlists-list"></ul>
+    </section>
+
+    <section id="view-settings" class="view">
+      <div class="settings-panel">
+        <h2>Download Search Filters</h2>
+        <p class="settings-copy">Whitelist words are added to yt-dlp searches. Blacklist words are excluded. These are stored in data/search_settings.json.</p>
+
+        <div class="settings-grid">
+          <label class="settings-field">
+            <span>Whitelist words</span>
+            <textarea id="search-whitelist" placeholder="lyrics&#10;official audio"></textarea>
+          </label>
+
+          <label class="settings-field">
+            <span>Blacklist words</span>
+            <textarea id="search-blacklist" placeholder="live&#10;remix&#10;extended"></textarea>
+          </label>
+        </div>
+
+        <button id="btn-save-search-settings">Save Search Settings</button>
+      </div>
     </section>
 
     <!-- LOFI VIEW -->
@@ -134,6 +157,6 @@
 
 
 
-  <script src="{{ url_for('static', filename='app.js') }}?v=8"></script>
+  <script src="{{ url_for('static', filename='app.js') }}?v=18"></script>
 </body>
 </html>
