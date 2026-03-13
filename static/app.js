@@ -47,9 +47,14 @@ let PLAYLIST_COVER_PICK = {};
 let SEARCH_SETTINGS = { whitelist_words: [], blacklist_words: [] };
 let TRACK_METADATA_CACHE = {};
 let TRACK_METADATA_PENDING = new Set();
+let TRACK_METADATA_ATTEMPTED = new Map();
+const TRACK_METADATA_RETRY_MS = 5 * 60 * 1000;
 let LAST_CURRENT = null; // cache current track state for audio sync
 let LAST_AUDIO_SRC = ""; // track last src set on browser audio
 let DID_INITIAL_SYNC = false; // one-time sync per track for browser mode
+let JOURNAL_REQUEST = null;
+let ACTIVE_SPOTIFY_IMPORT_ID = null;
+let SPOTIFY_IMPORT_POLL_TIMER = null;
 
 // ======================================================
 //  API HELPERS
@@ -120,6 +125,8 @@ tabs.forEach(tab => {
       renderFavoritesTab();
     } else if (targetId === "view-playlists") {
       renderPlaylistsTab();
+    } else if (targetId === "view-settings") {
+      refreshServiceJournal();
     }
   });
 });
@@ -252,6 +259,12 @@ function getTrackCacheKey(track) {
   return `name::${String(track.title || "").toLowerCase()}::${String(track.artist || "").toLowerCase()}`;
 }
 
+function isTrackDownloading(track) {
+  if (!track) return false;
+  if (track._downloading || track._lofi_downloading) return true;
+  return /\(downloading\)\s*$/i.test(String(track.title || ""));
+}
+
 function mergeTrackMetadata(track) {
   if (!track) return track;
   const cacheKey = getTrackCacheKey(track);
@@ -273,16 +286,27 @@ async function ensureTracksEnriched(tracks, onDone) {
   const seen = new Set();
 
   (tracks || []).forEach((track) => {
+    if (isTrackDownloading(track) && !track?.path) {
+      return;
+    }
+
     const cacheKey = getTrackCacheKey(track);
     if (!cacheKey || seen.has(cacheKey) || TRACK_METADATA_PENDING.has(cacheKey)) {
       return;
     }
 
-    seen.add(cacheKey);
-    if (mergeTrackMetadata(track)?.artwork_url) {
+    const attemptedAt = TRACK_METADATA_ATTEMPTED.get(cacheKey) || 0;
+    if (attemptedAt && (Date.now() - attemptedAt) < TRACK_METADATA_RETRY_MS) {
       return;
     }
 
+    seen.add(cacheKey);
+    if (mergeTrackMetadata(track)?.artwork_url) {
+      TRACK_METADATA_ATTEMPTED.set(cacheKey, Date.now());
+      return;
+    }
+
+    TRACK_METADATA_ATTEMPTED.set(cacheKey, Date.now());
     TRACK_METADATA_PENDING.add(cacheKey);
     missing.push(track);
   });
@@ -414,10 +438,133 @@ const playlistsListEl = document.getElementById("playlists-list");
 const newPlaylistNameInput = document.getElementById("new-playlist-name");
 const btnCreatePlaylist = document.getElementById("btn-create-playlist");
 const btnImportSpotify = document.getElementById("btn-import-spotify");
-const btnImportDeezer = document.getElementById("btn-import-deezer");
 const searchWhitelistInput = document.getElementById("search-whitelist");
 const searchBlacklistInput = document.getElementById("search-blacklist");
 const btnSaveSearchSettings = document.getElementById("btn-save-search-settings");
+const btnRefreshJournal = document.getElementById("btn-refresh-journal");
+const journalMetaEl = document.getElementById("journal-meta");
+const journalOutputEl = document.getElementById("journal-output");
+const playlistImportStatusEl = document.getElementById("playlist-import-status");
+const playlistImportTitleEl = document.getElementById("playlist-import-title");
+const playlistImportMetaEl = document.getElementById("playlist-import-meta");
+const playlistImportMessageEl = document.getElementById("playlist-import-message");
+const playlistImportProgressBarEl = document.getElementById("playlist-import-progress-bar");
+
+function stopSpotifyImportPolling() {
+  if (SPOTIFY_IMPORT_POLL_TIMER) {
+    clearInterval(SPOTIFY_IMPORT_POLL_TIMER);
+    SPOTIFY_IMPORT_POLL_TIMER = null;
+  }
+}
+
+function setPlaylistImportStatus({ title = "Spotify Import", meta = "", message = "", progress = null, state = "running" } = {}) {
+  if (!playlistImportStatusEl) {
+    return;
+  }
+
+  playlistImportStatusEl.classList.remove("hidden", "is-running", "is-complete", "is-error");
+  playlistImportStatusEl.classList.add(`is-${state}`);
+
+  if (playlistImportTitleEl) {
+    playlistImportTitleEl.textContent = title;
+  }
+  if (playlistImportMetaEl) {
+    playlistImportMetaEl.textContent = meta;
+  }
+  if (playlistImportMessageEl) {
+    playlistImportMessageEl.textContent = message;
+  }
+  if (playlistImportProgressBarEl) {
+    const safeProgress = Number.isFinite(progress) ? Math.max(0, Math.min(100, progress)) : 8;
+    playlistImportProgressBarEl.style.width = `${safeProgress}%`;
+  }
+}
+
+function schedulePlaylistImportStatusHide(delay = 5000) {
+  window.setTimeout(() => {
+    if (ACTIVE_SPOTIFY_IMPORT_ID || !playlistImportStatusEl || !playlistImportStatusEl.classList.contains("is-complete")) {
+      return;
+    }
+    playlistImportStatusEl.classList.add("hidden");
+  }, delay);
+}
+
+async function pollSpotifyImportStatus(progressId) {
+  if (!progressId || ACTIVE_SPOTIFY_IMPORT_ID !== progressId) {
+    return;
+  }
+
+  try {
+    const data = await apiGet(`/api/spotify/import/status?progress_id=${encodeURIComponent(progressId)}&t=${Date.now()}`);
+    if (data?.error) {
+      return;
+    }
+
+    const expected = Number.isFinite(data?.expected_total) ? data.expected_total : null;
+    const collected = Number.isFinite(data?.collected_count) ? data.collected_count : null;
+    const metaParts = [];
+    if (collected !== null) {
+      metaParts.push(expected ? `${collected}/${expected} tracks` : `${collected} tracks`);
+    }
+    if (data?.updated_at) {
+      metaParts.push(data.updated_at);
+    }
+
+    setPlaylistImportStatus({
+      title: data?.playlist_name ? `Spotify Import: ${data.playlist_name}` : "Spotify Import",
+      meta: metaParts.join(" • "),
+      message: data?.message || "Import in progress...",
+      progress: Number.isFinite(data?.progress) ? data.progress : null,
+      state: data?.state || "running",
+    });
+  } catch (e) {
+    console.error("Failed to poll Spotify import status:", e);
+  }
+}
+
+async function refreshServiceJournal() {
+  if (!journalOutputEl) {
+    return;
+  }
+
+  if (JOURNAL_REQUEST) {
+    return JOURNAL_REQUEST;
+  }
+
+  journalOutputEl.textContent = "Loading recent service log...";
+  if (journalMetaEl) {
+    journalMetaEl.textContent = "Fetching smart_home_apoo.service...";
+  }
+
+  JOURNAL_REQUEST = (async () => {
+    try {
+      const data = await apiGet(`/api/settings/journal?lines=150&t=${Date.now()}`);
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      const lines = Array.isArray(data?.lines) ? data.lines : [];
+      journalOutputEl.textContent = lines.length ? lines.join("\n") : "No journal lines available yet.";
+      journalOutputEl.scrollTop = journalOutputEl.scrollHeight;
+
+      if (journalMetaEl) {
+        const serviceName = data?.service || "smart_home_apoo.service";
+        const lineCount = typeof data?.line_count === "number" ? data.line_count : lines.length;
+        const fetchedAt = data?.fetched_at || "just now";
+        journalMetaEl.textContent = `${serviceName} • ${lineCount} lines • refreshed ${fetchedAt}`;
+      }
+    } catch (e) {
+      journalOutputEl.textContent = `Failed to load the service log.\n${e.message}`;
+      if (journalMetaEl) {
+        journalMetaEl.textContent = "Service log unavailable.";
+      }
+    } finally {
+      JOURNAL_REQUEST = null;
+    }
+  })();
+
+  return JOURNAL_REQUEST;
+}
 
 
 // ======================================================
@@ -1292,63 +1439,79 @@ if (btnCreatePlaylist) {
   });
 }
 
-if (btnImportDeezer) {
-  btnImportDeezer.addEventListener("click", async () => {
-    const url = prompt("Enter Deezer playlist URL or ID:");
-    if (!url) return;
-
-    const data = await apiPost("/api/deezer/import", { url });
-
-    if (!data || !data.name || !Array.isArray(data.tracks)) {
-      alert("Failed to import playlist.");
-      return;
-    }
-
-    let name = data.name;
-    let i = 1;
-    while (PLAYLISTS[name]) {
-      name = `${data.name} (${i++})`;
-    }
-
-    PLAYLISTS[name] = data.tracks.map(cleanTrack);
-
-    // Instant UI
-    renderPlaylistsTab();
-
-    // Background save
-    savePlaylists();
-
-    if (data.warning) {
-      alert(data.warning);
-    }
-  });
-}
-
 if (btnImportSpotify) {
   btnImportSpotify.addEventListener("click", async () => {
     const url = prompt("Enter Spotify playlist URL or ID:");
     if (!url) return;
 
-    const data = await apiPost("/api/spotify/import", { url });
+    const progressId = `spotify-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    ACTIVE_SPOTIFY_IMPORT_ID = progressId;
+    stopSpotifyImportPolling();
+    setPlaylistImportStatus({
+      title: "Spotify Import",
+      meta: "Starting...",
+      message: "Preparing Spotify playlist import.",
+      progress: 4,
+      state: "running",
+    });
 
-    if (!data || !data.name || !Array.isArray(data.tracks)) {
-      alert(data?.error ? `Failed to import Spotify playlist: ${data.error}` : "Failed to import Spotify playlist.");
-      return;
+    SPOTIFY_IMPORT_POLL_TIMER = window.setInterval(() => {
+      pollSpotifyImportStatus(progressId);
+    }, 900);
+    pollSpotifyImportStatus(progressId);
+
+    try {
+      const data = await apiPost("/api/spotify/import", { url, progress_id: progressId });
+      stopSpotifyImportPolling();
+
+      if (!data || !data.name || !Array.isArray(data.tracks)) {
+        ACTIVE_SPOTIFY_IMPORT_ID = null;
+        setPlaylistImportStatus({
+          title: "Spotify Import",
+          meta: "Failed",
+          message: data?.error ? `Failed to import Spotify playlist: ${data.error}` : "Failed to import Spotify playlist.",
+          progress: 100,
+          state: "error",
+        });
+        alert(data?.error ? `Failed to import Spotify playlist: ${data.error}` : "Failed to import Spotify playlist.");
+        return;
+      }
+
+      const name = data.name;
+      const wasExisting = Object.prototype.hasOwnProperty.call(PLAYLISTS, name);
+      PLAYLISTS[name] = data.tracks.map(cleanTrack);
+      delete PLAYLIST_ENRICHED[name];
+      delete PLAYLIST_COVER_PICK[name];
+      ACTIVE_PLAYLIST_NAME = name;
+
+      renderPlaylistsTab();
+      savePlaylists();
+
+      ACTIVE_SPOTIFY_IMPORT_ID = null;
+      setPlaylistImportStatus({
+        title: `Spotify Import: ${name}`,
+        meta: wasExisting ? "Playlist updated" : "Playlist imported",
+        message: `Stored ${data.tracks.length} tracks and synced the playlist with Spotify's latest version.`,
+        progress: 100,
+        state: "complete",
+      });
+      schedulePlaylistImportStatusHide();
+
+      if (data.warning) {
+        alert(data.warning);
+      }
+    } catch (e) {
+      stopSpotifyImportPolling();
+      ACTIVE_SPOTIFY_IMPORT_ID = null;
+      setPlaylistImportStatus({
+        title: "Spotify Import",
+        meta: "Failed",
+        message: `Failed to import Spotify playlist: ${e.message}`,
+        progress: 100,
+        state: "error",
+      });
+      alert(`Failed to import Spotify playlist: ${e.message}`);
     }
-
-    let name = data.name;
-    let i = 1;
-    while (PLAYLISTS[name]) {
-      name = `${data.name} (${i++})`;
-    }
-
-    PLAYLISTS[name] = data.tracks.map(cleanTrack);
-
-    // Instant UI
-    renderPlaylistsTab();
-
-    // Background save
-    savePlaylists();
   });
 }
 
@@ -1376,6 +1539,10 @@ if (btnSaveSearchSettings) {
       alert(`Failed to save settings: ${e.message}`);
     }
   });
+}
+
+if (btnRefreshJournal) {
+  btnRefreshJournal.addEventListener("click", refreshServiceJournal);
 }
 
 // ======================================================
@@ -1552,7 +1719,8 @@ function startLofiPoll() {
     try {
       const inProgressRes = await fetch("/api/lofi/in-progress");
       const inProgressData = await inProgressRes.json();
-      const hasActiveDownloads = (inProgressData.in_progress || []).length > 0;
+      const activeDownloads = (inProgressData.in_progress || []).filter(item => Number(item?.progress || 0) < 100);
+      const hasActiveDownloads = activeDownloads.length > 0;
       
       if (!hasActiveDownloads) {
         // No active downloads, stop polling and refresh once more
@@ -1694,14 +1862,16 @@ async function loadLofiLibrary() {
       apiGet("/api/lofi/in-progress")
     ]);
     const videos = listData.videos || [];
-    const inProgress = (inProgressData.in_progress || []).map(item => ({
-      id: item.safe_title,
-      title: item.title + ' (Downloading)',
-      progress: item.progress,
-      thumbnail: item.thumbnail,
-      inProgress: true,
-      progress_id: item.progress_id
-    }));
+    const inProgress = (inProgressData.in_progress || [])
+      .filter(item => Number(item?.progress || 0) < 100)
+      .map(item => ({
+        id: item.safe_title,
+        title: item.title + ' (Downloading)',
+        progress: item.progress,
+        thumbnail: item.thumbnail,
+        inProgress: true,
+        progress_id: item.progress_id
+      }));
     // Show in-progress first, then finished
     renderLofiLibrary([...inProgress, ...videos]);
   } catch (err) {

@@ -1,304 +1,2838 @@
 {
   "2024 our Favs": [
     {
+      "artist": "David Kushner",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "1odExI7RdWc4BT515LTAwj",
-      "title": "Daylight",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "1odExI7RdWc4BT515LTAwj",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Daylight"
     },
     {
+      "artist": "Chris Isaak",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "5l91KHr9uF8wdSdtRoZba8",
-      "title": "Wicked Game - Remastered",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "5l91KHr9uF8wdSdtRoZba8",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Wicked Game - Remastered"
     },
     {
+      "artist": "Dermot Kennedy",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "4tViDtaHuSLnh7HVJTrKhs",
-      "title": "Power Over Me",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "4tViDtaHuSLnh7HVJTrKhs",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Power Over Me"
     },
     {
+      "artist": "Duncan Laurence",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "1Xi84slp6FryDSCbzq4UCD",
-      "title": "Arcade",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "1Xi84slp6FryDSCbzq4UCD",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Arcade"
     },
     {
+      "artist": "Ed Sheeran",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "2RttW7RAu5nOAfq6YFvApB",
-      "title": "Happier",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "2RttW7RAu5nOAfq6YFvApB",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Happier"
     },
     {
+      "artist": "Gotye, Kimbra",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "13b3kZAjZGltp76ed4u1m3",
-      "title": "Somebody That I Used To Know",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "13b3kZAjZGltp76ed4u1m3",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Somebody That I Used To Know"
     },
     {
+      "artist": "Imagine Dragons",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "0HqZX76SFLDz2aW8aiqi7G",
-      "title": "Bones",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "0HqZX76SFLDz2aW8aiqi7G",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Bones"
     },
     {
+      "artist": "Imagine Dragons, JID, Arcane, League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "1r9xUipOqoNwggBpENDsvJ",
-      "title": "Enemy (with JID) - from the series Arcane League of Legends",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "1r9xUipOqoNwggBpENDsvJ",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Enemy (with JID) - from the series Arcane League of Legends"
     },
     {
+      "artist": "Imagine Dragons",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "0pqnGHJpmpxLKifKRmU6WP",
-      "title": "Believer",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "0pqnGHJpmpxLKifKRmU6WP",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Believer"
     },
     {
+      "artist": "Imagine Dragons",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "6TEftSkmWdTm1EpThnwqh6",
-      "title": "Wrecked",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "6TEftSkmWdTm1EpThnwqh6",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Wrecked"
     },
     {
+      "artist": "James Bay",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "6PZby1bNMj2ZEPShwQwJnL",
-      "title": "Hold Back The River",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "6PZby1bNMj2ZEPShwQwJnL",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Hold Back The River"
     },
     {
+      "artist": "Joshua Hyslop",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "3f3sl2F0lAcCDb30T4oKiP",
-      "title": "No Roots",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "3f3sl2F0lAcCDb30T4oKiP",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "No Roots"
     },
     {
+      "artist": "League of Legends, Against The Current",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "1FpVJ7HpZInE2GvhVE2TwT",
-      "title": "Legends Never Die",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "1FpVJ7HpZInE2GvhVE2TwT",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Legends Never Die"
     },
     {
+      "artist": "M\u00e5neskin",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "7exHT4swWOKL5addPeqkLP",
-      "title": "THE LONELIEST",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "7exHT4swWOKL5addPeqkLP",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "THE LONELIEST"
     },
     {
+      "artist": "M\u00e5neskin",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "7HMz8o0m7ASQ3ImFPfhWTY",
-      "title": "CORALINE",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "7HMz8o0m7ASQ3ImFPfhWTY",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "CORALINE"
     },
     {
+      "artist": "M\u00e5neskin",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "776AftMmFFAWUIEAb3lHhw",
-      "title": "ZITTI E BUONI",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "776AftMmFFAWUIEAb3lHhw",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "ZITTI E BUONI"
     },
     {
+      "artist": "Olivia Rodrigo",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "1kuGVB7EU95pJObxwvfwKS",
-      "title": "vampire",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "1kuGVB7EU95pJObxwvfwKS",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "vampire"
     },
     {
+      "artist": "Rachel Platten",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "37f4ITSlgPX81ad2EvmVQr",
-      "title": "Fight Song",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "37f4ITSlgPX81ad2EvmVQr",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Fight Song"
     },
     {
+      "artist": "Tones And I",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "2XU0oxnq2qxCpomAAuJY8K",
-      "title": "Dance Monkey",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "2XU0oxnq2qxCpomAAuJY8K",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Dance Monkey"
     },
     {
+      "artist": "Twenty One Pilots",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "6i0V12jOa3mr6uu4WYhUBr",
-      "title": "Heathens",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "6i0V12jOa3mr6uu4WYhUBr",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Heathens"
     },
     {
+      "artist": "Twenty One Pilots",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "3CRDbSIZ4r5MsZ0YwxuEkn",
-      "title": "Stressed Out",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "3CRDbSIZ4r5MsZ0YwxuEkn",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Stressed Out"
     },
     {
+      "artist": "Elley Duh\u00e9",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "45JYEmfoWSpCA3Paut7YXE",
-      "title": "MIDDLE OF THE NIGHT",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "45JYEmfoWSpCA3Paut7YXE",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "MIDDLE OF THE NIGHT"
     },
     {
+      "artist": "Sia",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "2J2Z1SkXYghSajLibnQHOa",
-      "title": "Unstoppable",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "2J2Z1SkXYghSajLibnQHOa",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Unstoppable"
     },
     {
+      "artist": "Sia",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "2MbgQKWhoii8bqsMBWWWgA",
-      "title": "Courage to Change",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "2MbgQKWhoii8bqsMBWWWgA",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Courage to Change"
     },
     {
+      "artist": "Lady Gaga, Bradley Cooper",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "2VxeLyX666F8uXCJ0dZF8B",
-      "title": "Shallow",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "2VxeLyX666F8uXCJ0dZF8B",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Shallow"
     },
     {
+      "artist": "Imagine Dragons",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "7sA2SKTo1QbTSSYn5YvJC4",
-      "title": "Sharks",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "7sA2SKTo1QbTSSYn5YvJC4",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Sharks"
     },
     {
+      "artist": "Ed Sheeran",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "3rmo8F54jFF8OgYsqTxm5d",
-      "title": "Bad Habits",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "3rmo8F54jFF8OgYsqTxm5d",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Bad Habits"
     },
     {
+      "artist": "X Ambassadors",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "0fYVliAYKHuPmECRs1pbRf",
-      "title": "Renegades",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "0fYVliAYKHuPmECRs1pbRf",
-      "path": null,
-      "duration": null,
-      "artwork_url": null
+      "title": "Renegades"
     },
     {
+      "artist": "Imagine Dragons",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
       "id": "6Qn5zhYkTa37e91HC1D7lb",
-      "title": "Whatever It Takes",
-      "artist": "Unknown artist",
-      "deezer_id": null,
+      "path": null,
       "spotify_id": "6Qn5zhYkTa37e91HC1D7lb",
+      "title": "Whatever It Takes"
+    },
+    {
+      "artist": "Dua Lipa",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3AzjcOeAmA57TIOr9zF1ZW",
+      "path": null,
+      "spotify_id": "3AzjcOeAmA57TIOr9zF1ZW",
+      "title": "Physical"
+    },
+    {
+      "artist": "Dua Lipa",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4OMJGnvZfDvsePyCwRGO7X",
+      "path": null,
+      "spotify_id": "4OMJGnvZfDvsePyCwRGO7X",
+      "title": "Houdini"
+    },
+    {
+      "artist": "Ed Sheeran",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4zrKN5Sv8JS5mqnbVcsul7",
+      "path": null,
+      "spotify_id": "4zrKN5Sv8JS5mqnbVcsul7",
+      "title": "Celestial"
+    },
+    {
+      "artist": "AURORA",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1v1oIWf2Xgh54kIWuKsDf6",
+      "path": null,
+      "spotify_id": "1v1oIWf2Xgh54kIWuKsDf6",
+      "title": "Runaway"
+    },
+    {
+      "artist": "Rosa Linn",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "76OGwb5RA9h4FxQPT33ekc",
+      "path": null,
+      "spotify_id": "76OGwb5RA9h4FxQPT33ekc",
+      "title": "SNAP"
+    },
+    {
+      "artist": "Alec Benjamin",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2qxmye6gAegTMjLKEBoR3d",
+      "path": null,
+      "spotify_id": "2qxmye6gAegTMjLKEBoR3d",
+      "title": "Let Me Down Slowly"
+    },
+    {
+      "artist": "Tate McRae",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3rUGC1vUpkDG9CZFHMur1t",
+      "path": null,
+      "spotify_id": "3rUGC1vUpkDG9CZFHMur1t",
+      "title": "greedy"
+    },
+    {
+      "artist": "M\u00e5neskin, Tom Morello",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "44Xyja7xYPlVC6v2CeweSi",
+      "path": null,
+      "spotify_id": "44Xyja7xYPlVC6v2CeweSi",
+      "title": "GOSSIP (feat. Tom Morello)"
+    },
+    {
+      "artist": "Sam Tinnesz, Yacht Money",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7vguMCv8uVuZLiQJ156u3Z",
+      "path": null,
+      "spotify_id": "7vguMCv8uVuZLiQJ156u3Z",
+      "title": "Play with Fire (feat. Yacht Money)"
+    },
+    {
+      "artist": "David Guetta, Bebe Rexha",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4uUG5RXrOk84mYEfFvj3cK",
+      "path": null,
+      "spotify_id": "4uUG5RXrOk84mYEfFvj3cK",
+      "title": "I'm Good (Blue)"
+    },
+    {
+      "artist": "The Score",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7uCBGNn991AM68fR4tSDco",
+      "path": null,
+      "spotify_id": "7uCBGNn991AM68fR4tSDco",
+      "title": "Born For This"
+    },
+    {
+      "artist": "Martin Garrix, JVKE",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4Wu62DoQg1ECGlDKDfo30R",
+      "path": null,
+      "spotify_id": "4Wu62DoQg1ECGlDKDfo30R",
+      "title": "Hero"
+    },
+    {
+      "artist": "Lukas Graham",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5kqIPrATaCc2LqxVWzQGbk",
+      "path": null,
+      "spotify_id": "5kqIPrATaCc2LqxVWzQGbk",
+      "title": "7 Years"
+    },
+    {
+      "artist": "2WEI, Edda Hayes",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2UIkO1w2lTXDb0BLzy262r",
+      "path": null,
+      "spotify_id": "2UIkO1w2lTXDb0BLzy262r",
+      "title": "Survivor"
+    },
+    {
+      "artist": "AURORA",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7Iiek3SL6PluRxj9IgbTC1",
+      "path": null,
+      "spotify_id": "7Iiek3SL6PluRxj9IgbTC1",
+      "title": "Cure For Me"
+    },
+    {
+      "artist": "Camila Cabello",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2ogKhhoMClkFXek7ZgxAhN",
+      "path": null,
+      "spotify_id": "2ogKhhoMClkFXek7ZgxAhN",
+      "title": "Shameless"
+    },
+    {
+      "artist": "Tokio Hotel",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "32Ky5QCRtwYJJXuLwoGufj",
+      "path": null,
+      "spotify_id": "32Ky5QCRtwYJJXuLwoGufj",
+      "title": "Monsoon"
+    },
+    {
+      "artist": "ZAYN, Sia",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3e7sxremeOE3wTySiOhGiP",
+      "path": null,
+      "spotify_id": "3e7sxremeOE3wTySiOhGiP",
+      "title": "Dusk Till Dawn (feat. Sia) - Radio Edit"
+    },
+    {
+      "artist": "Jaymes Young",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1SOClUWhOi8vHZYMz3GluK",
+      "path": null,
+      "spotify_id": "1SOClUWhOi8vHZYMz3GluK",
+      "title": "Infinity"
+    },
+    {
+      "artist": "Lady Gaga",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "53jnnqFSRGMDB9ADrNriCA",
+      "path": null,
+      "spotify_id": "53jnnqFSRGMDB9ADrNriCA",
+      "title": "Bloody Mary"
+    },
+    {
+      "artist": "CARYS",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "07squf0xpI7hHUwZ4hezKP",
+      "path": null,
+      "spotify_id": "07squf0xpI7hHUwZ4hezKP",
+      "title": "Princesses Don't Cry"
+    },
+    {
+      "artist": "The Chainsmokers",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "58kZ9spgxmlEznXGu6FPdQ",
+      "path": null,
+      "spotify_id": "58kZ9spgxmlEznXGu6FPdQ",
+      "title": "Sick Boy"
+    },
+    {
+      "artist": "Madison Beer",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "48vIfHaK7by6x0T6ucpODL",
+      "path": null,
+      "spotify_id": "48vIfHaK7by6x0T6ucpODL",
+      "title": "make you mine"
+    },
+    {
+      "artist": "Tate McRae",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7l9IqDtVWJurTvkQHq1BGh",
+      "path": null,
+      "spotify_id": "7l9IqDtVWJurTvkQHq1BGh",
+      "title": "she's all i wanna be"
+    },
+    {
+      "artist": "Benson Boone",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6tNQ70jh4OwmPGpYy6R2o9",
+      "path": null,
+      "spotify_id": "6tNQ70jh4OwmPGpYy6R2o9",
+      "title": "Beautiful Things"
+    },
+    {
+      "artist": "Madilyn Bailey",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1IzfmRGG6aNxu8kFHZfs1F",
+      "path": null,
+      "spotify_id": "1IzfmRGG6aNxu8kFHZfs1F",
+      "title": "Dusk Till Dawn"
+    },
+    {
+      "artist": "Shawn Mendes",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5jsw9uXEGuKyJzs0boZ1bT",
+      "path": null,
+      "spotify_id": "5jsw9uXEGuKyJzs0boZ1bT",
+      "title": "Stitches"
+    },
+    {
+      "artist": "Against The Current",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2yHmIxXi48DFl6zQlIhEaj",
+      "path": null,
+      "spotify_id": "2yHmIxXi48DFl6zQlIhEaj",
+      "title": "Wildfire"
+    },
+    {
+      "artist": "Lola Young",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3SKH53SPQbEnZR4cJPVaz2",
+      "path": null,
+      "spotify_id": "3SKH53SPQbEnZR4cJPVaz2",
+      "title": "Messy"
+    },
+    {
+      "artist": "OneRepublic",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2tpWsVSb9UEmDRxAl1zhX1",
+      "path": null,
+      "spotify_id": "2tpWsVSb9UEmDRxAl1zhX1",
+      "title": "Counting Stars"
+    },
+    {
+      "artist": "Sia",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6bLopGnirdrilrpdVB6Um1",
+      "path": null,
+      "spotify_id": "6bLopGnirdrilrpdVB6Um1",
+      "title": "The Greatest"
+    },
+    {
+      "artist": "Coldplay",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3RiPr603aXAoi4GHyXx0uy",
+      "path": null,
+      "spotify_id": "3RiPr603aXAoi4GHyXx0uy",
+      "title": "Hymn for the Weekend"
+    },
+    {
+      "artist": "Hozier",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3dYD57lRAUcMHufyqn9GcI",
+      "path": null,
+      "spotify_id": "3dYD57lRAUcMHufyqn9GcI",
+      "title": "Take Me To Church"
+    },
+    {
+      "artist": "Billie Eilish, Khalid",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0u2P5u6lvoDfwTYjAADbn4",
+      "path": null,
+      "spotify_id": "0u2P5u6lvoDfwTYjAADbn4",
+      "title": "lovely (with Khalid)"
+    },
+    {
+      "artist": "Vance Joy",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2uXlHCUbq9OMUwx3hrk06o",
+      "path": null,
+      "spotify_id": "2uXlHCUbq9OMUwx3hrk06o",
+      "title": "Riptide"
+    },
+    {
+      "artist": "Imagine Dragons",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2RSHsoi04658QL5xgQVov3",
+      "path": null,
+      "spotify_id": "2RSHsoi04658QL5xgQVov3",
+      "title": "Bad Liar"
+    },
+    {
+      "artist": "M\u00e5neskin",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4pt5fDVTg5GhEvEtlz9dKk",
+      "path": null,
+      "spotify_id": "4pt5fDVTg5GhEvEtlz9dKk",
+      "title": "I WANNA BE YOUR SLAVE"
+    },
+    {
+      "artist": "Maroon 5",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2bL2gyO6kBdLkNSkxXNh6x",
+      "path": null,
+      "spotify_id": "2bL2gyO6kBdLkNSkxXNh6x",
+      "title": "Animals"
+    },
+    {
+      "artist": "KALEO",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0y1QJc3SJVPKJ1OvFmFqe6",
+      "path": null,
+      "spotify_id": "0y1QJc3SJVPKJ1OvFmFqe6",
+      "title": "Way down We Go"
+    }
+  ],
+  "Best Playlist Worldwide": [
+    {
+      "id": "664gdARxaClFsoF5SXKOws",
+      "title": "Here",
+      "artist": "Alessia Cara",
+      "deezer_id": null,
+      "spotify_id": "664gdARxaClFsoF5SXKOws",
       "path": null,
       "duration": null,
       "artwork_url": null
     },
     {
-      "id": "3AzjcOeAmA57TIOr9zF1ZW",
-      "title": "Physical",
-      "artist": "Unknown artist",
+      "id": "42ydLwx4i5V49RXHOozJZq",
+      "title": "Scars To Your Beautiful",
+      "artist": "Alessia Cara",
       "deezer_id": null,
-      "spotify_id": "3AzjcOeAmA57TIOr9zF1ZW",
+      "spotify_id": "42ydLwx4i5V49RXHOozJZq",
       "path": null,
       "duration": null,
       "artwork_url": null
+    },
+    {
+      "id": "4pLwZjInHj3SimIyN9SnOz",
+      "title": "Side To Side",
+      "artist": "Ariana Grande, Nicki Minaj",
+      "deezer_id": null,
+      "spotify_id": "4pLwZjInHj3SimIyN9SnOz",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "4ZJPwET9Jrgpkqi4Vo3Yg8",
+      "title": "Bad Bitch (feat. Ty Dolla $ign)",
+      "artist": "Bebe Rexha, Ty Dolla $ign",
+      "deezer_id": null,
+      "spotify_id": "4ZJPwET9Jrgpkqi4Vo3Yg8",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1FUViuNSldssMIawrOXF2i",
+      "title": "I Got You",
+      "artist": "Bebe Rexha",
+      "deezer_id": null,
+      "spotify_id": "1FUViuNSldssMIawrOXF2i",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1vvNmPOiUuyCbgWmtc6yfm",
+      "title": "My Way",
+      "artist": "Calvin Harris",
+      "deezer_id": null,
+      "spotify_id": "1vvNmPOiUuyCbgWmtc6yfm",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0azC730Exh71aQlOt9Zj3y",
+      "title": "This Is What You Came For",
+      "artist": "Calvin Harris, Rihanna",
+      "deezer_id": null,
+      "spotify_id": "0azC730Exh71aQlOt9Zj3y",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "06KyNuuMOX1ROXRhj787tj",
+      "title": "We Don't Talk Anymore (feat. Selena Gomez)",
+      "artist": "Charlie Puth, Selena Gomez",
+      "deezer_id": null,
+      "spotify_id": "06KyNuuMOX1ROXRhj787tj",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "3s4U7OHV7gnj42VV72eSZ6",
+      "title": "Rather Be (feat. Jess Glynne)",
+      "artist": "Clean Bandit, Jess Glynne",
+      "deezer_id": null,
+      "spotify_id": "3s4U7OHV7gnj42VV72eSZ6",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "5knuzwU65gJK7IF5yJsuaW",
+      "title": "Rockabye (feat. Sean Paul & Anne-Marie)",
+      "artist": "Clean Bandit, Anne-Marie, Sean Paul",
+      "deezer_id": null,
+      "spotify_id": "5knuzwU65gJK7IF5yJsuaW",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "4in0srL0WxD7Hdib0hmzR9",
+      "title": "Little Bad Girl",
+      "artist": "David Guetta, Taio Cruz, Ludacris",
+      "deezer_id": null,
+      "spotify_id": "4in0srL0WxD7Hdib0hmzR9",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "4sn0Ck12hSxDc5sUvQkcTN",
+      "title": "Neon Lights",
+      "artist": "Demi Lovato",
+      "deezer_id": null,
+      "spotify_id": "4sn0Ck12hSxDc5sUvQkcTN",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2aFiaMXmWsM3Vj72F9ksBl",
+      "title": "Cake By The Ocean",
+      "artist": "DNCE",
+      "deezer_id": null,
+      "spotify_id": "2aFiaMXmWsM3Vj72F9ksBl",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "7qiZfU4dY1lWllzX7mPBI3",
+      "title": "Shape of You",
+      "artist": "Ed Sheeran",
+      "deezer_id": null,
+      "spotify_id": "7qiZfU4dY1lWllzX7mPBI3",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "7j56HrjR9cGzvekvZY3Faz",
+      "title": "HandClap",
+      "artist": "Fitz and The Tantrums",
+      "deezer_id": null,
+      "spotify_id": "7j56HrjR9cGzvekvZY3Faz",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1CUVN2kn7mW5FjkqXTR2W1",
+      "title": "Perfect Strangers",
+      "artist": "Jonas Blue, JP Cooper",
+      "deezer_id": null,
+      "spotify_id": "1CUVN2kn7mW5FjkqXTR2W1",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "5masKPHeAOVNgxdLebIcK7",
+      "title": "Stole the Show",
+      "artist": "Kygo, Parson James",
+      "deezer_id": null,
+      "spotify_id": "5masKPHeAOVNgxdLebIcK7",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "5KcYtdjhsQrNNMjJOSAUEz",
+      "title": "Team",
+      "artist": "Lorde",
+      "deezer_id": null,
+      "spotify_id": "5KcYtdjhsQrNNMjJOSAUEz",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1sLgGyOKyUABaPOeySLzRn",
+      "title": "Lost On You",
+      "artist": "LP",
+      "deezer_id": null,
+      "spotify_id": "1sLgGyOKyUABaPOeySLzRn",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2Q4v3tAAOfG5En0R9OmllG",
+      "title": "Other People",
+      "artist": "LP",
+      "deezer_id": null,
+      "spotify_id": "2Q4v3tAAOfG5En0R9OmllG",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "5NNlUMcOEOdoOIwwaWXv0k",
+      "title": "Cold",
+      "artist": "Maroon 5, Future",
+      "deezer_id": null,
+      "spotify_id": "5NNlUMcOEOdoOIwwaWXv0k",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "5MFzQMkrl1FOOng9tq6R9r",
+      "title": "Don't Wanna Know",
+      "artist": "Maroon 5, Kendrick Lamar",
+      "deezer_id": null,
+      "spotify_id": "5MFzQMkrl1FOOng9tq6R9r",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "7pYfyrMNPn3wtoCyqcTVoI",
+      "title": "Moves Like Jagger - Studio Recording From \"The Voice\" Performance",
+      "artist": "Maroon 5, Christina Aguilera",
+      "deezer_id": null,
+      "spotify_id": "7pYfyrMNPn3wtoCyqcTVoI",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "6cpk00i5TxCqSeqNi2HuIe",
+      "title": "One More Night",
+      "artist": "Maroon 5",
+      "deezer_id": null,
+      "spotify_id": "6cpk00i5TxCqSeqNi2HuIe",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "17Fd6Yb7mSbinKG8LoWfFl",
+      "title": "I Took A Pill In Ibiza - Seeb Remix",
+      "artist": "Mike Posner, Seeb",
+      "deezer_id": null,
+      "spotify_id": "17Fd6Yb7mSbinKG8LoWfFl",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "58zsLZPvfflaiIbNWoA22O",
+      "title": "Human",
+      "artist": "Rag'n'Bone Man",
+      "deezer_id": null,
+      "spotify_id": "58zsLZPvfflaiIbNWoA22O",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "6y2Kaz9QI01XBKJ8mTb7Pf",
+      "title": "Skin",
+      "artist": "Rag'n'Bone Man",
+      "deezer_id": null,
+      "spotify_id": "6y2Kaz9QI01XBKJ8mTb7Pf",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1tjY4H0X706ZH03SXa1DFh",
+      "title": "Where Have You Been",
+      "artist": "Rihanna",
+      "deezer_id": null,
+      "spotify_id": "1tjY4H0X706ZH03SXa1DFh",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1oew3nFNY3vMacJAsvry0S",
+      "title": "Me And My Broken Heart",
+      "artist": "Rixton",
+      "deezer_id": null,
+      "spotify_id": "1oew3nFNY3vMacJAsvry0S",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "76t5B0ttSAje5KHmQbv88t",
+      "title": "Treat You Better",
+      "artist": "Shawn Mendes",
+      "deezer_id": null,
+      "spotify_id": "76t5B0ttSAje5KHmQbv88t",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2tftivjRsvKs0jFH9h3Ti8",
+      "title": "Hangover",
+      "artist": "Taio Cruz, Flo Rida",
+      "deezer_id": null,
+      "spotify_id": "2tftivjRsvKs0jFH9h3Ti8",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2Z8WuEywRWYTKe1NybPQEW",
+      "title": "Ride",
+      "artist": "Twenty One Pilots",
+      "deezer_id": null,
+      "spotify_id": "2Z8WuEywRWYTKe1NybPQEW",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1yNyoWWWikbLhwIGWjZuDW",
+      "title": "All Night",
+      "artist": "The Vamps, Matoma",
+      "deezer_id": null,
+      "spotify_id": "1yNyoWWWikbLhwIGWjZuDW",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "3Xzog9enTvbsc0G7G9M58D",
+      "title": "Shut Up and Dance - Live Acoustic - 2015",
+      "artist": "WALK THE MOON",
+      "deezer_id": null,
+      "spotify_id": "3Xzog9enTvbsc0G7G9M58D",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0r4SsYcwvd8URat6AS2m6f",
+      "title": "Lush Life",
+      "artist": "Zara Larsson",
+      "deezer_id": null,
+      "spotify_id": "0r4SsYcwvd8URat6AS2m6f",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0ADG9OgdVTL7fgREP75BrZ",
+      "title": "Ain't My Fault",
+      "artist": "Zara Larsson",
+      "deezer_id": null,
+      "spotify_id": "0ADG9OgdVTL7fgREP75BrZ",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0PDUDa38GO8lMxLCRc4lL1",
+      "title": "PILLOWTALK",
+      "artist": "ZAYN",
+      "deezer_id": null,
+      "spotify_id": "0PDUDa38GO8lMxLCRc4lL1",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1zWMf9bVyhY5W3ZORbjNWt",
+      "title": "LIKE I WOULD",
+      "artist": "ZAYN",
+      "deezer_id": null,
+      "spotify_id": "1zWMf9bVyhY5W3ZORbjNWt",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0dA2Mk56wEzDgegdC6R17g",
+      "title": "Stay (with Alessia Cara)",
+      "artist": "Zedd, Alessia Cara",
+      "deezer_id": null,
+      "spotify_id": "0dA2Mk56wEzDgegdC6R17g",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "4Q4jmPHwu0wrJvqrld0FQ6",
+      "title": "I Would Like",
+      "artist": "Zara Larsson",
+      "deezer_id": null,
+      "spotify_id": "4Q4jmPHwu0wrJvqrld0FQ6",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "16pwlVsypm4aDKMhXdOuXg",
+      "title": "Animals",
+      "artist": "Maroon 5",
+      "deezer_id": null,
+      "spotify_id": "16pwlVsypm4aDKMhXdOuXg",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1ehPJRt49h6N0LoryqKZXq",
+      "title": "How Far I'll Go - Alessia Cara Version",
+      "artist": "Alessia Cara, Disney",
+      "deezer_id": null,
+      "spotify_id": "1ehPJRt49h6N0LoryqKZXq",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2lXDbdbBw7lJVCWHkYxdep",
+      "title": "Wildest Dreams",
+      "artist": "Taylor Swift",
+      "deezer_id": null,
+      "spotify_id": "2lXDbdbBw7lJVCWHkYxdep",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "3husjxyCMBvNeiTEcrpPSe",
+      "title": "Unfaithful",
+      "artist": "Rihanna",
+      "deezer_id": null,
+      "spotify_id": "3husjxyCMBvNeiTEcrpPSe",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "6tXjP6xgPJ7Xr1igrO6bOE",
+      "title": "Don't Stop The Music",
+      "artist": "Rihanna",
+      "deezer_id": null,
+      "spotify_id": "6tXjP6xgPJ7Xr1igrO6bOE",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "18AJRdgUoO9EYn11N7xzaT",
+      "title": "Habits (Stay High)",
+      "artist": "Tove Lo",
+      "deezer_id": null,
+      "spotify_id": "18AJRdgUoO9EYn11N7xzaT",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "5CtI0qwDJkDQGwXD1H1cLb",
+      "title": "Despacito - Remix",
+      "artist": "Luis Fonsi, Daddy Yankee, Justin Bieber",
+      "deezer_id": null,
+      "spotify_id": "5CtI0qwDJkDQGwXD1H1cLb",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "4iLqG9SeJSnt0cSPICSjxv",
+      "title": "Attention",
+      "artist": "Charlie Puth",
+      "deezer_id": null,
+      "spotify_id": "4iLqG9SeJSnt0cSPICSjxv",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "6HUnnBwYZqcED1eQztxMBN",
+      "title": "Solo Dance",
+      "artist": "Martin Jensen",
+      "deezer_id": null,
+      "spotify_id": "6HUnnBwYZqcED1eQztxMBN",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "5tL0AXnqgBOllGb39ptV7N",
+      "title": "Chained To The Rhythm (Feat. Lil Yachty)",
+      "artist": "Katy Perry, Lil Yachty",
+      "deezer_id": null,
+      "spotify_id": "5tL0AXnqgBOllGb39ptV7N",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "7nKBxz47S9SD79N086fuhn",
+      "title": "SUBEME LA RADIO",
+      "artist": "Enrique Iglesias, Descemer Bueno, Zion & Lennox",
+      "deezer_id": null,
+      "spotify_id": "7nKBxz47S9SD79N086fuhn",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2KklXplRtxMsBYo474Es0w",
+      "title": "Be Mine",
+      "artist": "Ofenbach",
+      "deezer_id": null,
+      "spotify_id": "2KklXplRtxMsBYo474Es0w",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "00lNx0OcTJrS3MKHcB80HY",
+      "title": "You Don't Know Me - Radio Edit",
+      "artist": "Jax Jones, RAYE",
+      "deezer_id": null,
+      "spotify_id": "00lNx0OcTJrS3MKHcB80HY",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2ZvsMMI4aOkMUo92MKQzFI",
+      "title": "Walk",
+      "artist": "Kwabs",
+      "deezer_id": null,
+      "spotify_id": "2ZvsMMI4aOkMUo92MKQzFI",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "61WbtB6ujkpNAsAf5LjF4b",
+      "title": "Bon app\u00e9tit",
+      "artist": "Katy Perry, Migos",
+      "deezer_id": null,
+      "spotify_id": "61WbtB6ujkpNAsAf5LjF4b",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2nCEN5q18oVaSpEdPdnRod",
+      "title": "There's Nothing Holdin' Me Back - NOTD Remix",
+      "artist": "Shawn Mendes, NOTD",
+      "deezer_id": null,
+      "spotify_id": "2nCEN5q18oVaSpEdPdnRod",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "3vgNmjuRDnGLxUFGCLkwpm",
+      "title": "Light My Body Up (feat. Nicki Minaj & Lil Wayne)",
+      "artist": "David Guetta, Lil Wayne, Nicki Minaj",
+      "deezer_id": null,
+      "spotify_id": "3vgNmjuRDnGLxUFGCLkwpm",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "6kex4EBAj0WHXDKZMEJaaF",
+      "title": "Swalla (feat. Nicki Minaj & Ty Dolla $ign)",
+      "artist": "Jason Derulo, Nicki Minaj, Ty Dolla $ign",
+      "deezer_id": null,
+      "spotify_id": "6kex4EBAj0WHXDKZMEJaaF",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0qKqGQGQcEjFLWr5QNH7sL",
+      "title": "Cool Kids",
+      "artist": "Sofia Karlberg",
+      "deezer_id": null,
+      "spotify_id": "0qKqGQGQcEjFLWr5QNH7sL",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "6Xs7OKt6i0Ddq8B4M5Dgvr",
+      "title": "New Americana",
+      "artist": "Halsey",
+      "deezer_id": null,
+      "spotify_id": "6Xs7OKt6i0Ddq8B4M5Dgvr",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "4xlrALxuaCf9yZBHJeTSG6",
+      "title": "Mama",
+      "artist": "Jonas Blue, William Singe",
+      "deezer_id": null,
+      "spotify_id": "4xlrALxuaCf9yZBHJeTSG6",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "46GGxd8TVRt6FjUBfCavVT",
+      "title": "Renegades",
+      "artist": "X Ambassadors",
+      "deezer_id": null,
+      "spotify_id": "46GGxd8TVRt6FjUBfCavVT",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2ekn2ttSfGqwhhate0LSR0",
+      "title": "New Rules",
+      "artist": "Dua Lipa",
+      "deezer_id": null,
+      "spotify_id": "2ekn2ttSfGqwhhate0LSR0",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "6uFsE1JgZ20EXyU0JQZbUR",
+      "title": "Look What You Made Me Do",
+      "artist": "Taylor Swift",
+      "deezer_id": null,
+      "spotify_id": "6uFsE1JgZ20EXyU0JQZbUR",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "7AOhUY89PYUxswAQax48ZB",
+      "title": "Wish I Knew You",
+      "artist": "The Revivalists",
+      "deezer_id": null,
+      "spotify_id": "7AOhUY89PYUxswAQax48ZB",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "4fic7W59R7m3gepyi7WxtJ",
+      "title": "One On One",
+      "artist": "Tujamo, Sorana",
+      "deezer_id": null,
+      "spotify_id": "4fic7W59R7m3gepyi7WxtJ",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "2Gl0FzuLxflY6nPifJp5Dr",
+      "title": "First Time",
+      "artist": "Kygo, Ellie Goulding",
+      "deezer_id": null,
+      "spotify_id": "2Gl0FzuLxflY6nPifJp5Dr",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1xd3OqTbx17HutN7RfJOTj",
+      "title": "Big Jet Plane",
+      "artist": "Alok, Mathieu Koss",
+      "deezer_id": null,
+      "spotify_id": "1xd3OqTbx17HutN7RfJOTj",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0xLCa6dp0wmDUhkDGKzDpv",
+      "title": "F.F.F. (feat. G-Eazy)",
+      "artist": "Bebe Rexha, G-Eazy",
+      "deezer_id": null,
+      "spotify_id": "0xLCa6dp0wmDUhkDGKzDpv",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "7kJlTKjNZVT26iwiDUVhRm",
+      "title": "Blow Your Mind (Mwah)",
+      "artist": "Dua Lipa",
+      "deezer_id": null,
+      "spotify_id": "7kJlTKjNZVT26iwiDUVhRm",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "1louJpMmzEicAn7lzDalPW",
+      "title": "No Promises (feat. Demi Lovato)",
+      "artist": "Cheat Codes, Demi Lovato",
+      "deezer_id": null,
+      "spotify_id": "1louJpMmzEicAn7lzDalPW",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "39IsH7B5byx8NRlEKlZVg9",
+      "title": "Pretty Girl - Cheat Codes X CADE Remix",
+      "artist": "Maggie Lindemann, CADE, Cheat Codes",
+      "deezer_id": null,
+      "spotify_id": "39IsH7B5byx8NRlEKlZVg9",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0afhq8XCExXpqazXczTSve",
+      "title": "Galway Girl",
+      "artist": "Ed Sheeran",
+      "deezer_id": null,
+      "spotify_id": "0afhq8XCExXpqazXczTSve",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "5ysL31dJXdNK1OCI5Hlqe7",
+      "title": "Legendary",
+      "artist": "Welshly Arms",
+      "deezer_id": null,
+      "spotify_id": "5ysL31dJXdNK1OCI5Hlqe7",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "13qqdlSeF8FcxsRyapDMZ0",
+      "title": "Changes",
+      "artist": "Faul & Wad, PNAU",
+      "deezer_id": null,
+      "spotify_id": "13qqdlSeF8FcxsRyapDMZ0",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "22ppznuzVF9LKamaaqMMqu",
+      "title": "Fuego",
+      "artist": "Eleni Foureira",
+      "deezer_id": null,
+      "spotify_id": "22ppznuzVF9LKamaaqMMqu",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    },
+    {
+      "id": "0QxxZ3l2P3vDyKjf42bRoD",
+      "title": "Gerudo Valley",
+      "artist": "Lionmight, Diwa de Leon",
+      "deezer_id": null,
+      "spotify_id": "0QxxZ3l2P3vDyKjf42bRoD",
+      "path": null,
+      "duration": null,
+      "artwork_url": null
+    }
+  ],
+  "Epic Concentration": [
+    {
+      "artist": "Tina Guo",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6x2B0LnddEcAReI99h70iv",
+      "path": null,
+      "spotify_id": "6x2B0LnddEcAReI99h70iv",
+      "title": "Wonder Woman Main Theme"
+    },
+    {
+      "artist": "Thomas Bergersen, Two Steps from Hell",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4JtvyWkWQTPVcroZf8JJkp",
+      "path": null,
+      "spotify_id": "4JtvyWkWQTPVcroZf8JJkp",
+      "title": "Heart of Courage"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6iLzFJhs4ATwJn7P1utZIJ",
+      "path": null,
+      "spotify_id": "6iLzFJhs4ATwJn7P1utZIJ",
+      "title": "Light of the Seven"
+    },
+    {
+      "artist": "Anime Kei",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5YKGHpXZUPSnChwYxbZHW9",
+      "path": null,
+      "spotify_id": "5YKGHpXZUPSnChwYxbZHW9",
+      "title": "L's Theme (From \"Death Note\") - Instrumental"
+    },
+    {
+      "artist": "Hans Zimmer",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6ZFbXIJkuI1dVNWvzJzown",
+      "path": null,
+      "spotify_id": "6ZFbXIJkuI1dVNWvzJzown",
+      "title": "Time"
+    },
+    {
+      "artist": "Yann Tiersen",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3YYKrn3iGOAel605Znt3ai",
+      "path": null,
+      "spotify_id": "3YYKrn3iGOAel605Znt3ai",
+      "title": "Comptine d'un autre \u00e9t\u00e9, l'apr\u00e8s-midi"
+    },
+    {
+      "artist": "Yann Tiersen",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6URm2kt7SV1bXWTxNQtVYR",
+      "path": null,
+      "spotify_id": "6URm2kt7SV1bXWTxNQtVYR",
+      "title": "La Valse d'Am\u00e9lie - Version piano"
+    },
+    {
+      "artist": "Thomas Bergersen, Two Steps from Hell",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3pTNVDJpzaLxiZnbC18SMX",
+      "path": null,
+      "spotify_id": "3pTNVDJpzaLxiZnbC18SMX",
+      "title": "Archangel"
+    },
+    {
+      "artist": "David Arnold, Michael Price",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "24xTylaPWS5iVVCxwTTkcv",
+      "path": null,
+      "spotify_id": "24xTylaPWS5iVVCxwTTkcv",
+      "title": "Who You Really Are"
+    },
+    {
+      "artist": "Ryuichi Sakamoto",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "17oLsEzzlGFlrBKViCzmGc",
+      "path": null,
+      "spotify_id": "17oLsEzzlGFlrBKViCzmGc",
+      "title": "Merry Christmas Mr. Lawrence"
+    },
+    {
+      "artist": "Scott Benson Band",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1lycZ6BCUETp0NauGdZbsm",
+      "path": null,
+      "spotify_id": "1lycZ6BCUETp0NauGdZbsm",
+      "title": "Requiem for a Dream"
+    },
+    {
+      "artist": "Rachel Portman",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1DdyioI2yXhLwR1pn5Hczk",
+      "path": null,
+      "spotify_id": "1DdyioI2yXhLwR1pn5Hczk",
+      "title": "Main Title (From \"Chocolat\" Soundtrack)"
+    },
+    {
+      "artist": "Bear McCreary, Raya Yarbrough",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "10VIsMEvM4K2xgFvh9plJi",
+      "path": null,
+      "spotify_id": "10VIsMEvM4K2xgFvh9plJi",
+      "title": "Outlander Main Title Theme (Skye Boat Song) [feat. Raya Yarbrough]"
+    },
+    {
+      "artist": "Craig Armstrong",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6sHIc9WzQXXuk6maHNMMj5",
+      "path": null,
+      "spotify_id": "6sHIc9WzQXXuk6maHNMMj5",
+      "title": "Me Before You Orchestral"
+    },
+    {
+      "artist": "Nicholas Hooper",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "74kSuS1yEsx0E0g70HOPqK",
+      "path": null,
+      "spotify_id": "74kSuS1yEsx0E0g70HOPqK",
+      "title": "Dumbledore's Farewell (\"Harry Potter & The Half-Blood Prince\")"
+    },
+    {
+      "artist": "Alan Silvestri",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1EWGuFGjNkP4KxRxSoWifM",
+      "path": null,
+      "spotify_id": "1EWGuFGjNkP4KxRxSoWifM",
+      "title": "The Avengers"
+    },
+    {
+      "artist": "Hans Zimmer",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4VaOecssBTF02dO0n2u8BS",
+      "path": null,
+      "spotify_id": "4VaOecssBTF02dO0n2u8BS",
+      "title": "Chevaliers De Sangreal"
+    },
+    {
+      "artist": "Hans Zimmer",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5xKVYMxOHB2XRLCUafFrz6",
+      "path": null,
+      "spotify_id": "5xKVYMxOHB2XRLCUafFrz6",
+      "title": "Dream Is Collapsing"
+    },
+    {
+      "artist": "John Williams, Itzhak Perlman, Boston Symphony Orchestra",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3DzMT13HJV7EsbVbNZZJZQ",
+      "path": null,
+      "spotify_id": "3DzMT13HJV7EsbVbNZZJZQ",
+      "title": "Theme From Schindler's List"
+    },
+    {
+      "artist": "Brian Tyler",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1Gbs2qettmeeUg0GUFLmn7",
+      "path": null,
+      "spotify_id": "1Gbs2qettmeeUg0GUFLmn7",
+      "title": "Call Of Duty: MW3"
+    },
+    {
+      "artist": "Howard Shore, Enya",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3Knohqfb9jeYzL6wMZiWLM",
+      "path": null,
+      "spotify_id": "3Knohqfb9jeYzL6wMZiWLM",
+      "title": "The Council of Elrond (feat. \"Aniron\") [Theme for Aragorn and Arwen]"
+    },
+    {
+      "artist": "Hans Zimmer",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2kDBZhuazsPJYUXFUHUnJY",
+      "path": null,
+      "spotify_id": "2kDBZhuazsPJYUXFUHUnJY",
+      "title": "Day One"
+    },
+    {
+      "artist": "Alexandre Desplat, London Symphony Orchestra",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0o9ivTBX7mjTnaUYF4Gk6t",
+      "path": null,
+      "spotify_id": "0o9ivTBX7mjTnaUYF4Gk6t",
+      "title": "The Imitation Game"
+    },
+    {
+      "artist": "Brian Tyler",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7E5x1HdgFRyCnlRoaAMY38",
+      "path": null,
+      "spotify_id": "7E5x1HdgFRyCnlRoaAMY38",
+      "title": "Iron Man 3"
+    },
+    {
+      "artist": "Alexandre Desplat",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2AFFaiIlripSpcTYZXNL7f",
+      "path": null,
+      "spotify_id": "2AFFaiIlripSpcTYZXNL7f",
+      "title": "Statues"
+    },
+    {
+      "artist": "Danny Elfman",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3h8DQEl5vgt5BRIlVXXycl",
+      "path": null,
+      "spotify_id": "3h8DQEl5vgt5BRIlVXXycl",
+      "title": "Heroes"
+    },
+    {
+      "artist": "James Newton Howard, Jennifer Lawrence",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5ONu4EF5vxDOCmBbQI6s0M",
+      "path": null,
+      "spotify_id": "5ONu4EF5vxDOCmBbQI6s0M",
+      "title": "The Hanging Tree"
+    },
+    {
+      "artist": "Brian Tyler, Assassin's Creed",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6enLk2V2s0M6D6PGLjHxYv",
+      "path": null,
+      "spotify_id": "6enLk2V2s0M6D6PGLjHxYv",
+      "title": "Assassin's Creed IV Black Flag Main Theme"
+    },
+    {
+      "artist": "Maybeshewill",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3K7x8efwXMb6IobkitNwIM",
+      "path": null,
+      "spotify_id": "3K7x8efwXMb6IobkitNwIM",
+      "title": "He Films the Clouds Pt. 2"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1e506jdjy7Tb1HkkOH4pg4",
+      "path": null,
+      "spotify_id": "1e506jdjy7Tb1HkkOH4pg4",
+      "title": "Main Title"
+    },
+    {
+      "artist": "Hans Zimmer",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3VdzKymHyCA7OQdUiDREKF",
+      "path": null,
+      "spotify_id": "3VdzKymHyCA7OQdUiDREKF",
+      "title": "Rise"
+    },
+    {
+      "artist": "Bear McCreary, Raya Yarbrough",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "39IOkz6LpC1qc5Wnt0T07r",
+      "path": null,
+      "spotify_id": "39IOkz6LpC1qc5Wnt0T07r",
+      "title": "Dance of the Druids (feat. Raya Yarbrough)"
+    },
+    {
+      "artist": "Paul Dinletir, Audiomachine",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5ugCgHftDye3SLUM8tSVH0",
+      "path": null,
+      "spotify_id": "5ugCgHftDye3SLUM8tSVH0",
+      "title": "Breath and Life"
+    },
+    {
+      "artist": "Alexandre Desplat",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6ZDDV6RKHY1By3QUqdorFo",
+      "path": null,
+      "spotify_id": "6ZDDV6RKHY1By3QUqdorFo",
+      "title": "Elisa's Theme"
+    },
+    {
+      "artist": "Jan A.P. Kaczmarek",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7EjupplL2gQyoMJLznKttR",
+      "path": null,
+      "spotify_id": "7EjupplL2gQyoMJLznKttR",
+      "title": "Hachiko Runs Away"
+    },
+    {
+      "artist": "Lionmight, Diwa de Leon",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0QxxZ3l2P3vDyKjf42bRoD",
+      "path": null,
+      "spotify_id": "0QxxZ3l2P3vDyKjf42bRoD",
+      "title": "Gerudo Valley"
+    },
+    {
+      "artist": "Fr\u00e9d\u00e9ric Chopin, Brigitte Engerer",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7yMSBYlmVEZYZS6V1SLrth",
+      "path": null,
+      "spotify_id": "7yMSBYlmVEZYZS6V1SLrth",
+      "title": "3 Nocturnes, Op. 9: II. Andante"
+    },
+    {
+      "artist": "Bruno Coulais",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4gr7yUZENHuFw76MfOpWLQ",
+      "path": null,
+      "spotify_id": "4gr7yUZENHuFw76MfOpWLQ",
+      "title": "P\u00e9pinot"
+    },
+    {
+      "artist": "Thomas Bergersen, Two Steps from Hell, Merethe Soltvedt",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "29gW6N4TtGhpkYmYwhRvDL",
+      "path": null,
+      "spotify_id": "29gW6N4TtGhpkYmYwhRvDL",
+      "title": "Impossible"
+    },
+    {
+      "artist": "Carter Burwell",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1brH9m4Q2LHTuwxaKoMTn5",
+      "path": null,
+      "spotify_id": "1brH9m4Q2LHTuwxaKoMTn5",
+      "title": "Plus Que Ma Prope Vie"
+    },
+    {
+      "artist": "Steve Petrunak",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3AEV3hR5adfBog5CLhsWVS",
+      "path": null,
+      "spotify_id": "3AEV3hR5adfBog5CLhsWVS",
+      "title": "Cool Kids (Instrumental Version)"
+    },
+    {
+      "artist": "Bruno Coulais, La Ma\u00eetrise de Saint Marc - LES CHORISTES",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6Q00zs8KvmXWdwlHD7PZZ2",
+      "path": null,
+      "spotify_id": "6Q00zs8KvmXWdwlHD7PZZ2",
+      "title": "Vois sur ton chemin"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0wXNnmvuTP0jPMpAXakSs8",
+      "path": null,
+      "spotify_id": "0wXNnmvuTP0jPMpAXakSs8",
+      "title": "The Winds of Winter"
+    },
+    {
+      "artist": "Rupert Gregson-Williams",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3FqqhdU8egriKmnpfuXKE0",
+      "path": null,
+      "spotify_id": "3FqqhdU8egriKmnpfuXKE0",
+      "title": "Duck Shoot"
+    },
+    {
+      "artist": "Hans Zimmer",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "21u2gUlh5Iun4ogGGqKVum",
+      "path": null,
+      "spotify_id": "21u2gUlh5Iun4ogGGqKVum",
+      "title": "The Crown Main Title"
+    },
+    {
+      "artist": "The Cinematic Orchestra, London Metropolitan Orchestra",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1xRCmlU2GyzGem2vw4glxK",
+      "path": null,
+      "spotify_id": "1xRCmlU2GyzGem2vw4glxK",
+      "title": "Arrival of the Birds"
+    },
+    {
+      "artist": "David Garrett",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3FT92lQ7y5LzT2QOlhuwTg",
+      "path": null,
+      "spotify_id": "3FT92lQ7y5LzT2QOlhuwTg",
+      "title": "Smells Like Teen Spirit"
+    },
+    {
+      "artist": "Rupert Gregson-Williams, Lorne Balfe",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "40of9kdRKtBlIIyKByBPpI",
+      "path": null,
+      "spotify_id": "40of9kdRKtBlIIyKByBPpI",
+      "title": "Your Majesty"
+    },
+    {
+      "artist": "The O'Neill Brothers",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "43jbJtWnFsbRbF2pQWSVNo",
+      "path": null,
+      "spotify_id": "43jbJtWnFsbRbF2pQWSVNo",
+      "title": "Ukrainian Carol (Carol of the Bells)"
+    },
+    {
+      "artist": "Sawano Hiroyuki",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1iz1LqOu9IsRowxOqrI1mk",
+      "path": null,
+      "spotify_id": "1iz1LqOu9IsRowxOqrI1mk",
+      "title": "Shingeki Pf - Adlib - C 20130218 Kyojin"
+    },
+    {
+      "artist": "Sawano Hiroyuki",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7AEcphXUR52QGYxdZ8TDVI",
+      "path": null,
+      "spotify_id": "7AEcphXUR52QGYxdZ8TDVI",
+      "title": "Vogel Im Kafig"
+    },
+    {
+      "artist": "Sawano Hiroyuki",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6eB5y7GZrfjCVpK1fjku3Q",
+      "path": null,
+      "spotify_id": "6eB5y7GZrfjCVpK1fjku3Q",
+      "title": "Xl-Tt"
+    },
+    {
+      "artist": "Two Steps from Hell, Thomas Bergersen",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2F9xBxKbx2M0pbgtSu8fLf",
+      "path": null,
+      "spotify_id": "2F9xBxKbx2M0pbgtSu8fLf",
+      "title": "Victory"
+    },
+    {
+      "artist": "Sawano Hiroyuki",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0ge9PBLpkfEiYv9qCE4TVY",
+      "path": null,
+      "spotify_id": "0ge9PBLpkfEiYv9qCE4TVY",
+      "title": "Shingeki Pf - Medley 20130629 Kyojin"
+    },
+    {
+      "artist": "Sawano Hiroyuki",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6gDeodqDob57Zp78u58grl",
+      "path": null,
+      "spotify_id": "6gDeodqDob57Zp78u58grl",
+      "title": "Shingeki Vc - Pf 20130218 Kyojin"
+    },
+    {
+      "artist": "Rupert Gregson-Williams",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "74rxMwhiICtTwI4VW72y4E",
+      "path": null,
+      "spotify_id": "74rxMwhiICtTwI4VW72y4E",
+      "title": "In This Together"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1bxtoixNiSt1qF2lknuMgG",
+      "path": null,
+      "spotify_id": "1bxtoixNiSt1qF2lknuMgG",
+      "title": "Blood of My Blood"
+    },
+    {
+      "artist": "Sawano Hiroyuki",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0HxoynruEEEo4DF0axOFNj",
+      "path": null,
+      "spotify_id": "0HxoynruEEEo4DF0axOFNj",
+      "title": "Omake-Pfadlib"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0zZ61TaCzlBXP87xBa3HuI",
+      "path": null,
+      "spotify_id": "0zZ61TaCzlBXP87xBa3HuI",
+      "title": "Truth"
+    },
+    {
+      "artist": "The Chamber Orchestra Of London",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6nOmoLgN8P8ZojNJMnPOnf",
+      "path": null,
+      "spotify_id": "6nOmoLgN8P8ZojNJMnPOnf",
+      "title": "Downton Abbey - The Suite - From \u201cDownton Abbey\u201d Soundtrack"
+    },
+    {
+      "artist": "The City of Prague Philharmonic Orchestra",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4FKgCkwOeC9cHajkxOsboa",
+      "path": null,
+      "spotify_id": "4FKgCkwOeC9cHajkxOsboa",
+      "title": "Only the Beginning of the Adventure (From \"The Chronicles of Narnia: The Lion, The Witch and the Wardrobe\")"
+    },
+    {
+      "artist": "Martin Phipps, Medi\u00e6val B\u00e6bes",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6zf2YfbEA4rnM39adFhyRN",
+      "path": null,
+      "spotify_id": "6zf2YfbEA4rnM39adFhyRN",
+      "title": "Victoria Titles"
+    },
+    {
+      "artist": "Martin Phipps, Benji Merrison, Medi\u00e6val B\u00e6bes",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3YmouyRz2z9DrPK0Z9W7dB",
+      "path": null,
+      "spotify_id": "3YmouyRz2z9DrPK0Z9W7dB",
+      "title": "Victoria - The Suite"
+    },
+    {
+      "artist": "Sigr\u00ed\u00f0ur",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5qRAUwgDqJ4fGWj8Td7e3O",
+      "path": null,
+      "spotify_id": "5qRAUwgDqJ4fGWj8Td7e3O",
+      "title": "Welcome Home"
+    },
+    {
+      "artist": "Rick Hagen",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7zVHmyl7rjPZRNJtWhbcIf",
+      "path": null,
+      "spotify_id": "7zVHmyl7rjPZRNJtWhbcIf",
+      "title": "Forever Vanished"
+    },
+    {
+      "artist": "Gavin Luke",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "049dXA0tNzvTYVIHILMY4j",
+      "path": null,
+      "spotify_id": "049dXA0tNzvTYVIHILMY4j",
+      "title": "The Gift"
+    },
+    {
+      "artist": "Ralph Vaughan Williams, Sir Adrian Boult, New Philharmonia Orchestra",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "24RujfjrtKAr66E3Ixjmns",
+      "path": null,
+      "spotify_id": "24RujfjrtKAr66E3Ixjmns",
+      "title": "Vaughan Williams: The Lark Ascending, for Violin and Orchestra (Excerpt, Opening)"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0b7p3kryLGENxN71B35ptm",
+      "path": null,
+      "spotify_id": "0b7p3kryLGENxN71B35ptm",
+      "title": "The Night King"
+    },
+    {
+      "artist": "Martin Phipps, Medi\u00e6val B\u00e6bes",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2jE1LgM37n0Os6FTZFytxT",
+      "path": null,
+      "spotify_id": "2jE1LgM37n0Os6FTZFytxT",
+      "title": "Coronation"
+    },
+    {
+      "artist": "Alan Silvestri",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0stEBONXZQ10zXnJeiiWiS",
+      "path": null,
+      "spotify_id": "0stEBONXZQ10zXnJeiiWiS",
+      "title": "Where Are They?"
+    },
+    {
+      "artist": "Alan Silvestri",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1yT8dOE9VJfZFcYuVCEEF8",
+      "path": null,
+      "spotify_id": "1yT8dOE9VJfZFcYuVCEEF8",
+      "title": "One Shot"
+    },
+    {
+      "artist": "Alan Silvestri",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1y1M3gJ5BRKdBM8gNMdjzg",
+      "path": null,
+      "spotify_id": "1y1M3gJ5BRKdBM8gNMdjzg",
+      "title": "The Tool of a Thief"
+    },
+    {
+      "artist": "Jeff Marsh, Audiomachine",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4NJBxsC2dzHrAbnS6ZuyU5",
+      "path": null,
+      "spotify_id": "4NJBxsC2dzHrAbnS6ZuyU5",
+      "title": "Homecoming"
+    },
+    {
+      "artist": "Rupert Gregson-Williams, Lorne Balfe",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "27IRxuyClRLi1yesYjoxGa",
+      "path": null,
+      "spotify_id": "27IRxuyClRLi1yesYjoxGa",
+      "title": "Future King"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7k8DQNQga4UMKFsnVSCPE0",
+      "path": null,
+      "spotify_id": "7k8DQNQga4UMKFsnVSCPE0",
+      "title": "The Children"
+    },
+    {
+      "artist": "John Powell",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2QTDuJIGKUjR7E2Q6KupIh",
+      "path": null,
+      "spotify_id": "2QTDuJIGKUjR7E2Q6KupIh",
+      "title": "Test Drive - From How To Train Your Dragon Music From The Motion Picture"
+    },
+    {
+      "artist": "Bear McCreary, Raya Yarbrough",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7F0qiiKDNjRNIe4fx7immH",
+      "path": null,
+      "spotify_id": "7F0qiiKDNjRNIe4fx7immH",
+      "title": "Setting Sail (feat. Raya Yarbrough)"
+    },
+    {
+      "artist": "Steve Jablonsky",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2MaUwANhrU6KF8AK71ezsX",
+      "path": null,
+      "spotify_id": "2MaUwANhrU6KF8AK71ezsX",
+      "title": "Tessa"
+    },
+    {
+      "artist": "Steven Price",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "06i6kDgeziHoeN6WAlgs9W",
+      "path": null,
+      "spotify_id": "06i6kDgeziHoeN6WAlgs9W",
+      "title": "A Game of Strategy"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4wxaEgPlUbEUwiAnThBUkw",
+      "path": null,
+      "spotify_id": "4wxaEgPlUbEUwiAnThBUkw",
+      "title": "Mhysa"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6u6owGCGi6WDXtd4Tf9ZLk",
+      "path": null,
+      "spotify_id": "6u6owGCGi6WDXtd4Tf9ZLk",
+      "title": "Khaleesi"
+    },
+    {
+      "artist": "Sofa Sounds",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "64tLkajnYqSUx12nv3dbd5",
+      "path": null,
+      "spotify_id": "64tLkajnYqSUx12nv3dbd5",
+      "title": "Light of the Seven - Cover Version"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1zEpbtg0SO7SsprPKJVHb9",
+      "path": null,
+      "spotify_id": "1zEpbtg0SO7SsprPKJVHb9",
+      "title": "Demacia Rising"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6B45Rrz6M9VPBX5zvuvV2c",
+      "path": null,
+      "spotify_id": "6B45Rrz6M9VPBX5zvuvV2c",
+      "title": "Tidecaller"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7AvwBgJa7tmF7sZy1TOL47",
+      "path": null,
+      "spotify_id": "7AvwBgJa7tmF7sZy1TOL47",
+      "title": "Tiny Masterpiece of Evil"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2wAVtHrcpBvYNAgpftcUP5",
+      "path": null,
+      "spotify_id": "2wAVtHrcpBvYNAgpftcUP5",
+      "title": "Quinn and Valor"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3pqTtHzszTsy5a2fAa00ne",
+      "path": null,
+      "spotify_id": "3pqTtHzszTsy5a2fAa00ne",
+      "title": "Braum"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4uv5M3Tdc3Db9yusDgS0Gp",
+      "path": null,
+      "spotify_id": "4uv5M3Tdc3Db9yusDgS0Gp",
+      "title": "Tales of the Rift"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3HokzS1QDKNX6UNB4rdThK",
+      "path": null,
+      "spotify_id": "3HokzS1QDKNX6UNB4rdThK",
+      "title": "Lulu and Shaco's Quirky Encounter"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7voZfpuYVVPYvGeLprHuG9",
+      "path": null,
+      "spotify_id": "7voZfpuYVVPYvGeLprHuG9",
+      "title": "Freljord"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0CMZZU9ou2BtZiL3rI1dee",
+      "path": null,
+      "spotify_id": "0CMZZU9ou2BtZiL3rI1dee",
+      "title": "Rise of the Ascended"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4QVjTvf3FO1UjQ4bRp02RA",
+      "path": null,
+      "spotify_id": "4QVjTvf3FO1UjQ4bRp02RA",
+      "title": "Daylight's End"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7IjZ966d7LLN7olUCCsk2m",
+      "path": null,
+      "spotify_id": "7IjZ966d7LLN7olUCCsk2m",
+      "title": "Challengers"
+    },
+    {
+      "artist": "League of Legends",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5wVNadRoYJQxfwQDmxTSnh",
+      "path": null,
+      "spotify_id": "5wVNadRoYJQxfwQDmxTSnh",
+      "title": "Reborn"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0VeOw2I0PIDZScE9HCUKgN",
+      "path": null,
+      "spotify_id": "0VeOw2I0PIDZScE9HCUKgN",
+      "title": "Arrival at Winterfell"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4OG2BR10XdGsOjWNiOdVjr",
+      "path": null,
+      "spotify_id": "4OG2BR10XdGsOjWNiOdVjr",
+      "title": "Flight of Dragons"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "39aQ9vpVWAfZS7SaYACimk",
+      "path": null,
+      "spotify_id": "39aQ9vpVWAfZS7SaYACimk",
+      "title": "Heir to the Throne"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0uURGp4Fsf5hMn2vMORmah",
+      "path": null,
+      "spotify_id": "0uURGp4Fsf5hMn2vMORmah",
+      "title": "A Knight of the Seven Kingdoms"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0l1yrAWnbH0LsTy2qnnmxI",
+      "path": null,
+      "spotify_id": "0l1yrAWnbH0LsTy2qnnmxI",
+      "title": "The Battle of Winterfell"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0kOJS4FWxVMT1i3CKFUZee",
+      "path": null,
+      "spotify_id": "0kOJS4FWxVMT1i3CKFUZee",
+      "title": "The Dead are Already Here"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1liDIUrQ6W9LLb4RYZ8wyQ",
+      "path": null,
+      "spotify_id": "1liDIUrQ6W9LLb4RYZ8wyQ",
+      "title": "Not Today"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5rNdcM8tTsTO19jhNVKWvG",
+      "path": null,
+      "spotify_id": "5rNdcM8tTsTO19jhNVKWvG",
+      "title": "Into the Fire"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5lboLByEnvwxLmWjTS2dfp",
+      "path": null,
+      "spotify_id": "5lboLByEnvwxLmWjTS2dfp",
+      "title": "The Iron Throne"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4fXqpIzgHDBhylBBOLOKVX",
+      "path": null,
+      "spotify_id": "4fXqpIzgHDBhylBBOLOKVX",
+      "title": "The Last of the Starks"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1AvLUHxSunGMWWRfEFmWSC",
+      "path": null,
+      "spotify_id": "1AvLUHxSunGMWWRfEFmWSC",
+      "title": "A Song of Ice and Fire"
+    },
+    {
+      "artist": "Zack Hemsey",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0eOyvQ2SeejSS0zJmLS4Wq",
+      "path": null,
+      "spotify_id": "0eOyvQ2SeejSS0zJmLS4Wq",
+      "title": "See What I've Become"
+    },
+    {
+      "artist": "TPR",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "53SyCNnUmzdID1D5QC6mfr",
+      "path": null,
+      "spotify_id": "53SyCNnUmzdID1D5QC6mfr",
+      "title": "Aeris's Theme"
+    },
+    {
+      "artist": "Terry:D",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3gJnXKrVlSlqmhywhtYehG",
+      "path": null,
+      "spotify_id": "3gJnXKrVlSlqmhywhtYehG",
+      "title": "Fallen Angel"
+    },
+    {
+      "artist": "City of the Sun",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3aIidfKAjMwaRTgvY9d0BG",
+      "path": null,
+      "spotify_id": "3aIidfKAjMwaRTgvY9d0BG",
+      "title": "Ventura"
+    },
+    {
+      "artist": "City of the Sun",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "69KvYHBTocvA6jLNN7WbQk",
+      "path": null,
+      "spotify_id": "69KvYHBTocvA6jLNN7WbQk",
+      "title": "Perfect Instance"
+    },
+    {
+      "artist": "City of the Sun",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3xSB3CRtQBcuAz63Wu6Tra",
+      "path": null,
+      "spotify_id": "3xSB3CRtQBcuAz63Wu6Tra",
+      "title": "Young Folks"
+    },
+    {
+      "artist": "City of the Sun",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1f7m3aueLvkYG3xTEqDxkY",
+      "path": null,
+      "spotify_id": "1f7m3aueLvkYG3xTEqDxkY",
+      "title": "Everything"
+    },
+    {
+      "artist": "City of the Sun",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5Qw89525rl3cviW9UZhWpa",
+      "path": null,
+      "spotify_id": "5Qw89525rl3cviW9UZhWpa",
+      "title": "La Luz"
+    },
+    {
+      "artist": "City of the Sun",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "794wi6nKP3g7LuwmZfgmGb",
+      "path": null,
+      "spotify_id": "794wi6nKP3g7LuwmZfgmGb",
+      "title": "No Walls In The West"
+    },
+    {
+      "artist": "City of the Sun",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4lyjuPi3pGN6oTQSK6CUEa",
+      "path": null,
+      "spotify_id": "4lyjuPi3pGN6oTQSK6CUEa",
+      "title": "Brothers"
+    },
+    {
+      "artist": "City of the Sun",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0dcIhzMAhyk478i9RG259s",
+      "path": null,
+      "spotify_id": "0dcIhzMAhyk478i9RG259s",
+      "title": "To the Sun and All the Cities in Between"
+    },
+    {
+      "artist": "Beau Projet",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3WEdWvAScE1EcBfErseQnC",
+      "path": null,
+      "spotify_id": "3WEdWvAScE1EcBfErseQnC",
+      "title": "Curiosity"
+    },
+    {
+      "artist": "Dreyma",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4nZSgFwgYUOyWcBX61JY6j",
+      "path": null,
+      "spotify_id": "4nZSgFwgYUOyWcBX61JY6j",
+      "title": "Laugavegur"
+    },
+    {
+      "artist": "Jen Brook",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4HUAT9dBskTeZO4kYXRTKI",
+      "path": null,
+      "spotify_id": "4HUAT9dBskTeZO4kYXRTKI",
+      "title": "How Did We Wind Up Here?"
+    },
+    {
+      "artist": "Borghild Wenn",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0OH6fMcg4oou7KXzPOXMpi",
+      "path": null,
+      "spotify_id": "0OH6fMcg4oou7KXzPOXMpi",
+      "title": "Filotimo"
+    },
+    {
+      "artist": "Joaquin Alejandro",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "6lE5ACHHqeEk7nLciGJH3P",
+      "path": null,
+      "spotify_id": "6lE5ACHHqeEk7nLciGJH3P",
+      "title": "Florentin"
+    },
+    {
+      "artist": "Matti Aalto",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0lFk8GCAu5gbxNCxPGuoOU",
+      "path": null,
+      "spotify_id": "0lFk8GCAu5gbxNCxPGuoOU",
+      "title": "feather"
+    },
+    {
+      "artist": "Oneke",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4mnfRzyz2dafyBaXBLZle2",
+      "path": null,
+      "spotify_id": "4mnfRzyz2dafyBaXBLZle2",
+      "title": "More than Close"
+    },
+    {
+      "artist": "Jonas Holmes",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "02HJo9cBRCO12opAKdcZcJ",
+      "path": null,
+      "spotify_id": "02HJo9cBRCO12opAKdcZcJ",
+      "title": "Flying South"
+    },
+    {
+      "artist": "Kyran Martin",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1dReYfTeLFlytvERbbRkAd",
+      "path": null,
+      "spotify_id": "1dReYfTeLFlytvERbbRkAd",
+      "title": "Belmont Street"
+    },
+    {
+      "artist": "Alan Menken, Howard Ashman, Benj Pasek, Justin Paul",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "5fdnkYsudjoQtvkk1jpk5f",
+      "path": null,
+      "spotify_id": "5fdnkYsudjoQtvkk1jpk5f",
+      "title": "Arabian Nights (2019) - Instrumental"
+    },
+    {
+      "artist": "Daniele Leoni",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "7muvfnzdDgiAme31K0w0kj",
+      "path": null,
+      "spotify_id": "7muvfnzdDgiAme31K0w0kj",
+      "title": "Dance Monkey - Piano Version"
+    },
+    {
+      "artist": "Braxton Burks, Kristin Naigus",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3VUjrOwzZiKaBJ21zsCHGX",
+      "path": null,
+      "spotify_id": "3VUjrOwzZiKaBJ21zsCHGX",
+      "title": "Lugia's Song"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1vPEPhmGDnp8RR6GCBozaa",
+      "path": null,
+      "spotify_id": "1vPEPhmGDnp8RR6GCBozaa",
+      "title": "A Lannister Always Pays His Debts"
+    },
+    {
+      "artist": "Alexandre Desplat, London Symphony Orchestra",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3GiE1hcocpQIEf1gC7fv2o",
+      "path": null,
+      "spotify_id": "3GiE1hcocpQIEf1gC7fv2o",
+      "title": "Alan Turing's Legacy (From \"The Imitation Game\" Soundtrack)"
+    },
+    {
+      "artist": "Howard Shore, Edward Ross",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1ykbtFnlIjmIFnZ8j6wg6i",
+      "path": null,
+      "spotify_id": "1ykbtFnlIjmIFnZ8j6wg6i",
+      "title": "The Breaking of the Fellowship (feat. \"In Dreams\")"
+    },
+    {
+      "artist": "Alexandre Desplat",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3Ra4rkq1ExwPXwrPQeHBWg",
+      "path": null,
+      "spotify_id": "3Ra4rkq1ExwPXwrPQeHBWg",
+      "title": "Lily's Theme"
+    },
+    {
+      "artist": "Craig Armstrong",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0x1rnXl24iJl8xZFMkoyNv",
+      "path": null,
+      "spotify_id": "0x1rnXl24iJl8xZFMkoyNv",
+      "title": "Opening (From \"Far from the Madding Crowd\" Soundtrack)"
+    },
+    {
+      "artist": "Hans Zimmer, Tina Guo, Gavin Greenaway, The Czech Philharmonic Orchestra",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "0S5aqKj50T09c3zgW8QJer",
+      "path": null,
+      "spotify_id": "0S5aqKj50T09c3zgW8QJer",
+      "title": "Time (From \"Inception\")"
+    },
+    {
+      "artist": "Ramin Djawadi",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "3fYO6sRqHy1BdF8EiLGyop",
+      "path": null,
+      "spotify_id": "3fYO6sRqHy1BdF8EiLGyop",
+      "title": "Winter Is Here"
+    },
+    {
+      "artist": "Philippa Boyens, David Donaldson, David Long, Janet Roddick, Stephen Roche, Fran Walsh, The City of Prague Philharmonic Orchestra, Evan Jolly",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "1ZtP25xnI0FgHUTmJLphoY",
+      "path": null,
+      "spotify_id": "1ZtP25xnI0FgHUTmJLphoY",
+      "title": "Misty Mountains - From \"The Hobbit: An Unexpected Journey\""
+    },
+    {
+      "artist": "Steven Price",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "2mFea4DOhY3iShay4BQ0se",
+      "path": null,
+      "spotify_id": "2mFea4DOhY3iShay4BQ0se",
+      "title": "Gravity"
+    },
+    {
+      "artist": "James Newton Howard",
+      "artwork_url": null,
+      "deezer_id": null,
+      "duration": null,
+      "id": "4WxGBy9U0nZe602M06XMxE",
+      "path": null,
+      "spotify_id": "4WxGBy9U0nZe602M06XMxE",
+      "title": "Flow Like Water"
     }
   ]
 }

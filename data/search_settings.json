@@ -1,7 +1,6 @@
 {
   "whitelist_words": [
-    "lyrics",
-    "official audio"
+    "lyrics"
   ],
   "blacklist_words": [
     "live",

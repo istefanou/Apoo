@@ -1,10 +1,12 @@
 # app.py
+import importlib.util
 import json
 import html
 import os
 import random
 import re
 import shutil
+import sys
 import time
 from datetime import datetime, time as dt_time
 import threading
@@ -28,6 +30,19 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 PLAYLISTS_FILE = os.path.join(DATA_DIR, "playlists.json")
 FAVORITES_FILE = os.path.join(DATA_DIR, "favorites.json")
 SEARCH_SETTINGS_FILE = os.path.join(DATA_DIR, "search_settings.json")
+APOO_SERVICE_NAME = os.getenv("APOO_SERVICE_NAME", "smart_home_apoo.service")
+MAX_SETTINGS_JOURNAL_LINES = 150
+SPOTIFY_IMPORT_STATUS_TTL_SECONDS = 1800
+LASTFM_API_BASE = os.getenv("LASTFM_API_BASE", "https://ws.audioscrobbler.com/2.0/")
+LASTFM_API_KEY = os.getenv("LASTFM_API_KEY", "").strip()
+try:
+    DEEZER_QUOTA_BACKOFF_SECONDS = int(os.getenv("DEEZER_QUOTA_BACKOFF_SECONDS", "1800"))
+except ValueError:
+    DEEZER_QUOTA_BACKOFF_SECONDS = 1800
+try:
+    LASTFM_NEGATIVE_CACHE_TTL_SECONDS = int(os.getenv("LASTFM_NEGATIVE_CACHE_TTL_SECONDS", "900"))
+except ValueError:
+    LASTFM_NEGATIVE_CACHE_TTL_SECONDS = 900
 
 DEFAULT_SEARCH_SETTINGS = {
     "whitelist_words": ["lyrics", "official audio"],
@@ -42,6 +57,152 @@ ARTWORK_EMBED_ATTEMPTED_PATHS = set()
 ARTWORK_EMBED_ATTEMPTED_LOCK = threading.Lock()
 MP3_METADATA_EMBED_ATTEMPTED_PATHS = set()
 MP3_METADATA_EMBED_ATTEMPTED_LOCK = threading.Lock()
+SPOTIFY_IMPORT_STATUS = {}
+SPOTIFY_IMPORT_STATUS_LOCK = threading.Lock()
+DEEZER_QUOTA_COOLDOWN_UNTIL = 0.0
+DEEZER_QUOTA_COOLDOWN_LOCK = threading.Lock()
+LASTFM_NEGATIVE_CACHE = {}
+LASTFM_NEGATIVE_CACHE_LOCK = threading.Lock()
+
+
+def is_downloading_marker(value: Optional[str]) -> bool:
+    return bool(re.search(r"\(downloading\)\s*$", str(value or ""), flags=re.IGNORECASE))
+
+
+def clean_metadata_lookup_text(value: Optional[str]) -> str:
+    cleaned = str(value or "").strip()
+    cleaned = re.sub(r"\s*\(downloading\)\s*$", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned.strip()
+
+
+def prepare_track_metadata_lookup(title: Optional[str], artist: Optional[str]) -> tuple[str, str]:
+    """Normalize noisy queue titles/artists so metadata APIs get cleaner lookup terms."""
+    clean_title = clean_metadata_lookup_text(title)
+    clean_artist = clean_metadata_lookup_text(artist)
+
+    clean_title = re.sub(r"\s*\((?:feat|ft|with)\.?[^)]*\)", "", clean_title, flags=re.IGNORECASE)
+    clean_title = re.sub(
+        r"\s*-\s*(?:radio\s+edit|radio\s+version|single\s+version|album\s+version|extended\s+mix|remaster(?:ed)?(?:\s+\d{4})?|explicit|clean)\s*$",
+        "",
+        clean_title,
+        flags=re.IGNORECASE,
+    )
+    clean_title = re.sub(r"\s+", " ", clean_title).strip(" -")
+
+    if clean_artist:
+        parts = re.split(
+            r"\s*(?:,|&|\bx\b|\bfeat\.?\b|\bft\.?\b|\bwith\b)\s*",
+            clean_artist,
+            maxsplit=1,
+            flags=re.IGNORECASE,
+        )
+        if parts and parts[0].strip():
+            clean_artist = parts[0].strip()
+
+    clean_artist = re.sub(r"\s+", " ", clean_artist).strip()
+    return clean_title, clean_artist
+
+
+def is_downloading_placeholder_track(track: dict) -> bool:
+    if not isinstance(track, dict):
+        return False
+    if track.get("_downloading") or track.get("_lofi_downloading"):
+        return True
+    return is_downloading_marker(track.get("title"))
+
+
+def _lastfm_negative_cache_key(title: str, artist: str) -> str:
+    key_title = re.sub(r"[^a-z0-9]+", "", (title or "").lower())
+    key_artist = re.sub(r"[^a-z0-9]+", "", (artist or "").lower())
+    if not key_title or not key_artist:
+        return ""
+    return f"{key_artist}::{key_title}"
+
+
+def _is_lastfm_negative_cached(title: str, artist: str) -> bool:
+    key = _lastfm_negative_cache_key(title, artist)
+    if not key:
+        return False
+
+    now = time.time()
+    with LASTFM_NEGATIVE_CACHE_LOCK:
+        expires_at = LASTFM_NEGATIVE_CACHE.get(key)
+        if not expires_at:
+            return False
+        if expires_at > now:
+            return True
+        LASTFM_NEGATIVE_CACHE.pop(key, None)
+    return False
+
+
+def _mark_lastfm_negative_cache(title: str, artist: str):
+    key = _lastfm_negative_cache_key(title, artist)
+    if not key:
+        return
+    with LASTFM_NEGATIVE_CACHE_LOCK:
+        LASTFM_NEGATIVE_CACHE[key] = time.time() + LASTFM_NEGATIVE_CACHE_TTL_SECONDS
+
+
+def cleanup_spotify_import_statuses():
+    cutoff = time.time() - SPOTIFY_IMPORT_STATUS_TTL_SECONDS
+    with SPOTIFY_IMPORT_STATUS_LOCK:
+        stale = [
+            progress_id
+            for progress_id, payload in SPOTIFY_IMPORT_STATUS.items()
+            if payload.get("updated_ts", 0) < cutoff
+        ]
+        for progress_id in stale:
+            SPOTIFY_IMPORT_STATUS.pop(progress_id, None)
+
+
+def update_spotify_import_status(progress_id: Optional[str], **updates):
+    if not progress_id:
+        return
+
+    now = time.time()
+    with SPOTIFY_IMPORT_STATUS_LOCK:
+        stale = [
+            stale_id
+            for stale_id, payload in SPOTIFY_IMPORT_STATUS.items()
+            if payload.get("updated_ts", 0) < now - SPOTIFY_IMPORT_STATUS_TTL_SECONDS
+        ]
+        for stale_id in stale:
+            SPOTIFY_IMPORT_STATUS.pop(stale_id, None)
+
+        payload = dict(SPOTIFY_IMPORT_STATUS.get(progress_id) or {})
+        payload.update(updates)
+        payload["progress_id"] = progress_id
+        payload["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        payload["updated_ts"] = now
+        SPOTIFY_IMPORT_STATUS[progress_id] = payload
+
+
+def get_spotify_import_status(progress_id: str) -> Optional[dict]:
+    cleanup_spotify_import_statuses()
+    with SPOTIFY_IMPORT_STATUS_LOCK:
+        payload = SPOTIFY_IMPORT_STATUS.get(progress_id)
+        return dict(payload) if payload else None
+
+
+def resolve_yt_dlp_command() -> list[str]:
+    env_override = os.getenv("YT_DLP_BIN", "").strip()
+    candidates = [
+        env_override,
+        os.path.join(os.path.dirname(__file__), ".venv", "bin", "yt-dlp"),
+        shutil.which("yt-dlp") or "",
+    ]
+
+    for candidate in candidates:
+        if candidate and os.path.exists(candidate):
+            return [candidate]
+
+    if importlib.util.find_spec("yt_dlp"):
+        return [sys.executable, "-m", "yt_dlp"]
+
+    raise FileNotFoundError(
+        "yt-dlp is not installed. Install it in the Apoo virtualenv or set YT_DLP_BIN."
+    )
 
 def ensure_dir_exists(path):
     """Ensure the directory for a file exists."""
@@ -197,9 +358,9 @@ def sanitize_filename(name: str) -> str:
     return name
 
 def run_yt_dlp(command_list):
-    cmd = " ".join(command_list)
-    print("Running:", cmd)
-    subprocess.run(cmd, shell=True)
+    cmd = [*resolve_yt_dlp_command(), *command_list]
+    print("Running:", " ".join(cmd))
+    subprocess.run(cmd, shell=False)
 
 def extract_audio_from_video(video_path: str, audio_path: str) -> bool:
     """Extract audio from video file (MP4, etc) to MP3 using ffmpeg."""
@@ -335,9 +496,16 @@ def _spotify_anonymous_token() -> Optional[str]:
     return None
 
 
-def _spotify_import_via_api(playlist_id: str, token: str):
+def _spotify_import_via_api(playlist_id: str, token: str, progress_id: Optional[str] = None, stage_label: str = "spotify-api"):
     """Fetch all playlist tracks from Spotify Web API using app token."""
     headers = {"Authorization": f"Bearer {token}"}
+
+    update_spotify_import_status(
+        progress_id,
+        state="running",
+        stage=stage_label,
+        message="Fetching playlist metadata from Spotify API...",
+    )
 
     meta_res = requests.get(
         f"https://api.spotify.com/v1/playlists/{playlist_id}",
@@ -357,6 +525,15 @@ def _spotify_import_via_api(playlist_id: str, token: str):
     limit = 100
 
     while True:
+        update_spotify_import_status(
+            progress_id,
+            state="running",
+            stage=stage_label,
+            message=f"Fetching Spotify API tracks ({len(tracks)}/{total or '?'})...",
+            collected_count=len(tracks),
+            expected_total=total or None,
+            progress=int((len(tracks) / total) * 100) if total else None,
+        )
         res = requests.get(
             f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks",
             headers=headers,
@@ -394,10 +571,20 @@ def _spotify_import_via_api(playlist_id: str, token: str):
             break
         offset += limit
 
+    update_spotify_import_status(
+        progress_id,
+        state="running",
+        stage=stage_label,
+        message=f"Fetched {len(tracks)} tracks from Spotify API.",
+        collected_count=len(tracks),
+        expected_total=total or len(tracks),
+        progress=100 if tracks else None,
+    )
+
     return playlist_name, tracks, total
 
 
-def _import_spotify_via_selenium(playlist_id: str):
+def _import_spotify_via_selenium(playlist_id: str, progress_id: Optional[str] = None):
     """
     Use headless Chromium + Selenium to scrape a Spotify playlist,
     scrolling through the virtualised track list to collect all tracks.
@@ -444,6 +631,13 @@ def _import_spotify_via_selenium(playlist_id: str):
         if _chromium_bin:
             opts.binary_location = _chromium_bin
 
+    update_spotify_import_status(
+        progress_id,
+        state="running",
+        stage="selenium-launch",
+        message="Launching headless Chromium for Spotify import...",
+    )
+
     svc = Service(_chromedriver_bin)
     driver = webdriver.Chrome(service=svc, options=opts)
     try:
@@ -454,13 +648,32 @@ def _import_spotify_via_selenium(playlist_id: str):
         # Extract playlist name from page title ("Name - playlist by X | Spotify")
         title_raw = driver.title or ""
         playlist_name = title_raw.split(" - ")[0].strip() if " - " in title_raw else "Imported Playlist"
+        expected_total = driver.execute_script("""
+            const bodyText = document.body?.innerText || "";
+            const match = bodyText.match(/(\\d+)\\s+songs?/i);
+            return match ? parseInt(match[1], 10) : null;
+        """)
+
+        update_spotify_import_status(
+            progress_id,
+            state="running",
+            stage="selenium-scan",
+            message=f"Scanning the Spotify page ({0}/{expected_total or '?'})...",
+            collected_count=0,
+            expected_total=expected_total,
+            progress=0,
+            playlist_name=playlist_name,
+        )
 
         tracks = {}  # keyed by (title, artist) for deduplication
 
         def collect_visible():
             """Read currently rendered track rows from the virtual list."""
+            added = False
             buttons = driver.find_elements(By.CSS_SELECTOR, "button[aria-label^='Play ']")
             for btn in buttons:
+                if expected_total and len(tracks) >= expected_total:
+                    break
                 label = btn.get_attribute("aria-label") or ""
                 if not label.startswith("Play "):
                     continue
@@ -497,6 +710,19 @@ def _import_spotify_via_selenium(playlist_id: str):
                     "spotify_id": spotify_id,
                     "path": None,
                 }
+                added = True
+
+            if added:
+                update_spotify_import_status(
+                    progress_id,
+                    state="running",
+                    stage="selenium-scan",
+                    message=f"Collected {len(tracks)} of {expected_total or '?'} Spotify tracks...",
+                    collected_count=len(tracks),
+                    expected_total=expected_total,
+                    progress=int((len(tracks) / expected_total) * 100) if expected_total else None,
+                    playlist_name=playlist_name,
+                )
 
         # Find the single scrollable container that holds the track list
         scroll_el = driver.execute_script("""
@@ -519,6 +745,8 @@ def _import_spotify_via_selenium(playlist_id: str):
         no_new = 0
 
         for _ in range(300):  # safety cap — handles playlists with 1000+ tracks
+            if expected_total and len(tracks) >= expected_total:
+                break
             scroll_pos += step
             if scroll_el:
                 driver.execute_script(
@@ -534,12 +762,23 @@ def _import_spotify_via_selenium(playlist_id: str):
                 if no_new >= 6:
                     break  # reached end of list
 
-        return playlist_name, list(tracks.values()), len(tracks)
+        final_tracks = list(tracks.values())[:expected_total or None]
+        update_spotify_import_status(
+            progress_id,
+            state="running",
+            stage="selenium-complete",
+            message=f"Collected {len(final_tracks)} Spotify tracks from the page.",
+            collected_count=len(final_tracks),
+            expected_total=expected_total or len(final_tracks),
+            progress=100 if final_tracks else None,
+            playlist_name=playlist_name,
+        )
+        return playlist_name, final_tracks, expected_total or len(final_tracks)
     finally:
         driver.quit()
 
 
-def _import_spotify_playlist_impl(url_or_id: str):
+def _import_spotify_playlist_impl(url_or_id: str, progress_id: Optional[str] = None):
     """
     Import a Spotify playlist. Tries (in order):
       1. Spotify Web API (if SPOTIFY_CLIENT_ID/SECRET configured)
@@ -549,36 +788,46 @@ def _import_spotify_playlist_impl(url_or_id: str):
     """
     playlist_id = parse_spotify_playlist_id(url_or_id)
     if not playlist_id:
+        update_spotify_import_status(progress_id, state="error", stage="validation", message="Invalid Spotify playlist URL or ID.")
         return jsonify({"error": "Invalid Spotify playlist URL or ID"}), 400
 
     try:
         # 1. Official API path (requires env vars)
+        update_spotify_import_status(progress_id, state="running", stage="credentials-api", message="Trying Spotify API credentials...")
         token = _spotify_client_credentials_token()
         if token:
             try:
-                playlist_name, tracks, total = _spotify_import_via_api(playlist_id, token)
+                playlist_name, tracks, total = _spotify_import_via_api(playlist_id, token, progress_id=progress_id, stage_label="credentials-api")
                 if tracks:
+                    update_spotify_import_status(progress_id, state="complete", stage="done", message=f"Imported {len(tracks)} tracks via Spotify API.", collected_count=len(tracks), expected_total=total or len(tracks), progress=100, playlist_name=playlist_name)
                     return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
             except Exception as e:
                 print(f"Spotify API import failed, falling back: {e}")
+                update_spotify_import_status(progress_id, state="running", stage="credentials-api", message="Spotify API credentials failed, trying the next import method...")
 
         # 2. Anonymous web-player token (no credentials needed, works for public playlists)
+        update_spotify_import_status(progress_id, state="running", stage="anonymous-api", message="Trying anonymous Spotify access token...")
         anon_token = _spotify_anonymous_token()
         if anon_token:
             try:
-                playlist_name, tracks, total = _spotify_import_via_api(playlist_id, anon_token)
+                playlist_name, tracks, total = _spotify_import_via_api(playlist_id, anon_token, progress_id=progress_id, stage_label="anonymous-api")
                 if tracks:
+                    update_spotify_import_status(progress_id, state="complete", stage="done", message=f"Imported {len(tracks)} tracks with Spotify's public token.", collected_count=len(tracks), expected_total=total or len(tracks), progress=100, playlist_name=playlist_name)
                     return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
             except Exception as e:
                 print(f"Spotify anonymous API import failed, falling back: {e}")
+                update_spotify_import_status(progress_id, state="running", stage="anonymous-api", message="Anonymous token failed, falling back to browser import...")
 
         # 3. Selenium headless-browser path (gets full playlist, no credentials needed)
         try:
-            playlist_name, tracks, total = _import_spotify_via_selenium(playlist_id)
+            update_spotify_import_status(progress_id, state="running", stage="selenium-launch", message="Starting browser-based Spotify import...")
+            playlist_name, tracks, total = _import_spotify_via_selenium(playlist_id, progress_id=progress_id)
             if tracks:
+                update_spotify_import_status(progress_id, state="complete", stage="done", message=f"Imported {len(tracks)} tracks from the Spotify page.", collected_count=len(tracks), expected_total=total or len(tracks), progress=100, playlist_name=playlist_name)
                 return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
         except Exception as e:
             print(f"Selenium Spotify import failed, falling back to HTML scrape: {e}")
+            update_spotify_import_status(progress_id, state="running", stage="html-fallback", message="Browser import failed, falling back to limited HTML scraping...")
 
         # 4. Static HTML scrape fallback (limited to ~30 tracks)
         playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
@@ -605,6 +854,7 @@ def _import_spotify_playlist_impl(url_or_id: str):
                 continue
 
         if not page:
+            update_spotify_import_status(progress_id, state="error", stage="html-fallback", message="Failed to fetch the Spotify playlist page.")
             return jsonify({"error": "Failed to fetch Spotify playlist page"}), 502
 
         playlist_name = "Imported Spotify Playlist"
@@ -633,6 +883,7 @@ def _import_spotify_playlist_impl(url_or_id: str):
             pass
 
         if not tracks:
+            update_spotify_import_status(progress_id, state="error", stage="html-fallback", message="Spotify page loaded, but no tracks were found.")
             return jsonify({"error": "No tracks found on Spotify playlist page"}), 400
 
         warning = (
@@ -640,10 +891,12 @@ def _import_spotify_playlist_impl(url_or_id: str):
             "The anonymous Spotify token also failed. "
             "For the full playlist, configure SPOTIFY_CLIENT_ID/SECRET or install chromium-browser + chromedriver."
         )
+        update_spotify_import_status(progress_id, state="complete", stage="done", message=f"Imported {len(tracks)} tracks via limited HTML fallback.", collected_count=len(tracks), expected_total=len(tracks), progress=100, playlist_name=playlist_name, warning=warning)
         return jsonify({"name": playlist_name, "tracks": tracks, "warning": warning})
 
     except Exception as e:
         print("Spotify import error:", e)
+        update_spotify_import_status(progress_id, state="error", stage="error", message=f"Spotify import failed: {e}")
         return jsonify({"error": "Failed to import Spotify playlist"}), 500
 
 
@@ -658,13 +911,298 @@ def deezer_get(path_or_url: str, params: Optional[dict] = None):
     data = res.json()
     if isinstance(data, dict) and data.get("error"):
         message = data.get("error", {}).get("message", "Unknown Deezer API error")
+        if _is_deezer_quota_error_message(message):
+            mark_deezer_quota_backoff(message)
         raise ValueError(message)
     return data
+
+
+def _is_deezer_quota_error_message(message: str) -> bool:
+    text = str(message or "").lower()
+    return "quota" in text and "exceeded" in text
+
+
+def is_deezer_quota_backoff_active() -> bool:
+    with DEEZER_QUOTA_COOLDOWN_LOCK:
+        return time.time() < DEEZER_QUOTA_COOLDOWN_UNTIL
+
+
+def mark_deezer_quota_backoff(reason: str = ""):
+    global DEEZER_QUOTA_COOLDOWN_UNTIL
+    with DEEZER_QUOTA_COOLDOWN_LOCK:
+        DEEZER_QUOTA_COOLDOWN_UNTIL = max(
+            DEEZER_QUOTA_COOLDOWN_UNTIL,
+            time.time() + DEEZER_QUOTA_BACKOFF_SECONDS,
+        )
+        remaining = int(max(0, DEEZER_QUOTA_COOLDOWN_UNTIL - time.time()))
+    if reason:
+        print(f"Deezer quota backoff active for {remaining}s: {reason}")
+
+
+def _extract_year_from_text(text: Optional[str]) -> Optional[str]:
+    if not text:
+        return None
+    match = re.search(r"(19|20)\d{2}", str(text))
+    return match.group(0) if match else None
+
+
+def _best_lastfm_image(images) -> Optional[str]:
+    if not isinstance(images, list):
+        return None
+
+    by_size = {}
+    for image in images:
+        if not isinstance(image, dict):
+            continue
+        url = (image.get("#text") or "").strip()
+        if not url:
+            continue
+        by_size[image.get("size") or ""] = url
+
+    for size in ("extralarge", "large", "medium", "small"):
+        if by_size.get(size):
+            return by_size[size]
+    return next(iter(by_size.values()), None)
+
+
+def _lastfm_track_getinfo(track_title: str, track_artist: str) -> Optional[dict]:
+    if not LASTFM_API_KEY:
+        return None
+
+    params = {
+        "method": "track.getInfo",
+        "api_key": LASTFM_API_KEY,
+        "artist": track_artist,
+        "track": track_title,
+        "autocorrect": 1,
+        "format": "json",
+    }
+    response = requests.get(LASTFM_API_BASE, params=params, timeout=15)
+    response.raise_for_status()
+    payload = response.json()
+
+    if payload.get("error"):
+        raise ValueError(payload.get("message") or "Last.fm API error")
+
+    track = payload.get("track")
+    if not isinstance(track, dict):
+        return None
+
+    album_info = track.get("album") if isinstance(track.get("album"), dict) else {}
+    duration_raw = track.get("duration")
+    duration = None
+    if duration_raw:
+        try:
+            duration = float(duration_raw) / 1000.0
+        except (TypeError, ValueError):
+            duration = None
+
+    year = _extract_year_from_text((track.get("wiki") or {}).get("published"))
+    if not year:
+        year = _extract_year_from_text(album_info.get("title"))
+
+    return {
+        "duration": duration,
+        "album": album_info.get("title"),
+        "year": year,
+        "artwork_url": _best_lastfm_image(album_info.get("image")),
+        "deezer_id": None,
+    }
+
+
+def search_lastfm_track_metadata(title: str, artist: str) -> Optional[dict]:
+    """Best-effort Last.fm metadata lookup by title + artist."""
+    if not LASTFM_API_KEY:
+        return None
+
+    lookup_title, lookup_artist = prepare_track_metadata_lookup(title, artist)
+    if not lookup_title or not lookup_artist:
+        return None
+
+    if _is_lastfm_negative_cached(lookup_title, lookup_artist):
+        return None
+
+    try:
+        direct = _lastfm_track_getinfo(lookup_title, lookup_artist)
+        if direct:
+            return direct
+
+        search_params = {
+            "method": "track.search",
+            "api_key": LASTFM_API_KEY,
+            "track": f"{lookup_title} {lookup_artist}",
+            "limit": 1,
+            "format": "json",
+        }
+        response = requests.get(LASTFM_API_BASE, params=search_params, timeout=15)
+        response.raise_for_status()
+        payload = response.json()
+
+        if payload.get("error"):
+            raise ValueError(payload.get("message") or "Last.fm search error")
+
+        matches = (((payload.get("results") or {}).get("trackmatches") or {}).get("track") or [])
+        if isinstance(matches, dict):
+            matches = [matches]
+        if not matches:
+            _mark_lastfm_negative_cache(lookup_title, lookup_artist)
+            return None
+
+        first = matches[0]
+        candidate_title = (first.get("name") or lookup_title).strip()
+        candidate_artist = (first.get("artist") or lookup_artist).strip()
+        candidate_title, candidate_artist = prepare_track_metadata_lookup(candidate_title, candidate_artist)
+        resolved = _lastfm_track_getinfo(candidate_title or lookup_title, candidate_artist or lookup_artist)
+        if not resolved:
+            _mark_lastfm_negative_cache(lookup_title, lookup_artist)
+        return resolved
+    except Exception as e:
+        message = str(e or "")
+        if "track not found" in message.lower():
+            _mark_lastfm_negative_cache(lookup_title, lookup_artist)
+            return None
+        print(f"Last.fm metadata search failed for {lookup_artist} - {lookup_title}: {e}")
+        return None
+
+
+def search_lastfm_tracks(query: str, limit: int = 10) -> list[dict]:
+    """Search tracks on Last.fm for generic UI search fallback."""
+    if not LASTFM_API_KEY:
+        return []
+
+    try:
+        params = {
+            "method": "track.search",
+            "api_key": LASTFM_API_KEY,
+            "track": query,
+            "limit": max(1, min(int(limit or 10), 50)),
+            "format": "json",
+        }
+        response = requests.get(LASTFM_API_BASE, params=params, timeout=15)
+        response.raise_for_status()
+        payload = response.json()
+
+        if payload.get("error"):
+            raise ValueError(payload.get("message") or "Last.fm search error")
+
+        matches = (((payload.get("results") or {}).get("trackmatches") or {}).get("track") or [])
+        if isinstance(matches, dict):
+            matches = [matches]
+
+        results = []
+        seen = set()
+        for item in matches:
+            title = (item.get("name") or "").strip()
+            artist = (item.get("artist") or "").strip()
+            if not title or not artist:
+                continue
+
+            key = (title.lower(), artist.lower())
+            if key in seen:
+                continue
+            seen.add(key)
+
+            synthetic_id = f"lastfm:{sanitize_filename(artist)}:{sanitize_filename(title)}"
+            results.append({
+                "id": synthetic_id,
+                "title": title,
+                "artist": artist,
+                "deezer_id": None,
+                "path": None,
+                "duration": None,
+                "artwork_url": _best_lastfm_image(item.get("image")),
+            })
+
+        return results
+    except Exception as e:
+        print(f"Last.fm track search failed for query '{query}': {e}")
+        return []
+
+
+def search_lastfm_top_tracks_for_artist(artist: str, limit: int = 10) -> list[dict]:
+    """Return lightweight candidate tracks for an artist when Deezer is unavailable."""
+    if not LASTFM_API_KEY:
+        return []
+
+    try:
+        params = {
+            "method": "artist.gettoptracks",
+            "api_key": LASTFM_API_KEY,
+            "artist": artist,
+            "limit": max(1, min(int(limit or 10), 50)),
+            "autocorrect": 1,
+            "format": "json",
+        }
+        response = requests.get(LASTFM_API_BASE, params=params, timeout=15)
+        response.raise_for_status()
+        payload = response.json()
+
+        if payload.get("error"):
+            raise ValueError(payload.get("message") or "Last.fm artist top tracks error")
+
+        tracks = ((payload.get("toptracks") or {}).get("track") or [])
+        if isinstance(tracks, dict):
+            tracks = [tracks]
+
+        candidates = []
+        seen = set()
+        for item in tracks:
+            title = (item.get("name") or "").strip()
+            artist_info = item.get("artist")
+            if isinstance(artist_info, dict):
+                artist_name = (artist_info.get("name") or artist).strip()
+            else:
+                artist_name = (artist_info or artist).strip()
+
+            if not title or not artist_name:
+                continue
+
+            key = (title.lower(), artist_name.lower())
+            if key in seen:
+                continue
+            seen.add(key)
+
+            synthetic_id = f"lastfm:{sanitize_filename(artist_name)}:{sanitize_filename(title)}"
+            candidates.append({
+                "title": title,
+                "artist": artist_name,
+                "source_id": synthetic_id,
+                "album": None,
+                "year": None,
+                "album_art_url": _best_lastfm_image(item.get("image")),
+            })
+
+        return candidates
+    except Exception as e:
+        print(f"Last.fm top tracks lookup failed for artist '{artist}': {e}")
+        return []
+
+
+def get_track_metadata_for_download(title: str, artist: str, deezer_id: Optional[str]) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    """Resolve album/year/art for downloads, preferring Deezer and falling back to Last.fm."""
+    album = None
+    year = None
+    album_art_url = None
+
+    if deezer_id and not is_deezer_quota_backoff_active():
+        album, year, album_art_url = get_deezer_track_metadata(deezer_id)
+
+    if (not album or not album_art_url or not year) and title and artist:
+        lastfm_meta = search_lastfm_track_metadata(title, artist)
+        if lastfm_meta:
+            album = album or lastfm_meta.get("album")
+            year = year or lastfm_meta.get("year")
+            album_art_url = album_art_url or lastfm_meta.get("artwork_url")
+
+    return album, year, album_art_url
 
 
 def get_deezer_track_metadata(track_id: str) -> tuple[Optional[str], Optional[str], Optional[str]]:
     """Return album, year, and album art URL for a Deezer track id."""
     if not track_id:
+        return None, None, None
+
+    if is_deezer_quota_backoff_active():
         return None, None, None
 
     try:
@@ -675,6 +1213,8 @@ def get_deezer_track_metadata(track_id: str) -> tuple[Optional[str], Optional[st
         album_art_url = (track_data.get("album") or {}).get("cover_xl") or (track_data.get("album") or {}).get("cover_big")
         return album, year, album_art_url
     except Exception as e:
+        if _is_deezer_quota_error_message(str(e)):
+            mark_deezer_quota_backoff(str(e))
         print(f"Failed to fetch Deezer metadata: {e}")
         return None, None, None
 
@@ -765,6 +1305,21 @@ def mp3_has_embedded_metadata(path: Optional[str]) -> bool:
         has_artist = bool(tags.get("TPE1"))
         has_cover = bool(tags.getall("APIC"))
         return has_title and has_artist and has_cover
+    except Exception:
+        return False
+
+
+def mp3_has_basic_metadata(path: Optional[str]) -> bool:
+    """Check whether MP3 has at least title + artist tags."""
+    if not path or not os.path.exists(path) or not path.lower().endswith(".mp3"):
+        return False
+
+    try:
+        audio = MP3(path, ID3=ID3)
+        tags = audio.tags
+        if not tags:
+            return False
+        return bool(tags.get("TIT2")) and bool(tags.get("TPE1"))
     except Exception:
         return False
 
@@ -866,16 +1421,26 @@ def embed_artwork_into_mp3(path: Optional[str], artwork_url: Optional[str]) -> b
 
 
 def search_deezer_track_metadata(title: str, artist: str):
-    """Best-effort Deezer metadata lookup by title + artist."""
+    """Best-effort metadata lookup by title + artist.
+
+    Deezer is primary. When Deezer quota is exceeded, fall back to Last.fm.
+    """
+    lookup_title, lookup_artist = prepare_track_metadata_lookup(title, artist)
+    if not lookup_title or not lookup_artist:
+        return None
+
+    if is_deezer_quota_backoff_active():
+        return search_lastfm_track_metadata(lookup_title, lookup_artist)
+
     try:
-        query = f'track:"{title}" artist:"{artist}"'
+        query = f'track:"{lookup_title}" artist:"{lookup_artist}"'
         data = deezer_get("search", params={"q": query, "limit": 5})
         items = data.get("data") or []
         if not items:
-            fallback = deezer_get("search", params={"q": f"{title} {artist}", "limit": 5})
+            fallback = deezer_get("search", params={"q": f"{lookup_title} {lookup_artist}", "limit": 5})
             items = fallback.get("data") or []
         if not items:
-            return None
+            return search_lastfm_track_metadata(lookup_title, lookup_artist)
 
         best = items[0]
         duration = best.get("duration")
@@ -891,18 +1456,29 @@ def search_deezer_track_metadata(title: str, artist: str):
             "deezer_id": str(best.get("id")) if best.get("id") else None,
         }
     except Exception as e:
-        print(f"Deezer metadata search failed for {artist} - {title}: {e}")
+        if _is_deezer_quota_error_message(str(e)):
+            mark_deezer_quota_backoff(str(e))
+            fallback_meta = search_lastfm_track_metadata(lookup_title, lookup_artist)
+            if fallback_meta:
+                print(f"Using Last.fm fallback metadata for {lookup_artist} - {lookup_title}")
+                return fallback_meta
+        print(f"Deezer metadata search failed for {lookup_artist} - {lookup_title}: {e}")
         return None
 
 
-def enrich_track_for_ui(track: dict) -> dict:
-    """Return artwork/duration enriched track data for UI lists."""
+def enrich_track_for_ui(track: dict, allow_remote_lookup: bool = False) -> dict:
+    """Return artwork/duration enriched track data for UI lists.
+
+    By default this is local-only to avoid repeated network calls while browsing the UI.
+    """
     base = dict(track or {})
     cache_key = get_track_cache_key(base)
     cached = get_cached_track_metadata(cache_key)
 
     title = base.get("title", "")
     artist = base.get("artist", "")
+    lookup_title, lookup_artist = prepare_track_metadata_lookup(title, artist)
+    is_downloading_placeholder = is_downloading_placeholder_track(base)
     source_id = base.get("deezer_id") or base.get("spotify_id") or base.get("id")
     path = base.get("path") or cached.get("path")
     deezer_id = base.get("deezer_id") or cached.get("deezer_id")
@@ -924,7 +1500,29 @@ def enrich_track_for_ui(track: dict) -> dict:
                 artwork_url = f"/api/artwork/by-path?path={requests.utils.quote(path)}"
 
     if not path and source_id:
-        path = find_local_track(title, artist, source_id)
+        path = find_local_track(lookup_title or title, lookup_artist or artist, source_id)
+
+    if is_downloading_placeholder and not path:
+        enriched = {
+            **base,
+            "path": path,
+            "album": album,
+            "year": year,
+            "duration": duration,
+            "artwork_url": artwork_url,
+            "deezer_id": deezer_id,
+            "spotify_id": spotify_id,
+        }
+        set_cached_track_metadata(cache_key, {
+            "path": path,
+            "album": album,
+            "year": year,
+            "duration": duration,
+            "artwork_url": artwork_url,
+            "deezer_id": deezer_id,
+            "spotify_id": spotify_id,
+        })
+        return enriched
 
     if path and not duration:
         duration = get_local_track_duration(path)
@@ -934,14 +1532,14 @@ def enrich_track_for_ui(track: dict) -> dict:
         if artwork_data:
             artwork_url = f"/api/artwork/by-path?path={requests.utils.quote(path)}"
 
-    if deezer_id and (not artwork_url or not album or not year):
+    if allow_remote_lookup and deezer_id and (not artwork_url or not album or not year):
         deezer_album, deezer_year, deezer_art = get_deezer_track_metadata(deezer_id)
         album = album or deezer_album
         year = year or deezer_year
         artwork_url = artwork_url or deezer_art
 
-    if (not artwork_url or not duration) and title and artist:
-        deezer_meta = search_deezer_track_metadata(title, artist)
+    if allow_remote_lookup and (not artwork_url or not duration) and lookup_title and lookup_artist:
+        deezer_meta = search_deezer_track_metadata(lookup_title, lookup_artist)
         if deezer_meta:
             duration = duration or deezer_meta.get("duration")
             album = album or deezer_meta.get("album")
@@ -950,7 +1548,7 @@ def enrich_track_for_ui(track: dict) -> dict:
             deezer_id = deezer_id or deezer_meta.get("deezer_id")
 
     # Prefer local embedded artwork: if we only have remote art and local MP3, embed it once.
-    if path and artwork_url and artwork_url.startswith("http"):
+    if allow_remote_lookup and path and artwork_url and artwork_url.startswith("http"):
         tried_already = False
         with ARTWORK_EMBED_ATTEMPTED_LOCK:
             if path in ARTWORK_EMBED_ATTEMPTED_PATHS:
@@ -972,7 +1570,8 @@ def enrich_track_for_ui(track: dict) -> dict:
                 should_upsert = not mp3_has_embedded_metadata(path)
 
         if should_upsert:
-            upsert_mp3_metadata(path, title, artist, album, year, artwork_url if artwork_url and artwork_url.startswith("http") else None, deezer_id)
+            remote_artwork = artwork_url if allow_remote_lookup and artwork_url and artwork_url.startswith("http") else None
+            upsert_mp3_metadata(path, lookup_title or title, lookup_artist or artist, album, year, remote_artwork, deezer_id)
             artwork_data, _ = get_local_track_artwork(path)
             if artwork_data:
                 artwork_url = f"/api/artwork/by-path?path={requests.utils.quote(path)}"
@@ -1024,6 +1623,27 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
     # If already exists, return it
     if os.path.exists(final_mp3):
         print(f"✓ Already exists: {final_mp3}")
+        if not mp3_has_basic_metadata(final_mp3):
+            print(f"Existing MP3 is missing metadata, repairing tags: {final_mp3}")
+            deezer_tag = str(source_id) if source_id and str(source_id).isdigit() else None
+            repaired = upsert_mp3_metadata(final_mp3, title, artist, album, year, album_art_url, deezer_tag)
+            if not repaired:
+                try:
+                    audio = MP3(final_mp3, ID3=ID3)
+                    try:
+                        audio.add_tags()
+                    except Exception:
+                        pass
+                    if audio.tags is not None:
+                        audio.tags["TIT2"] = TIT2(encoding=3, text=title)
+                        audio.tags["TPE1"] = TPE1(encoding=3, text=artist)
+                        if album:
+                            audio.tags["TALB"] = TALB(encoding=3, text=album)
+                        if year:
+                            audio.tags["TDRC"] = TDRC(encoding=3, text=year)
+                        audio.save(v2_version=3)
+                except Exception as e:
+                    print(f"Failed to repair existing MP3 metadata: {e}")
         return final_mp3
 
     # Acquire semaphore to ensure only 1 download runs at a time
@@ -1047,7 +1667,7 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
                     # Download AUDIO ONLY for music (not video like lofi)
                     audio_template = f"{safe_artist} - {safe_title}.%(ext)s"
                     command = [
-                        "yt-dlp",
+                        *resolve_yt_dlp_command(),
                         *extra_args,
                         "--extract-audio",
                         "--audio-format", "mp3",
@@ -1086,47 +1706,40 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
             # If we successfully downloaded, break out of result loop
             if os.path.exists(final_mp3):
                 print("Downloaded:", final_mp3)
-                
-                # Add metadata to the MP3 file
-                try:
-                    audio = MP3(final_mp3, ID3=ID3)
-                    
-                    # Add ID3 tag if it doesn't exist
+
+                deezer_tag = str(source_id) if source_id and str(source_id).isdigit() else None
+                metadata_written = upsert_mp3_metadata(
+                    final_mp3,
+                    title,
+                    artist,
+                    album,
+                    year,
+                    album_art_url,
+                    deezer_tag,
+                )
+                if not metadata_written:
+                    print(f"Metadata upsert had issues for {final_mp3}, retrying core tags...")
                     try:
-                        audio.add_tags()
-                    except:
-                        pass
-                    
-                    # Set metadata
-                    audio.tags["TIT2"] = TIT2(encoding=3, text=title)  # Title
-                    audio.tags["TPE1"] = TPE1(encoding=3, text=artist)  # Artist
-                    
-                    if album:
-                        audio.tags["TALB"] = TALB(encoding=3, text=album)  # Album
-                        audio.tags["TPE2"] = TPE2(encoding=3, text=artist)  # Album Artist
-                    
-                    if year:
-                        audio.tags["TDRC"] = TDRC(encoding=3, text=year)  # Year
-                    
-                    # Download and embed album art if available
-                    if album_art_url:
+                        audio = MP3(final_mp3, ID3=ID3)
                         try:
-                            art_response = requests.get(album_art_url, timeout=10)
-                            if art_response.status_code == 200:
-                                audio.tags["APIC"] = APIC(
-                                    encoding=3,
-                                    mime='image/jpeg',
-                                    type=3,  # Cover (front)
-                                    desc='Cover',
-                                    data=art_response.content
-                                )
-                        except Exception as e:
-                            print(f"Failed to download album art: {e}")
-                    
-                    audio.save()
-                    print(f"✓ Added metadata to {final_mp3}")
-                except Exception as e:
-                    print(f"Failed to add metadata: {e}")
+                            audio.add_tags()
+                        except Exception:
+                            pass
+                        if audio.tags is not None:
+                            audio.tags["TIT2"] = TIT2(encoding=3, text=title)
+                            audio.tags["TPE1"] = TPE1(encoding=3, text=artist)
+                            if album:
+                                audio.tags["TALB"] = TALB(encoding=3, text=album)
+                            if year:
+                                audio.tags["TDRC"] = TDRC(encoding=3, text=year)
+                            audio.save(v2_version=3)
+                    except Exception as e:
+                        print(f"Failed to write fallback core metadata: {e}")
+
+                if mp3_has_basic_metadata(final_mp3):
+                    print(f"✓ MP3 ready with metadata: {final_mp3}")
+                else:
+                    print(f"⚠ MP3 saved but metadata tags are incomplete: {final_mp3}")
                 
                 print(f"\n{'='*60}")
                 print(f"✓ DOWNLOAD SUCCESS: {artist} - {title}")
@@ -1315,20 +1928,57 @@ class Player:
 
         played_titles = {normalize(t.title) for t in self.played}
 
-        res = deezer_get("search", params={"q": f'artist:"{artist}"', "limit": 10})
-        items = res.get("data", [])
+        candidates = []
+        provider = "deezer"
+        try:
+            if is_deezer_quota_backoff_active():
+                raise ValueError("Quota exceeded")
 
-        print(f"Deezer returned {len(items)} tracks for artist search '{artist}'")
+            res = deezer_get("search", params={"q": f'artist:"{artist}"', "limit": 10})
+            for item in res.get("data", []):
+                title = item.get("title", "")
+                artist_name = (item.get("artist") or {}).get("name", artist)
+                source_id = str(item.get("id", ""))
+                album = (item.get("album") or {}).get("title", "")
+                release_date = item.get("release_date") or ""
+                year = release_date[:4] if release_date else ""
+                album_art_url = (item.get("album") or {}).get("cover_xl") or (item.get("album") or {}).get("cover_big")
+                candidates.append({
+                    "title": title,
+                    "artist": artist_name,
+                    "source_id": source_id,
+                    "album": album,
+                    "year": year,
+                    "album_art_url": album_art_url,
+                })
+        except Exception as e:
+            if _is_deezer_quota_error_message(str(e)) or is_deezer_quota_backoff_active():
+                provider = "lastfm"
+                candidates = search_lastfm_top_tracks_for_artist(artist, limit=10)
+                if not candidates and not LASTFM_API_KEY:
+                    print("Last.fm fallback unavailable: LASTFM_API_KEY is not configured.")
+                print(f"Using Last.fm fallback with {len(candidates)} tracks for artist search '{artist}'")
+            else:
+                print(f"Artist search failed for '{artist}': {e}")
+                return False
+
+        print(f"{provider.capitalize()} returned {len(candidates)} tracks for artist search '{artist}'")
         downloaded_any = False
 
-        for idx, item in enumerate(items, start=1):
+        for idx, item in enumerate(candidates, start=1):
             title = item.get("title", "")
-            artist_name = (item.get("artist") or {}).get("name", artist)
-            source_id = str(item.get("id", ""))
-            album = (item.get("album") or {}).get("title", "")
-            release_date = item.get("release_date") or ""
-            year = release_date[:4] if release_date else ""
-            album_art_url = (item.get("album") or {}).get("cover_xl") or (item.get("album") or {}).get("cover_big")
+            artist_name = item.get("artist", artist)
+            source_id = item.get("source_id")
+            album = item.get("album")
+            year = item.get("year")
+            album_art_url = item.get("album_art_url")
+
+            if provider == "lastfm" and (not album or not year or not album_art_url):
+                meta = search_lastfm_track_metadata(title, artist_name)
+                if meta:
+                    album = album or meta.get("album")
+                    year = year or meta.get("year")
+                    album_art_url = album_art_url or meta.get("artwork_url")
 
             if normalize(title) in played_titles:
                 print(f"[{idx}] Candidate: {title} by {artist_name} → already played, skipping")
@@ -1635,6 +2285,8 @@ class Player:
             # Include _lofi_downloading if present
             if hasattr(t, "_lofi_downloading"):
                 d["_lofi_downloading"] = t._lofi_downloading
+            if hasattr(t, "_downloading"):
+                d["_downloading"] = t._downloading
             return d
         with self.lock:
             if self.current:
@@ -1867,6 +2519,49 @@ def api_save_search_settings():
     return jsonify(normalized)
 
 
+@app.route("/api/settings/journal", methods=["GET"])
+def api_get_settings_journal():
+    try:
+        requested_lines = int(request.args.get("lines", MAX_SETTINGS_JOURNAL_LINES))
+    except (TypeError, ValueError):
+        requested_lines = MAX_SETTINGS_JOURNAL_LINES
+
+    line_limit = max(1, min(requested_lines, MAX_SETTINGS_JOURNAL_LINES))
+
+    try:
+        result = subprocess.run(
+            [
+                "journalctl",
+                "-u",
+                APOO_SERVICE_NAME,
+                "-n",
+                str(line_limit),
+                "--no-pager",
+                "--output=short-iso",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    except subprocess.TimeoutExpired:
+        return jsonify({"error": "Timed out while reading the service journal."}), 504
+
+    if result.returncode != 0 and not result.stdout.strip():
+        return jsonify({
+            "error": result.stderr.strip() or "Failed to read the service journal.",
+            "service": APOO_SERVICE_NAME,
+        }), 500
+
+    lines = result.stdout.splitlines()[-line_limit:]
+    return jsonify({
+        "service": APOO_SERVICE_NAME,
+        "lines": lines,
+        "line_count": len(lines),
+        "max_lines": MAX_SETTINGS_JOURNAL_LINES,
+        "fetched_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    })
+
+
 @app.route("/api/favorites/add", methods=["POST"])
 def add_favorite():
     data = request.get_json() or {}
@@ -2055,8 +2750,7 @@ def add_to_queue():
         album = None
         year = None
         album_art_url = None
-        if deezer_id:
-            album, year, album_art_url = get_deezer_track_metadata(deezer_id)
+        album, year, album_art_url = get_track_metadata_for_download(title, artist, deezer_id)
 
         def download_and_replace():
             real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url)
@@ -2134,8 +2828,7 @@ def add_to_queue_next():
         album = None
         year = None
         album_art_url = None
-        if deezer_id:
-            album, year, album_art_url = get_deezer_track_metadata(deezer_id)
+        album, year, album_art_url = get_track_metadata_for_download(title, artist, deezer_id)
 
         def download_and_replace():
             real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url)
@@ -2384,28 +3077,49 @@ def api_search():
     if not q:
         return jsonify({"results": []})
 
-    data = deezer_get("search", params={"q": q, "limit": 10})
+    if is_deezer_quota_backoff_active():
+        fallback_results = search_lastfm_tracks(q, limit=10)
+        warning = None
+        if not LASTFM_API_KEY:
+            warning = "Deezer quota is active and LASTFM_API_KEY is not configured."
+        elif not fallback_results:
+            warning = "Deezer quota is active and Last.fm fallback returned no results."
+        return jsonify({"results": fallback_results, "provider": "lastfm", "warning": warning})
 
-    results = []
-    for item in data.get("data", []):
-        track_id = str(item.get("id"))
-        title = item.get("title", "")
-        artist = (item.get("artist") or {}).get("name", "")
+    try:
+        data = deezer_get("search", params={"q": q, "limit": 10})
 
-        # You can later map provider metadata -> local file here
-        local_path = None
+        results = []
+        for item in data.get("data", []):
+            track_id = str(item.get("id"))
+            title = item.get("title", "")
+            artist = (item.get("artist") or {}).get("name", "")
 
-        results.append({
-            "id": track_id,
-            "title": title,
-            "artist": artist,
-            "deezer_id": track_id,
-            "path": local_path,
-            "duration": item.get("duration"),
-            "artwork_url": (item.get("album") or {}).get("cover_xl") or (item.get("album") or {}).get("cover_big") or (item.get("album") or {}).get("cover_medium"),
-        })
+            # You can later map provider metadata -> local file here
+            local_path = None
 
-    return jsonify({"results": results})
+            results.append({
+                "id": track_id,
+                "title": title,
+                "artist": artist,
+                "deezer_id": track_id,
+                "path": local_path,
+                "duration": item.get("duration"),
+                "artwork_url": (item.get("album") or {}).get("cover_xl") or (item.get("album") or {}).get("cover_big") or (item.get("album") or {}).get("cover_medium"),
+            })
+
+        return jsonify({"results": results, "provider": "deezer"})
+    except Exception as e:
+        if _is_deezer_quota_error_message(str(e)) or is_deezer_quota_backoff_active():
+            fallback_results = search_lastfm_tracks(q, limit=10)
+            if LASTFM_API_KEY:
+                warning = "Deezer quota exceeded; using Last.fm fallback."
+            else:
+                warning = "Deezer quota exceeded and LASTFM_API_KEY is not configured."
+            return jsonify({"results": fallback_results, "provider": "lastfm", "warning": warning})
+
+        print(f"Search failed for '{q}': {e}")
+        return jsonify({"results": [], "error": "Search failed"}), 500
 
 def _import_deezer_playlist_impl(url_or_id: str):
     """
@@ -2444,13 +3158,18 @@ def _import_deezer_playlist_impl(url_or_id: str):
         return jsonify({"error": "Failed to import playlist"}), 500
 
 
-@app.route("/api/deezer/import", methods=["POST"])
-def api_deezer_import():
-    data = request.get_json() or {}
-    url = data.get("url")
-    if not url:
-        return jsonify({"error": "Missing URL"}), 400
-    return _import_deezer_playlist_impl(url)
+@app.route("/api/spotify/import/status", methods=["GET"])
+def api_spotify_import_status():
+    progress_id = (request.args.get("progress_id") or "").strip()
+    if not progress_id:
+        return jsonify({"error": "Missing progress_id"}), 400
+
+    payload = get_spotify_import_status(progress_id)
+    if not payload:
+        return jsonify({"error": "Import status not found", "progress_id": progress_id}), 404
+
+    payload.pop("updated_ts", None)
+    return jsonify(payload)
 
 
 @app.route("/api/spotify/import", methods=["POST"])
@@ -2459,7 +3178,9 @@ def api_spotify_import():
     url = data.get("url")
     if not url:
         return jsonify({"error": "Missing URL"}), 400
-    return _import_spotify_playlist_impl(url)
+    progress_id = (data.get("progress_id") or "").strip() or None
+    update_spotify_import_status(progress_id, state="running", stage="starting", message="Preparing Spotify import...", progress=0, collected_count=0, expected_total=None)
+    return _import_spotify_playlist_impl(url, progress_id=progress_id)
 
 
 import threading
@@ -2470,6 +3191,7 @@ import threading
 LOFI_PROGRESS_FILE = os.path.join(DATA_DIR, "lofi_progress.json")
 LOFI_IN_PROGRESS_FILE = os.path.join(DATA_DIR, "lofi_in_progress.json")
 LOFI_LOG_FILE = os.path.join(DATA_DIR, "lofi_debug.log")
+LOFI_TRACKING_LOCK = threading.Lock()
 
 def _node_works(node_path: str) -> bool:
     try:
@@ -2518,8 +3240,9 @@ def save_lofi_progress(progress):
     try:
         with open(LOFI_PROGRESS_FILE, "w") as f:
             json.dump(progress, f)
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[LOFI] Failed to save progress file: {e}")
+        lofi_log(f"save_progress_failed={e}")
 
 def load_lofi_in_progress():
     if os.path.exists(LOFI_IN_PROGRESS_FILE):
@@ -2535,11 +3258,95 @@ def save_lofi_in_progress(in_progress):
     try:
         with open(LOFI_IN_PROGRESS_FILE, "w") as f:
             json.dump(in_progress, f)
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[LOFI] Failed to save in-progress file: {e}")
+        lofi_log(f"save_in_progress_failed={e}")
 
 LOFI_PROGRESS = load_lofi_progress()
 LOFI_IN_PROGRESS = load_lofi_in_progress()
+
+
+def _to_percent(value) -> int:
+    try:
+        return int(float(value))
+    except Exception:
+        return 0
+
+
+def _remove_lofi_tracking_entries(progress_ids: list[str], reason: str = "") -> int:
+    if not progress_ids:
+        return 0
+
+    removed_count = 0
+    with LOFI_TRACKING_LOCK:
+        for progress_id in progress_ids:
+            removed = False
+            if progress_id in LOFI_IN_PROGRESS:
+                del LOFI_IN_PROGRESS[progress_id]
+                removed = True
+            if progress_id in LOFI_PROGRESS:
+                del LOFI_PROGRESS[progress_id]
+                removed = True
+            if removed:
+                removed_count += 1
+
+        if removed_count:
+            save_lofi_in_progress(LOFI_IN_PROGRESS)
+            save_lofi_progress(LOFI_PROGRESS)
+
+    if removed_count:
+        lofi_log(f"tracking_removed count={removed_count} reason={reason or 'n/a'}")
+    return removed_count
+
+
+def cleanup_completed_lofi_tracking() -> int:
+    """Prune completed/orphan tracking entries that can linger after restarts or thread errors."""
+    now = time.time()
+    completed_ids = []
+    orphan_complete_ids = []
+
+    with LOFI_TRACKING_LOCK:
+        for progress_id, meta in list(LOFI_IN_PROGRESS.items()):
+            meta = meta or {}
+            safe_title = str(meta.get("safe_title") or "")
+            started_ts = meta.get("started_ts", now)
+            try:
+                started_ts = float(started_ts)
+            except Exception:
+                started_ts = now
+
+            percent = _to_percent(LOFI_PROGRESS.get(progress_id, 0))
+            audio_path = os.path.join(LOFI_DIR, f"{safe_title}.mp3") if safe_title else ""
+            audio_exists = bool(audio_path) and os.path.exists(audio_path)
+
+            # Completed means we have progress=100 and an extracted audio file.
+            # As a safety net, also clear very old 100% entries.
+            if percent >= 100 and (audio_exists or (now - started_ts) > (30 * 60)):
+                completed_ids.append(progress_id)
+
+        for progress_id, percent in list(LOFI_PROGRESS.items()):
+            if progress_id not in LOFI_IN_PROGRESS and _to_percent(percent) >= 100:
+                orphan_complete_ids.append(progress_id)
+
+        if completed_ids:
+            for progress_id in completed_ids:
+                LOFI_IN_PROGRESS.pop(progress_id, None)
+                LOFI_PROGRESS.pop(progress_id, None)
+
+        if orphan_complete_ids:
+            for progress_id in orphan_complete_ids:
+                LOFI_PROGRESS.pop(progress_id, None)
+
+        if completed_ids or orphan_complete_ids:
+            save_lofi_in_progress(LOFI_IN_PROGRESS)
+            save_lofi_progress(LOFI_PROGRESS)
+
+    if completed_ids or orphan_complete_ids:
+        lofi_log(
+            f"tracking_cleanup completed={len(completed_ids)} orphan_complete={len(orphan_complete_ids)}"
+        )
+
+    return len(completed_ids)
 
 # Clean up stale in-progress entries on startup (>30 min old)
 def cleanup_stale_lofi_downloads():
@@ -2547,21 +3354,26 @@ def cleanup_stale_lofi_downloads():
     current_time = time.time()
     timeout_seconds = 30 * 60  # 30 minutes
     stale_ids = []
-    
-    for progress_id, meta in LOFI_IN_PROGRESS.items():
-        started_ts = meta.get("started_ts", current_time)
-        if current_time - started_ts > timeout_seconds:
-            stale_ids.append(progress_id)
-    
-    if stale_ids:
-        print(f"[LOFI] Cleaning up {len(stale_ids)} stale download(s) older than 30 min")
-        for progress_id in stale_ids:
-            del LOFI_IN_PROGRESS[progress_id]
-            if progress_id in LOFI_PROGRESS:
-                del LOFI_PROGRESS[progress_id]
-        save_lofi_in_progress(LOFI_IN_PROGRESS)
-        save_lofi_progress(LOFI_PROGRESS)
+    with LOFI_TRACKING_LOCK:
+        for progress_id, meta in list(LOFI_IN_PROGRESS.items()):
+            started_ts = meta.get("started_ts", current_time)
+            try:
+                started_ts = float(started_ts)
+            except Exception:
+                started_ts = current_time
 
+            if current_time - started_ts > timeout_seconds:
+                stale_ids.append(progress_id)
+
+        if stale_ids:
+            print(f"[LOFI] Cleaning up {len(stale_ids)} stale download(s) older than 30 min")
+            for progress_id in stale_ids:
+                LOFI_IN_PROGRESS.pop(progress_id, None)
+                LOFI_PROGRESS.pop(progress_id, None)
+            save_lofi_in_progress(LOFI_IN_PROGRESS)
+            save_lofi_progress(LOFI_PROGRESS)
+
+cleanup_completed_lofi_tracking()
 cleanup_stale_lofi_downloads()
 
 def _lofi_progress_hook(d, progress_id):
@@ -2569,11 +3381,13 @@ def _lofi_progress_hook(d, progress_id):
         total = d.get('total_bytes') or d.get('total_bytes_estimate') or 1
         downloaded = d.get('downloaded_bytes', 0)
         percent = int(downloaded * 100 / total) if total else 0
-        LOFI_PROGRESS[progress_id] = percent
-        save_lofi_progress(LOFI_PROGRESS)
+        with LOFI_TRACKING_LOCK:
+            LOFI_PROGRESS[progress_id] = percent
+            save_lofi_progress(LOFI_PROGRESS)
     elif d['status'] == 'finished':
-        LOFI_PROGRESS[progress_id] = 100
-        save_lofi_progress(LOFI_PROGRESS)
+        with LOFI_TRACKING_LOCK:
+            LOFI_PROGRESS[progress_id] = 100
+            save_lofi_progress(LOFI_PROGRESS)
 
 @app.route("/api/lofi/download", methods=["POST"])
 def api_lofi_download():
@@ -2589,7 +3403,7 @@ def api_lofi_download():
         lofi_log(f"download_start url={url}")
         # Get video metadata first
         print("Step 1: Fetching metadata...")
-        info_command = ["yt-dlp", "--js-runtimes", f"node:{NODE_RUNTIME_PATH}", "--dump-json", "--no-playlist", url]
+        info_command = [*resolve_yt_dlp_command(), "--js-runtimes", f"node:{NODE_RUNTIME_PATH}", "--dump-json", "--no-playlist", url]
         print("Command:", info_command)
         lofi_log(f"metadata_cmd={' '.join(info_command)}")
         info_result = subprocess.run(info_command, shell=False, capture_output=True, text=True)
@@ -2654,136 +3468,132 @@ def api_lofi_download():
             ["--extractor-args", "youtube:player_client=android"],
         ]
         progress_id = f"{safe_title}_{int(time.time())}"
-        LOFI_PROGRESS[progress_id] = 0
-        save_lofi_progress(LOFI_PROGRESS)
-        LOFI_IN_PROGRESS[progress_id] = {
-            "title": title,
-            "safe_title": safe_title,
-            "thumbnail": thumbnail,
-            "started_ts": time.time(),
-        }
-        save_lofi_in_progress(LOFI_IN_PROGRESS)
+        with LOFI_TRACKING_LOCK:
+            LOFI_PROGRESS[progress_id] = 0
+            LOFI_IN_PROGRESS[progress_id] = {
+                "title": title,
+                "safe_title": safe_title,
+                "thumbnail": thumbnail,
+                "started_ts": time.time(),
+            }
+            save_lofi_progress(LOFI_PROGRESS)
+            save_lofi_in_progress(LOFI_IN_PROGRESS)
         lofi_log(f"progress_id={progress_id}")
         # Do not add placeholder to queue for lofi downloads
         def run_download():
-            # Acquire semaphore to ensure sequential downloads
-            with DOWNLOAD_SEMAPHORE:
-                success = False
-                # Format priority: prefer formats that don't require ffmpeg merge to avoid Raspberry Pi timeout issues
-                formats = [
-                    "bestvideo[height>=1080]+bestaudio/best[height>=0180]/bestvideo+bestaudio/best",
-                ]
-                
-                for i, strategy in enumerate(strategies):
-                    print(f"Strategy {i+1}/{len(strategies)}...")
-                    lofi_log(f"strategy_start index={i+1}")
-                    for fmt_idx, fmt in enumerate(formats):
-                        print(f"  Format {fmt_idx+1}/{len(formats)}: {fmt}")
-                        lofi_log(f"format_try index={fmt_idx+1} fmt={fmt}")
-                        # Build yt-dlp command
-                        cmd = [
-                            "yt-dlp",
-                            "--js-runtimes", f"node:{NODE_RUNTIME_PATH}",
-                            "--newline",
-                            "--progress-template",
-                            "%(progress._percent_str)s %(progress.downloaded_bytes)s/%(progress.total_bytes)s",
-                            "--format", fmt,
-                            "--merge-output-format", "mp4",
-                            "--no-playlist",
-                            "--no-check-certificate",
-                            "-o", output_template,
-                            url
-                        ]
-                        if strategy:
-                            cmd = ["yt-dlp", "--js-runtimes", f"node:{NODE_RUNTIME_PATH}"] + strategy + cmd[3:]
-                        print("Running:", " ".join(cmd))
-                        lofi_log(f"download_cmd={' '.join(cmd)}")
-                        try:
-                            proc = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
-                            stdout_lines = []
-                            stderr_lines = []
-                            
-                            for line in proc.stdout:
-                                stdout_lines.append(line)
-                                # Try to parse percent from line like '  12.3% 123456/1234567'
-                                line = line.strip()
-                                if line.endswith("%") or "%" in line:
+            success = False
+            try:
+                # Acquire semaphore to ensure sequential downloads
+                with DOWNLOAD_SEMAPHORE:
+                    # Format priority: prefer formats that don't require ffmpeg merge to avoid Raspberry Pi timeout issues
+                    formats = [
+                        "bestvideo[height>=1080]+bestaudio/best[height>=0180]/bestvideo+bestaudio/best",
+                    ]
+
+                    for i, strategy in enumerate(strategies):
+                        print(f"Strategy {i+1}/{len(strategies)}...")
+                        lofi_log(f"strategy_start index={i+1}")
+                        for fmt_idx, fmt in enumerate(formats):
+                            print(f"  Format {fmt_idx+1}/{len(formats)}: {fmt}")
+                            lofi_log(f"format_try index={fmt_idx+1} fmt={fmt}")
+                            # Build yt-dlp command
+                            yt_dlp_prefix = resolve_yt_dlp_command()
+                            cmd = [
+                                *yt_dlp_prefix,
+                                *strategy,
+                                "--js-runtimes", f"node:{NODE_RUNTIME_PATH}",
+                                "--newline",
+                                "--progress-template",
+                                "%(progress._percent_str)s %(progress.downloaded_bytes)s/%(progress.total_bytes)s",
+                                "--format", fmt,
+                                "--merge-output-format", "mp4",
+                                "--no-playlist",
+                                "--no-check-certificate",
+                                "-o", output_template,
+                                url
+                            ]
+                            print("Running:", " ".join(cmd))
+                            lofi_log(f"download_cmd={' '.join(cmd)}")
+                            try:
+                                proc = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
+                                stdout_lines = []
+                                stderr_lines = []
+
+                                for line in proc.stdout:
+                                    stdout_lines.append(line)
+                                    # Try to parse percent from line like '  12.3% 123456/1234567'
+                                    line = line.strip()
+                                    if line.endswith("%") or "%" in line:
+                                        try:
+                                            percent_str = line.split("%", 1)[0].strip()
+                                            percent = float(percent_str)
+                                            with LOFI_TRACKING_LOCK:
+                                                LOFI_PROGRESS[progress_id] = int(percent)
+                                        except Exception:
+                                            pass
+                                    # Log format selection info
+                                    if "Downloading" in line or "Selected" in line or "format" in line.lower():
+                                        print(f"[yt-dlp] {line.strip()}")
+                                        lofi_log(f"yt_dlp_stdout={line.strip()}")
+
+                                stderr = proc.stderr.read()
+                                if stderr:
+                                    stderr_lines = stderr.split('\n')
+                                    for line in stderr_lines:
+                                        if line.strip():
+                                            print(f"[yt-dlp stderr] {line}")
+                                            lofi_log(f"yt_dlp_stderr={line.strip()}")
+
+                                proc.wait()
+                                lofi_log(f"yt_dlp_exit={proc.returncode}")
+
+                                if os.path.exists(expected_file):
+                                    success = True
+                                    # Use ffprobe to check resolution
                                     try:
-                                        percent_str = line.split("%", 1)[0].strip()
-                                        percent = float(percent_str)
-                                        LOFI_PROGRESS[progress_id] = int(percent)
-                                    except Exception:
-                                        pass
-                                # Log format selection info
-                                if "Downloading" in line or "Selected" in line or "format" in line.lower():
-                                    print(f"[yt-dlp] {line.strip()}")
-                                    lofi_log(f"yt_dlp_stdout={line.strip()}")
-                            
-                            stderr = proc.stderr.read()
-                            if stderr:
-                                stderr_lines = stderr.split('\n')
-                                for line in stderr_lines:
-                                    if line.strip():
-                                        print(f"[yt-dlp stderr] {line}")
-                                        lofi_log(f"yt_dlp_stderr={line.strip()}")
-                            
-                            proc.wait()
-                            lofi_log(f"yt_dlp_exit={proc.returncode}")
-                            
-                            if os.path.exists(expected_file):
-                                success = True
-                                # Use ffprobe to check resolution
-                                try:
-                                    probe_cmd = ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", expected_file]
-                                    probe_result = subprocess.run(probe_cmd, capture_output=True, text=True)
-                                    if probe_result.returncode == 0:
-                                        resolution = probe_result.stdout.strip()
-                                        print(f"✓ Downloaded! Resolution: {resolution}")
-                                        lofi_log(f"downloaded_resolution={resolution}")
-                                    else:
-                                        print(f"✓ Downloaded!")
-                                        lofi_log("downloaded_no_resolution")
-                                except Exception as e:
-                                    print(f"✓ Downloaded! (could not check resolution: {e})")
-                                    lofi_log(f"resolution_error={e}")
-                                break  # Success! Exit format loop
-                            else:
-                                print(f"✗ Format {fmt_idx+1} failed, trying next...")
-                                lofi_log(f"format_failed index={fmt_idx+1}")
-                        except Exception as e:
-                            print(f"yt-dlp error: {e}")
-                            lofi_log(f"yt_dlp_error={e}")
-                    
-                    if success:
-                        break  # Exit strategy loop if successful
-            
-            # Extract audio AFTER releasing semaphore to prevent deadlock
-            if success:
-                print(f"Extracting audio for {safe_title}...")
-                lofi_log("extract_audio_start")
-                LOFI_PROGRESS[progress_id] = 100  # Mark complete
-                save_lofi_progress(LOFI_PROGRESS)
-                audio_path = os.path.join(LOFI_DIR, f"{safe_title}.mp3")
-                extract_audio_from_video(expected_file, audio_path)
-                print(f"✓ Download complete: {safe_title}")
-                lofi_log("download_complete")
-                # Immediately remove from in-progress after completion
-                if progress_id in LOFI_IN_PROGRESS:
-                    del LOFI_IN_PROGRESS[progress_id]
-                    save_lofi_in_progress(LOFI_IN_PROGRESS)
-                if progress_id in LOFI_PROGRESS:
-                    del LOFI_PROGRESS[progress_id]
-                    save_lofi_progress(LOFI_PROGRESS)
-            else:
-                print(f"✗ Download failed: {safe_title}")
-                lofi_log("download_failed")
-                # Remove failed downloads from tracking
-                if progress_id in LOFI_IN_PROGRESS:
-                    del LOFI_IN_PROGRESS[progress_id]
-                    save_lofi_in_progress(LOFI_IN_PROGRESS)
-                if progress_id in LOFI_PROGRESS:
-                    del LOFI_PROGRESS[progress_id]
-                    save_lofi_progress(LOFI_PROGRESS)
+                                        probe_cmd = ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", expected_file]
+                                        probe_result = subprocess.run(probe_cmd, capture_output=True, text=True)
+                                        if probe_result.returncode == 0:
+                                            resolution = probe_result.stdout.strip()
+                                            print(f"✓ Downloaded! Resolution: {resolution}")
+                                            lofi_log(f"downloaded_resolution={resolution}")
+                                        else:
+                                            print(f"✓ Downloaded!")
+                                            lofi_log("downloaded_no_resolution")
+                                    except Exception as e:
+                                        print(f"✓ Downloaded! (could not check resolution: {e})")
+                                        lofi_log(f"resolution_error={e}")
+                                    break  # Success! Exit format loop
+                                else:
+                                    print(f"✗ Format {fmt_idx+1} failed, trying next...")
+                                    lofi_log(f"format_failed index={fmt_idx+1}")
+                            except Exception as e:
+                                print(f"yt-dlp error: {e}")
+                                lofi_log(f"yt_dlp_error={e}")
+
+                        if success:
+                            break  # Exit strategy loop if successful
+
+                # Extract audio AFTER releasing semaphore to prevent deadlock
+                if success:
+                    print(f"Extracting audio for {safe_title}...")
+                    lofi_log("extract_audio_start")
+                    with LOFI_TRACKING_LOCK:
+                        LOFI_PROGRESS[progress_id] = 100  # Mark complete
+                        save_lofi_progress(LOFI_PROGRESS)
+                    audio_path = os.path.join(LOFI_DIR, f"{safe_title}.mp3")
+                    extract_audio_from_video(expected_file, audio_path)
+                    print(f"✓ Download complete: {safe_title}")
+                    lofi_log("download_complete")
+                else:
+                    print(f"✗ Download failed: {safe_title}")
+                    lofi_log("download_failed")
+            except Exception as e:
+                print(f"[LOFI] Download thread error for {safe_title}: {e}")
+                lofi_log(f"download_thread_error={e}")
+            finally:
+                cleanup_completed_lofi_tracking()
+                _remove_lofi_tracking_entries([progress_id], reason="download-thread-exit")
         threading.Thread(target=run_download, daemon=True).start()
         return jsonify({
             "status": "downloading",
@@ -2803,29 +3613,32 @@ def api_lofi_download():
 @app.route("/api/lofi/in-progress", methods=["GET"])
 def api_lofi_in_progress():
     """Return all in-progress lofi downloads with progress."""
+    cleanup_completed_lofi_tracking()
     result = []
-    for progress_id, meta in LOFI_IN_PROGRESS.items():
-        percent = LOFI_PROGRESS.get(progress_id, 0)
-        result.append({
-            "progress_id": progress_id,
-            "title": meta.get("title", progress_id),
-            "safe_title": meta.get("safe_title", progress_id),
-            "thumbnail": meta.get("thumbnail"),
-            "progress": percent,
-            "started_ts": meta.get("started_ts"),
-        })
+    with LOFI_TRACKING_LOCK:
+        for progress_id, meta in LOFI_IN_PROGRESS.items():
+            percent = LOFI_PROGRESS.get(progress_id, 0)
+            result.append({
+                "progress_id": progress_id,
+                "title": meta.get("title", progress_id),
+                "safe_title": meta.get("safe_title", progress_id),
+                "thumbnail": meta.get("thumbnail"),
+                "progress": percent,
+                "started_ts": meta.get("started_ts"),
+            })
     return jsonify({"in_progress": result})
 
 @app.route("/api/lofi/clear-in-progress", methods=["POST"])
 def api_lofi_clear_in_progress():
     """Clear all in-progress lofi downloads and their progress entries."""
     try:
-        cleared_in_progress = len(LOFI_IN_PROGRESS)
-        cleared_progress = len(LOFI_PROGRESS)
-        LOFI_IN_PROGRESS.clear()
-        LOFI_PROGRESS.clear()
-        save_lofi_in_progress(LOFI_IN_PROGRESS)
-        save_lofi_progress(LOFI_PROGRESS)
+        with LOFI_TRACKING_LOCK:
+            cleared_in_progress = len(LOFI_IN_PROGRESS)
+            cleared_progress = len(LOFI_PROGRESS)
+            LOFI_IN_PROGRESS.clear()
+            LOFI_PROGRESS.clear()
+            save_lofi_in_progress(LOFI_IN_PROGRESS)
+            save_lofi_progress(LOFI_PROGRESS)
         lofi_log("clear_in_progress")
         return jsonify({
             "status": "ok",
@@ -3172,7 +3985,8 @@ def api_lofi_progress():
     progress_id = request.args.get("progress_id")
     if not progress_id:
         return jsonify({"progress": 0})
-    percent = LOFI_PROGRESS.get(progress_id, 0)
+    with LOFI_TRACKING_LOCK:
+        percent = LOFI_PROGRESS.get(progress_id, 0)
     return jsonify({"progress": percent})
 
 @app.route("/api/lofi/debug/resolutions", methods=["GET"])
