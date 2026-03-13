@@ -17,8 +17,13 @@ env/
 # Project runtime data/content (exclude from code backup repo)
 music/
 lofi/
-data/
+# Ignore data dir contents except JSON state files (playlists, favourites, settings)
+data/*
+!data/*.json
 
 # OS/editor
 .DS_Store
 .vscode/
+
+# Runtime logs
+logs/

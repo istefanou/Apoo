@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_DIR="/home/johnara/Projects/Apoo"
+REPO_DIR="/home/pi4/Projects/Apoo"
 BRANCH="main"
 
 cd "$REPO_DIR"

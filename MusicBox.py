@@ -307,6 +307,34 @@ def _spotify_client_credentials_token() -> Optional[str]:
         return None
 
 
+def _spotify_anonymous_token() -> Optional[str]:
+    """Get a short-lived Spotify web-player token for public resources.
+
+    This uses the same endpoint the Spotify web player calls, so no developer
+    account or registered app is required.  The token works for reading any
+    public playlist via the standard /v1 API endpoints.
+    """
+    try:
+        res = requests.get(
+            "https://open.spotify.com/get_access_token",
+            params={"reason": "transport", "productType": "web_player"},
+            headers={
+                "User-Agent": (
+                    "Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+                ),
+                "Accept": "application/json",
+            },
+            timeout=15,
+        )
+        if res.status_code == 200:
+            token = res.json().get("accessToken")
+            return token if token else None
+    except Exception as e:
+        print(f"[Spotify] Anonymous token fetch failed: {e}")
+    return None
+
+
 def _spotify_import_via_api(playlist_id: str, token: str):
     """Fetch all playlist tracks from Spotify Web API using app token."""
     headers = {"Authorization": f"Bearer {token}"}
@@ -388,12 +416,35 @@ def _import_spotify_via_selenium(playlist_id: str):
     opts = Options()
     opts.add_argument("--headless=new")
     opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-setuid-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
     opts.add_argument("--disable-gpu")
     opts.add_argument("--window-size=1280,900")
-    opts.binary_location = "/usr/bin/chromium-browser"
 
-    svc = Service("/usr/bin/chromedriver")
+    # Resolve chromedriver — prefer explicit env override, then snap, then apt paths.
+    # Do NOT set binary_location when using snap chromedriver: the snap wrapper
+    # knows where its paired Chromium binary lives and setting a path breaks it.
+    _chromedriver_candidates = [
+        os.environ.get("CHROMEDRIVER_BINARY", ""),
+        "/snap/bin/chromium.chromedriver",
+        "/usr/bin/chromedriver",
+    ]
+    _chromedriver_bin = next((p for p in _chromedriver_candidates if p and os.path.exists(p)), None)
+    if not _chromedriver_bin:
+        raise RuntimeError("chromedriver not found; install via 'sudo snap install chromium'")
+
+    # Only set an explicit binary_location for non-snap drivers (snap handles it internally)
+    if "/snap/" not in _chromedriver_bin:
+        _chromium_candidates = [
+            os.environ.get("CHROMIUM_BINARY", ""),
+            "/usr/bin/chromium-browser",
+            "/usr/bin/chromium",
+        ]
+        _chromium_bin = next((p for p in _chromium_candidates if p and os.path.exists(p)), None)
+        if _chromium_bin:
+            opts.binary_location = _chromium_bin
+
+    svc = Service(_chromedriver_bin)
     driver = webdriver.Chrome(service=svc, options=opts)
     try:
         url = f"https://open.spotify.com/playlist/{playlist_id}"
@@ -492,8 +543,9 @@ def _import_spotify_playlist_impl(url_or_id: str):
     """
     Import a Spotify playlist. Tries (in order):
       1. Spotify Web API (if SPOTIFY_CLIENT_ID/SECRET configured)
-      2. Headless Chromium browser to scroll through the full virtual track list
-      3. Static HTML scrape (fallback, returns at most ~30 tracks)
+      2. Anonymous Spotify web-player token (public playlists, no credentials needed)
+      3. Headless Chromium browser to scroll through the full virtual track list
+      4. Static HTML scrape (fallback, returns at most ~30 tracks)
     """
     playlist_id = parse_spotify_playlist_id(url_or_id)
     if not playlist_id:
@@ -510,7 +562,17 @@ def _import_spotify_playlist_impl(url_or_id: str):
             except Exception as e:
                 print(f"Spotify API import failed, falling back: {e}")
 
-        # 2. Selenium headless-browser path (gets full playlist, no credentials needed)
+        # 2. Anonymous web-player token (no credentials needed, works for public playlists)
+        anon_token = _spotify_anonymous_token()
+        if anon_token:
+            try:
+                playlist_name, tracks, total = _spotify_import_via_api(playlist_id, anon_token)
+                if tracks:
+                    return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
+            except Exception as e:
+                print(f"Spotify anonymous API import failed, falling back: {e}")
+
+        # 3. Selenium headless-browser path (gets full playlist, no credentials needed)
         try:
             playlist_name, tracks, total = _import_spotify_via_selenium(playlist_id)
             if tracks:
@@ -518,7 +580,7 @@ def _import_spotify_playlist_impl(url_or_id: str):
         except Exception as e:
             print(f"Selenium Spotify import failed, falling back to HTML scrape: {e}")
 
-        # 3. Static HTML scrape fallback (limited to ~30 tracks)
+        # 4. Static HTML scrape fallback (limited to ~30 tracks)
         playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
         header_profiles = [
             {},
@@ -575,7 +637,8 @@ def _import_spotify_playlist_impl(url_or_id: str):
 
         warning = (
             "Only the first ~30 tracks could be fetched (static HTML limit). "
-            "For the full playlist, ensure chromium-browser and chromedriver are installed."
+            "The anonymous Spotify token also failed. "
+            "For the full playlist, configure SPOTIFY_CLIENT_ID/SECRET or install chromium-browser + chromedriver."
         )
         return jsonify({"name": playlist_name, "tracks": tracks, "warning": warning})
 
@@ -1128,10 +1191,23 @@ class Player:
         self.browser_elapsed: float = 0.0
         self.browser_last_update: float = 0.0
 
-        # Set SDL audio driver for Linux compatibility
-        os.environ["SDL_AUDIODRIVER"] = "alsa"  # Try "pulse" or "dsp" if needed
-        # Explicitly set mixer parameters for best quality
-        pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+        # Prefer ALSA for real output, but allow a dummy fallback so the API can
+        # still boot on systems where sound hardware is temporarily unavailable.
+        os.environ.setdefault("SDL_AUDIODRIVER", "alsa")
+        self.audio_backend = os.environ.get("SDL_AUDIODRIVER", "alsa")
+        try:
+            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+        except pygame.error as err:
+            print(f"[AUDIO] Failed to init backend '{self.audio_backend}': {err}")
+            if self.audio_backend == "dummy":
+                raise
+
+            os.environ["SDL_AUDIODRIVER"] = "dummy"
+            self.audio_backend = "dummy"
+            pygame.mixer.quit()
+            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+            print("[AUDIO] Falling back to SDL_AUDIODRIVER=dummy (no physical audio output).")
+
         pygame.mixer.music.set_volume(self.volume)
 
         self.current_start_ts: Optional[float] = None
@@ -3125,4 +3201,5 @@ def api_lofi_debug_resolutions():
     })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=7000, debug=True)
+    debug_mode = os.getenv("APOO_DEBUG", "0").strip().lower() in {"1", "true", "yes", "on"}
+    app.run(host="0.0.0.0", port=7000, debug=debug_mode)

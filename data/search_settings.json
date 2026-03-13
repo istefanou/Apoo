@@ -1,0 +1,15 @@
+{
+  "whitelist_words": [
+    "lyrics",
+    "official audio"
+  ],
+  "blacklist_words": [
+    "live",
+    "remix",
+    "extended",
+    "acoustic",
+    "karaoke",
+    "cover",
+    "instrumental"
+  ]
+}
