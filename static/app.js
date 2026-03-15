@@ -51,6 +51,7 @@ let TRACK_METADATA_ATTEMPTED = new Map();
 const TRACK_METADATA_RETRY_MS = 5 * 60 * 1000;
 let LAST_CURRENT = null; // cache current track state for audio sync
 let LAST_AUDIO_SRC = ""; // track last src set on browser audio
+let BROWSER_END_NOTIFIED_FOR = "";
 let DID_INITIAL_SYNC = false; // one-time sync per track for browser mode
 let JOURNAL_REQUEST = null;
 let ACTIVE_SPOTIFY_IMPORT_ID = null;
@@ -204,6 +205,30 @@ function addTrackToPlaylist(name, track) {
   savePlaylists();
 }
 
+function reorderPlaylistTracks(name, fromIndex, toIndex) {
+  if (!name || !Array.isArray(PLAYLISTS[name])) return false;
+  const tracks = PLAYLISTS[name];
+
+  if (fromIndex === toIndex) return false;
+  if (fromIndex < 0 || toIndex < 0 || fromIndex >= tracks.length || toIndex >= tracks.length) {
+    return false;
+  }
+
+  const [movedTrack] = tracks.splice(fromIndex, 1);
+  tracks.splice(toIndex, 0, movedTrack);
+
+  if (Array.isArray(PLAYLIST_ENRICHED[name]) && PLAYLIST_ENRICHED[name].length === tracks.length) {
+    const [movedEnrichedTrack] = PLAYLIST_ENRICHED[name].splice(fromIndex, 1);
+    PLAYLIST_ENRICHED[name].splice(toIndex, 0, movedEnrichedTrack);
+  } else {
+    delete PLAYLIST_ENRICHED[name];
+  }
+
+  delete PLAYLIST_COVER_PICK[name];
+  savePlaylists();
+  return true;
+}
+
 function savePlaylists() {
   apiPost("/api/playlists/save", PLAYLISTS);
 }
@@ -269,12 +294,22 @@ function mergeTrackMetadata(track) {
   if (!track) return track;
   const cacheKey = getTrackCacheKey(track);
   const cached = cacheKey ? TRACK_METADATA_CACHE[cacheKey] : null;
+  const trackDuration = Number.isFinite(Number(track.duration)) && Number(track.duration) > 0
+    ? Number(track.duration)
+    : null;
+  const cachedDuration = Number.isFinite(Number(cached?.duration)) && Number(cached.duration) > 0
+    ? Number(cached.duration)
+    : null;
   const artworkUrl = track.artwork_url || track.album_art || track.thumbnail || cached?.artwork_url || null;
+  const pathsDiffer = Boolean(track.path && cached?.path && track.path !== cached.path);
+  const mergedDuration = pathsDiffer
+    ? (trackDuration ?? cachedDuration ?? null)
+    : (cachedDuration ?? trackDuration ?? null);
   return {
     ...cached,
     ...track,
     artwork_url: artworkUrl,
-    duration: track.duration ?? cached?.duration ?? null,
+    duration: mergedDuration,
     deezer_id: track.deezer_id || cached?.deezer_id || null,
     spotify_id: track.spotify_id || cached?.spotify_id || null,
     path: track.path || cached?.path || null,
@@ -318,10 +353,18 @@ async function ensureTracksEnriched(tracks, onDone) {
   try {
     const data = await apiPost("/api/tracks/enrich", { tracks: missing });
     const enrichedTracks = Array.isArray(data?.tracks) ? data.tracks : [];
-    enrichedTracks.forEach((track) => {
-      const cacheKey = getTrackCacheKey(track);
-      if (cacheKey) {
-        TRACK_METADATA_CACHE[cacheKey] = track;
+    enrichedTracks.forEach((track, index) => {
+      const responseKey = getTrackCacheKey(track);
+      const requestKey = getTrackCacheKey(missing[index]);
+
+      if (responseKey) {
+        TRACK_METADATA_CACHE[responseKey] = track;
+      }
+      if (requestKey) {
+        TRACK_METADATA_CACHE[requestKey] = {
+          ...(TRACK_METADATA_CACHE[requestKey] || {}),
+          ...track,
+        };
       }
     });
   } catch (e) {
@@ -538,7 +581,7 @@ async function refreshServiceJournal() {
 
   JOURNAL_REQUEST = (async () => {
     try {
-      const data = await apiGet(`/api/settings/journal?lines=150&t=${Date.now()}`);
+      const data = await apiGet(`/api/settings/journal?lines=1000&t=${Date.now()}`);
       if (data?.error) {
         throw new Error(data.error);
       }
@@ -584,11 +627,19 @@ function formatTime(seconds) {
 }
 
 async function addToQueue(track) {
-  await apiPost("/api/queue/add", cleanTrack(track));
+  const result = await apiPost("/api/queue/add", cleanTrack(track));
+  if (result?.error) {
+    alert(result.error);
+  }
+  return result;
 }
 
 async function addToQueueNext(track) {
-  await apiPost("/api/queue/add_next", cleanTrack(track));
+  const result = await apiPost("/api/queue/add_next", cleanTrack(track));
+  if (result?.error) {
+    alert(result.error);
+  }
+  return result;
 }
 
 function formatPlaylistDuration(seconds) {
@@ -608,6 +659,20 @@ async function ensurePlaylistEnriched(name, tracks) {
   try {
     const data = await apiPost("/api/playlists/enrich", { tracks });
     PLAYLIST_ENRICHED[name] = Array.isArray(data?.tracks) ? data.tracks : tracks;
+    (PLAYLIST_ENRICHED[name] || []).forEach((track, index) => {
+      const responseKey = getTrackCacheKey(track);
+      const requestKey = getTrackCacheKey(tracks[index]);
+
+      if (responseKey) {
+        TRACK_METADATA_CACHE[responseKey] = track;
+      }
+      if (requestKey) {
+        TRACK_METADATA_CACHE[requestKey] = {
+          ...(TRACK_METADATA_CACHE[requestKey] || {}),
+          ...track,
+        };
+      }
+    });
   } catch (e) {
     console.error("Failed to enrich playlist:", e);
     PLAYLIST_ENRICHED[name] = tracks;
@@ -637,6 +702,50 @@ function getPlaylistCoverUrls(name, tracks) {
   const orderedFirstFour = [...new Set(artUrls)].slice(0, 4);
   PLAYLIST_COVER_PICK[name] = orderedFirstFour;
   return orderedFirstFour;
+}
+
+function getBrowserTrackKey(track = LAST_CURRENT) {
+  if (!track && !LAST_AUDIO_SRC) return "";
+  return `${track?.id || ""}::${LAST_AUDIO_SRC}`;
+}
+
+async function notifyBrowserTrackEnded(reason = "ended") {
+  if (!outputBrowserRadio || !outputBrowserRadio.checked || !LAST_AUDIO_SRC) {
+    return;
+  }
+
+  const trackKey = getBrowserTrackKey();
+  if (!trackKey || BROWSER_END_NOTIFIED_FOR === trackKey) {
+    return;
+  }
+
+  BROWSER_END_NOTIFIED_FOR = trackKey;
+
+  try {
+    const endedAt = Number.isFinite(browserAudio.duration) && browserAudio.duration > 0
+      ? browserAudio.duration
+      : Math.max(0, browserAudio.currentTime || 0);
+
+    console.log(`Browser audio finished (${reason}), notifying server...`);
+    await apiPost("/api/browser/progress", { elapsed: endedAt });
+    await apiPost("/api/browser/ended", {});
+
+    const state = await apiGet("/api/queue");
+    if (state.current && state.current.id === LAST_CURRENT?.id) {
+      try {
+        browserAudio.currentTime = 0;
+        BROWSER_END_NOTIFIED_FOR = "";
+        await browserAudio.play();
+      } catch (e) {
+        console.error("Error replaying in repeat-one mode:", e);
+      }
+    }
+
+    await refreshState();
+  } catch (e) {
+    BROWSER_END_NOTIFIED_FOR = "";
+    console.error("Error handling browser track end:", e);
+  }
 }
 
 
@@ -858,6 +967,7 @@ function renderState(state) {
     const src = `/media/by-path?path=${encodeURIComponent(t.path)}`;
     if (LAST_AUDIO_SRC !== src) {
       LAST_AUDIO_SRC = src;
+      BROWSER_END_NOTIFIED_FOR = "";
       try {
         browserAudio.src = src;
         browserAudio.load();
@@ -911,6 +1021,34 @@ function renderState(state) {
     let duration = t.duration;
     let progress = t.progress || 0;
 
+    if (outputBrowserRadio && outputBrowserRadio.checked && state.playback_mode === "browser") {
+      const browserDuration = Number.isFinite(browserAudio.duration) ? browserAudio.duration : 0;
+      const browserElapsed = Number.isFinite(browserAudio.currentTime) ? browserAudio.currentTime : 0;
+
+      if ((!duration || duration <= 0) && browserDuration > 0) {
+        duration = browserDuration;
+      }
+
+      if (browserElapsed > 0 || browserAudio.ended) {
+        elapsed = browserElapsed;
+      }
+
+      if (duration > 0) {
+        elapsed = Math.min(elapsed, duration);
+        progress = Math.max(0, Math.min(1, elapsed / duration));
+      }
+
+      const browserTrackFinished = browserAudio.ended || (
+        browserDuration > 0 &&
+        browserElapsed >= browserDuration - 0.25 &&
+        browserAudio.paused
+      );
+
+      if (!state.paused && browserTrackFinished) {
+        notifyBrowserTrackEnded(browserAudio.ended ? "watchdog-ended" : "watchdog-near-end");
+      }
+    }
+
     // If not paused, trust backend and update cache
     if (!state.paused) {
       LAST_ELAPSED = elapsed;
@@ -931,6 +1069,7 @@ function renderState(state) {
     }
     seekBar.disabled = false;
   } else {
+    BROWSER_END_NOTIFIED_FOR = "";
     seekBar.value = 0;
     seekBar.disabled = true;
     elapsedEl.textContent = "0:00";
@@ -951,6 +1090,9 @@ function renderState(state) {
 
 let draggedItem = null;
 let draggedFromIndex = null;
+let draggedPlaylistRow = null;
+let draggedPlaylistFromIndex = null;
+let draggedPlaylistName = null;
 
 function attachQueueDragHandlers() {
   const queueItems = document.querySelectorAll("#queue-list .track-item[draggable='true']");
@@ -1007,6 +1149,64 @@ function attachQueueDragHandlers() {
       queueItems.forEach(qi => qi.classList.remove("drag-over"));
       draggedItem = null;
       draggedFromIndex = null;
+    });
+  });
+}
+
+function attachPlaylistDragHandlers(tbodyEl, playlistName) {
+  const playlistRows = Array.from(tbodyEl.querySelectorAll("tr[data-playlist-index]"));
+
+  playlistRows.forEach((row) => {
+    row.addEventListener("dragstart", (e) => {
+      draggedPlaylistRow = row;
+      draggedPlaylistFromIndex = Number.parseInt(row.dataset.playlistIndex || "-1", 10);
+      draggedPlaylistName = playlistName;
+      row.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", row.dataset.playlistIndex || "");
+    });
+
+    row.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      if (row !== draggedPlaylistRow) {
+        row.classList.add("drag-over");
+      }
+    });
+
+    row.addEventListener("dragleave", () => {
+      row.classList.remove("drag-over");
+    });
+
+    row.addEventListener("drop", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const draggedToIndex = Number.parseInt(row.dataset.playlistIndex || "-1", 10);
+      const fromIndex = draggedPlaylistFromIndex;
+
+      if (
+        draggedPlaylistRow &&
+        row !== draggedPlaylistRow &&
+        draggedPlaylistName === playlistName &&
+        Number.isInteger(fromIndex) &&
+        Number.isInteger(draggedToIndex)
+      ) {
+        const changed = reorderPlaylistTracks(playlistName, fromIndex, draggedToIndex);
+        if (changed && ACTIVE_PLAYLIST_NAME === playlistName) {
+          renderPlaylistsTab();
+        }
+      }
+
+      row.classList.remove("drag-over");
+    });
+
+    row.addEventListener("dragend", () => {
+      row.classList.remove("dragging");
+      playlistRows.forEach((playlistRow) => playlistRow.classList.remove("drag-over"));
+      draggedPlaylistRow = null;
+      draggedPlaylistFromIndex = null;
+      draggedPlaylistName = null;
     });
   });
 }
@@ -1339,6 +1539,8 @@ function renderPlaylistsTab() {
   const tbody = document.createElement("tbody");
   activeTracks.forEach((t, idx) => {
     const row = document.createElement("tr");
+    row.setAttribute("draggable", "true");
+    row.dataset.playlistIndex = String(idx);
 
     const c1 = document.createElement("td");
     c1.textContent = String(idx + 1);
@@ -1404,6 +1606,8 @@ function renderPlaylistsTab() {
     row.appendChild(c5);
     tbody.appendChild(row);
   });
+
+  attachPlaylistDragHandlers(tbody, activeName);
 
   table.appendChild(tbody);
   tableWrap.appendChild(table);
@@ -1611,6 +1815,7 @@ if (btnClear) {
       browserAudio.src = "";
       browserAudio.load();
       LAST_AUDIO_SRC = "";
+      BROWSER_END_NOTIFIED_FOR = "";
       LAST_CURRENT = null;
       DID_INITIAL_SYNC = false;
     } catch (_) {}
@@ -1661,22 +1866,7 @@ if (browserAudio) {
   // Report when track ends in browser mode
   browserAudio.addEventListener("ended", async () => {
     if (outputBrowserRadio && outputBrowserRadio.checked) {
-      console.log("Browser audio ended, notifying server...");
-      await apiPost("/api/browser/ended", {});
-      // After server processes next track, refresh state
-      setTimeout(async () => {
-        const state = await apiGet("/api/queue");
-        // If repeat-one mode, the track stays the same, so replay browser audio
-        if (state.current && state.current.id === LAST_CURRENT?.id) {
-          try {
-            browserAudio.currentTime = 0;
-            await browserAudio.play();
-          } catch (e) {
-            console.error("Error replaying in repeat-one mode:", e);
-          }
-        }
-        await refreshState();
-      }, 100);
+      await notifyBrowserTrackEnded("ended-event");
     }
   });
   

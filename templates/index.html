@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Apoo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=12">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=13">
   <!-- Google Cast SDK -->
   <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 </head>
@@ -123,7 +123,7 @@
           <div class="settings-panel-header">
             <div>
               <h2>Apoo Service Log</h2>
-              <p class="settings-copy">Shows the latest 150 lines from smart_home_apoo.service.</p>
+              <p class="settings-copy">Shows the latest 1000 lines from smart_home_apoo.service.</p>
             </div>
             <button id="btn-refresh-journal" class="settings-secondary-btn">Refresh Log</button>
           </div>
@@ -181,6 +181,6 @@
 
 
 
-  <script src="{{ url_for('static', filename='app.js') }}?v=20"></script>
+  <script src="{{ url_for('static', filename='app.js') }}?v=24"></script>
 </body>
 </html>

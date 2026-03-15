@@ -31,7 +31,7 @@ PLAYLISTS_FILE = os.path.join(DATA_DIR, "playlists.json")
 FAVORITES_FILE = os.path.join(DATA_DIR, "favorites.json")
 SEARCH_SETTINGS_FILE = os.path.join(DATA_DIR, "search_settings.json")
 APOO_SERVICE_NAME = os.getenv("APOO_SERVICE_NAME", "smart_home_apoo.service")
-MAX_SETTINGS_JOURNAL_LINES = 150
+MAX_SETTINGS_JOURNAL_LINES = 1000
 SPOTIFY_IMPORT_STATUS_TTL_SECONDS = 1800
 LASTFM_API_BASE = os.getenv("LASTFM_API_BASE", "https://ws.audioscrobbler.com/2.0/")
 LASTFM_API_KEY = os.getenv("LASTFM_API_KEY", "").strip()
@@ -48,6 +48,10 @@ DEFAULT_SEARCH_SETTINGS = {
     "whitelist_words": ["lyrics", "official audio"],
     "blacklist_words": ["live", "remix", "extended", "acoustic", "karaoke", "cover", "instrumental"],
 }
+DEFAULT_HOST_VOLUME = 0.7
+MIN_TRACK_DURATION_SECONDS = 60
+MAX_TRACK_DURATION_SECONDS = 8 * 60
+SUPPORTED_AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a", ".ogg"}
 
 # Semaphore to limit ffmpeg/yt-dlp downloads to 1 at a time (important for Raspberry Pi)
 DOWNLOAD_SEMAPHORE = threading.Semaphore(1)
@@ -63,6 +67,17 @@ DEEZER_QUOTA_COOLDOWN_UNTIL = 0.0
 DEEZER_QUOTA_COOLDOWN_LOCK = threading.Lock()
 LASTFM_NEGATIVE_CACHE = {}
 LASTFM_NEGATIVE_CACHE_LOCK = threading.Lock()
+
+
+def is_supported_audio_file(path_or_name: Optional[str]) -> bool:
+    if not path_or_name:
+        return False
+    _, ext = os.path.splitext(str(path_or_name))
+    return ext.lower() in SUPPORTED_AUDIO_EXTENSIONS
+
+
+def is_usable_local_audio_path(path: Optional[str]) -> bool:
+    return bool(path) and os.path.exists(path) and is_supported_audio_file(path)
 
 
 def is_downloading_marker(value: Optional[str]) -> bool:
@@ -1232,6 +1247,46 @@ def get_local_track_duration(path: Optional[str]) -> Optional[float]:
     return None
 
 
+def coerce_duration_seconds(value) -> Optional[float]:
+    try:
+        if value is None or value == "":
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def format_duration_label(seconds: Optional[float]) -> str:
+    duration = coerce_duration_seconds(seconds)
+    if duration is None:
+        return "unknown"
+    total_seconds = max(0, int(round(duration)))
+    minutes, secs = divmod(total_seconds, 60)
+    return f"{minutes}:{secs:02d}"
+
+
+def is_track_duration_out_of_bounds(duration_seconds: Optional[float]) -> bool:
+    duration = coerce_duration_seconds(duration_seconds)
+    return duration is not None and (
+        duration <= MIN_TRACK_DURATION_SECONDS or duration >= MAX_TRACK_DURATION_SECONDS
+    )
+
+
+def get_duration_limit_message(duration_seconds: Optional[float]) -> str:
+    return (
+        f"Track duration {format_duration_label(duration_seconds)} is outside the allowed "
+        f"range (> {format_duration_label(MIN_TRACK_DURATION_SECONDS)} and "
+        f"< {format_duration_label(MAX_TRACK_DURATION_SECONDS)})."
+    )
+
+
+def validate_track_path_duration(path: Optional[str]) -> tuple[Optional[float], Optional[str]]:
+    duration = get_local_track_duration(path)
+    if is_track_duration_out_of_bounds(duration):
+        return duration, get_duration_limit_message(duration)
+    return duration, None
+
+
 def get_local_track_artwork(path: Optional[str]) -> tuple[Optional[bytes], Optional[str]]:
     """Return embedded artwork bytes and mime type from a local audio file."""
     if not path or not os.path.exists(path):
@@ -1481,12 +1536,24 @@ def enrich_track_for_ui(track: dict, allow_remote_lookup: bool = False) -> dict:
     is_downloading_placeholder = is_downloading_placeholder_track(base)
     source_id = base.get("deezer_id") or base.get("spotify_id") or base.get("id")
     path = base.get("path") or cached.get("path")
+    base_artwork = base.get("artwork_url") or base.get("album_art") or base.get("thumbnail")
+    base_duration = coerce_duration_seconds(base.get("duration"))
+
+    if path and not is_usable_local_audio_path(path):
+        # Drop stale/non-audio cache paths so we can re-resolve to a real local audio file.
+        path = None
+        if base_duration is None:
+            cached = {**cached, "duration": None}
+        if not base_artwork:
+            cached = {**cached, "artwork_url": None}
+
     deezer_id = base.get("deezer_id") or cached.get("deezer_id")
     spotify_id = base.get("spotify_id") or cached.get("spotify_id")
     album = base.get("album") or cached.get("album")
     year = base.get("year") or cached.get("year")
-    duration = base.get("duration") or cached.get("duration")
-    artwork_url = base.get("artwork_url") or base.get("album_art") or base.get("thumbnail") or cached.get("artwork_url")
+    cached_duration = coerce_duration_seconds(cached.get("duration"))
+    duration = base_duration if base_duration is not None else cached_duration
+    artwork_url = base_artwork or cached.get("artwork_url")
 
     # Fast path: read all needed data from MP3 tags in one pass (avoids remote calls on restart)
     if path and path.lower().endswith(".mp3"):
@@ -1524,8 +1591,10 @@ def enrich_track_for_ui(track: dict, allow_remote_lookup: bool = False) -> dict:
         })
         return enriched
 
-    if path and not duration:
-        duration = get_local_track_duration(path)
+    if path:
+        local_duration = get_local_track_duration(path)
+        if local_duration is not None:
+            duration = local_duration
 
     if path and not artwork_url:
         artwork_data, _ = get_local_track_artwork(path)
@@ -1622,29 +1691,39 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
 
     # If already exists, return it
     if os.path.exists(final_mp3):
-        print(f"✓ Already exists: {final_mp3}")
-        if not mp3_has_basic_metadata(final_mp3):
-            print(f"Existing MP3 is missing metadata, repairing tags: {final_mp3}")
-            deezer_tag = str(source_id) if source_id and str(source_id).isdigit() else None
-            repaired = upsert_mp3_metadata(final_mp3, title, artist, album, year, album_art_url, deezer_tag)
-            if not repaired:
-                try:
-                    audio = MP3(final_mp3, ID3=ID3)
+        existing_duration, duration_error = validate_track_path_duration(final_mp3)
+        if duration_error:
+            print(f"✗ Existing MP3 rejected: {duration_error} ({final_mp3})")
+            try:
+                os.remove(final_mp3)
+                print("Removed rejected local MP3. Will try downloading a different result.")
+            except Exception as cleanup_error:
+                print(f"Failed to remove rejected existing MP3: {cleanup_error}")
+                return None
+        else:
+            print(f"✓ Already exists: {final_mp3}")
+            if not mp3_has_basic_metadata(final_mp3):
+                print(f"Existing MP3 is missing metadata, repairing tags: {final_mp3}")
+                deezer_tag = str(source_id) if source_id and str(source_id).isdigit() else None
+                repaired = upsert_mp3_metadata(final_mp3, title, artist, album, year, album_art_url, deezer_tag)
+                if not repaired:
                     try:
-                        audio.add_tags()
-                    except Exception:
-                        pass
-                    if audio.tags is not None:
-                        audio.tags["TIT2"] = TIT2(encoding=3, text=title)
-                        audio.tags["TPE1"] = TPE1(encoding=3, text=artist)
-                        if album:
-                            audio.tags["TALB"] = TALB(encoding=3, text=album)
-                        if year:
-                            audio.tags["TDRC"] = TDRC(encoding=3, text=year)
-                        audio.save(v2_version=3)
-                except Exception as e:
-                    print(f"Failed to repair existing MP3 metadata: {e}")
-        return final_mp3
+                        audio = MP3(final_mp3, ID3=ID3)
+                        try:
+                            audio.add_tags()
+                        except Exception:
+                            pass
+                        if audio.tags is not None:
+                            audio.tags["TIT2"] = TIT2(encoding=3, text=title)
+                            audio.tags["TPE1"] = TPE1(encoding=3, text=artist)
+                            if album:
+                                audio.tags["TALB"] = TALB(encoding=3, text=album)
+                            if year:
+                                audio.tags["TDRC"] = TDRC(encoding=3, text=year)
+                            audio.save(v2_version=3)
+                    except Exception as e:
+                        print(f"Failed to repair existing MP3 metadata: {e}")
+            return final_mp3
 
     # Acquire semaphore to ensure only 1 download runs at a time
     with DOWNLOAD_SEMAPHORE:
@@ -1674,6 +1753,10 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
                         "--audio-quality", "0",
                         "--no-playlist",
                         "--max-downloads", "1",
+                        "--match-filter", (
+                            f"duration > {MIN_TRACK_DURATION_SECONDS} & "
+                            f"duration < {MAX_TRACK_DURATION_SECONDS}"
+                        ),
                         "--no-check-certificate",
                         "--output", os.path.join(MUSIC_DIR, audio_template),
                         query
@@ -1691,6 +1774,15 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
                         
                         # Check if MP3 was created
                         if os.path.exists(final_mp3):
+                            downloaded_duration, duration_error = validate_track_path_duration(final_mp3)
+                            if duration_error:
+                                print(f"✗ Downloaded MP3 rejected: {duration_error}")
+                                try:
+                                    os.remove(final_mp3)
+                                except Exception as cleanup_error:
+                                    print(f"Failed to remove rejected MP3: {cleanup_error}")
+                                continue
+
                             print(f"✓ Downloaded MP3: {final_mp3}")
                             break  # Success, exit strategy loop
                         else:
@@ -1794,7 +1886,8 @@ class Player:
         self._downloading = set()  # tracks artists currently being downloaded
 
         self.current: Optional[Track] = None
-        self.volume: float = 0.7
+        self.volume: float = DEFAULT_HOST_VOLUME
+        self.last_nonzero_volume: float = self.volume
         self.repeat: str = "off"  # off, one, all
         self.lock = threading.Lock()
         
@@ -1808,15 +1901,58 @@ class Player:
         # still boot on systems where sound hardware is temporarily unavailable.
         os.environ.setdefault("SDL_AUDIODRIVER", "alsa")
         self.audio_backend = os.environ.get("SDL_AUDIODRIVER", "alsa")
+        self.audio_device = "default"
         try:
-            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+            if self.audio_backend == "alsa":
+                preferred_device = os.getenv("APOO_AUDIO_DEVICE", "").strip()
+                device_candidates = [
+                    preferred_device,
+                    "plughw:CARD=Headphones,DEV=0",
+                    "sysdefault:CARD=Headphones",
+                    "default",
+                    "",
+                ]
+
+                tried = set()
+                init_errors = []
+                mixer_ready = False
+
+                for device in device_candidates:
+                    key = device or "<unset>"
+                    if key in tried:
+                        continue
+                    tried.add(key)
+
+                    try:
+                        pygame.mixer.quit()
+                        if device:
+                            os.environ["AUDIODEV"] = device
+                        else:
+                            os.environ.pop("AUDIODEV", None)
+
+                        pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+                        self.audio_device = device or "default"
+                        mixer_ready = True
+                        print(f"[AUDIO] Initialized ALSA device '{self.audio_device}'")
+                        break
+                    except pygame.error as dev_err:
+                        init_errors.append(f"{key}: {dev_err}")
+
+                if not mixer_ready:
+                    raise pygame.error(" ; ".join(init_errors) if init_errors else "Unknown ALSA init failure")
+            else:
+                pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+                self.audio_device = os.environ.get("AUDIODEV", "default") or "default"
+                print(f"[AUDIO] Initialized backend '{self.audio_backend}' device '{self.audio_device}'")
         except pygame.error as err:
             print(f"[AUDIO] Failed to init backend '{self.audio_backend}': {err}")
             if self.audio_backend == "dummy":
                 raise
 
             os.environ["SDL_AUDIODRIVER"] = "dummy"
+            os.environ.pop("AUDIODEV", None)
             self.audio_backend = "dummy"
+            self.audio_device = "dummy"
             pygame.mixer.quit()
             pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
             print("[AUDIO] Falling back to SDL_AUDIODRIVER=dummy (no physical audio output).")
@@ -2276,7 +2412,17 @@ class Player:
         vol = max(0.0, min(1.0, vol))
         with self.lock:
             self.volume = vol
+            if vol > 0:
+                self.last_nonzero_volume = vol
             pygame.mixer.music.set_volume(vol)
+
+    def _get_browser_elapsed_locked(self) -> float:
+        elapsed = max(0.0, self.browser_elapsed)
+        if not self._is_paused and self.current_start_ts is not None:
+            elapsed = max(elapsed, time.time() - self.current_start_ts)
+        if self.current_duration > 0:
+            elapsed = min(elapsed, self.current_duration)
+        return elapsed
 
     # --- state reporting ---
     def get_state(self):
@@ -2290,13 +2436,14 @@ class Player:
             return d
         with self.lock:
             if self.current:
-                # Use browser elapsed if in browser mode and recently updated
-                if self.playback_mode == "browser" and (time.time() - self.browser_last_update) < 2.0:
-                    elapsed = self.browser_elapsed
+                if self.playback_mode == "browser":
+                    elapsed = self._get_browser_elapsed_locked()
                 else:
                     elapsed = time.time() - (self.current_start_ts or time.time())
                 
                 duration = self.current_duration
+                if duration > 0:
+                    elapsed = min(elapsed, duration)
                 progress = elapsed / duration if duration > 0 else 0
                 progress = max(0.0, min(1.0, progress))
 
@@ -2320,6 +2467,8 @@ class Player:
                 "shuffle": self.shuffle,
                 "auto_fill": self.auto_fill,
                 "playback_mode": self.playback_mode,
+                "audio_backend": self.audio_backend,
+                "audio_device": self.audio_device,
             }
 
     # --- background loop ---
@@ -2334,12 +2483,18 @@ class Player:
                     # Do nothing while paused
                     pass
 
-                elif self.current and not is_playing:
-                    # Only handle finished tracks
-                    if self.current_duration > 0:
-                        elapsed = time.time() - (self.current_start_ts or time.time())
-                        if elapsed >= self.current_duration:
-                            self._play_next_locked()
+                elif self.current:
+                    if self.playback_mode == "browser":
+                        if self.current_duration > 0:
+                            elapsed = self._get_browser_elapsed_locked()
+                            if elapsed >= max(0.0, self.current_duration - 0.25):
+                                self._play_next_locked()
+                    elif not is_playing:
+                        # Only handle finished tracks
+                        if self.current_duration > 0:
+                            elapsed = time.time() - (self.current_start_ts or time.time())
+                            if elapsed >= self.current_duration:
+                                self._play_next_locked()
 
                 # If playing normally, nothing to do
             time.sleep(0.5)
@@ -2606,9 +2761,9 @@ def find_local_track(title: str, artist: str, track_id: str) -> Optional[str]:
     # STRICT MATCH FIRST: "Artist - Title.ext"
     for root, _, files in os.walk(MUSIC_DIR):
         for f in files:
-            name, ext = os.path.splitext(f)
-            if ext.lower() not in [".mp3", ".wav", ".flac", ".m4a", ".ogg"]:
+            if not is_supported_audio_file(f):
                 continue
+            name, _ = os.path.splitext(f)
 
             # Split "Artist - Title"
             if " - " in name:
@@ -2619,6 +2774,8 @@ def find_local_track(title: str, artist: str, track_id: str) -> Optional[str]:
     # SECOND: match both artist + title anywhere in filename
     for root, _, files in os.walk(MUSIC_DIR):
         for f in files:
+            if not is_supported_audio_file(f):
+                continue
             fname_n = normalize(f)
             if artist_n in fname_n and title_n in fname_n:
                 return os.path.join(root, f)
@@ -2627,6 +2784,8 @@ def find_local_track(title: str, artist: str, track_id: str) -> Optional[str]:
     if id_n:
         for root, _, files in os.walk(MUSIC_DIR):
             for f in files:
+                if not is_supported_audio_file(f):
+                    continue
                 if id_n in normalize(f):
                     return os.path.join(root, f)
 
@@ -3020,6 +3179,18 @@ def api_set_playback_mode():
     with player.lock:
         old_mode = player.playback_mode
         player.playback_mode = mode
+
+        # In browser mode the UI mutes host volume (0). Restore a sensible
+        # host level automatically when switching back so playback isn't silent.
+        if mode == "host" and old_mode == "browser" and player.volume <= 0:
+            restored_volume = (
+                player.last_nonzero_volume
+                if player.last_nonzero_volume > 0
+                else DEFAULT_HOST_VOLUME
+            )
+            player.volume = restored_volume
+            pygame.mixer.music.set_volume(restored_volume)
+            print(f"[AUDIO] Restored host volume to {restored_volume:.2f} after browser mode")
         
         # When switching modes, handle current playback
         if player.current:
@@ -3056,8 +3227,9 @@ def api_browser_progress():
     
     with player.lock:
         if player.playback_mode == "browser" and player.current:
-            player.browser_elapsed = float(elapsed)
+            player.browser_elapsed = max(0.0, float(elapsed))
             player.browser_last_update = time.time()
+            player.current_start_ts = player.browser_last_update - player.browser_elapsed
     
     return jsonify({"status": "ok"})
 

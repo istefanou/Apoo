@@ -742,6 +742,25 @@ main {
   background: #141a22;
 }
 
+.playlist-table tbody tr[draggable="true"] {
+  cursor: grab;
+}
+
+.playlist-table tbody tr[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.playlist-table tbody tr.dragging {
+  opacity: 0.45;
+  background: #0f1620;
+}
+
+.playlist-table tbody tr.drag-over {
+  background: #183149;
+  outline: 2px solid #1db954;
+  outline-offset: -2px;
+}
+
 .playlist-track-duration {
   color: #b0bccb;
   white-space: nowrap;
