@@ -1,12 +1,42 @@
 [
   {
-    "id": "3579685431",
-    "title": "The Fate of Ophelia",
-    "artist": "Taylor Swift",
-    "deezer_id": "3579685431",
+    "id": "3412534581",
+    "title": "Golden",
+    "artist": "HUNTR/X",
+    "deezer_id": "3412534581",
     "spotify_id": null,
     "path": null,
-    "duration": 226,
-    "artwork_url": "https://cdn-images.dzcdn.net/images/cover/d0bed55a0efb3c5c3ddb3dacda67d9b3/1000x1000-000000-80-0-0.jpg"
+    "duration": 192,
+    "artwork_url": "https://cdn-images.dzcdn.net/images/cover/e54bda0628749119f7a9a05b71b40283/1000x1000-000000-80-0-0.jpg"
+  },
+  {
+    "id": "3412534601",
+    "title": "Takedown",
+    "artist": "HUNTR/X",
+    "deezer_id": "3412534601",
+    "spotify_id": null,
+    "path": null,
+    "duration": 182,
+    "artwork_url": "https://cdn-images.dzcdn.net/images/cover/e54bda0628749119f7a9a05b71b40283/1000x1000-000000-80-0-0.jpg"
+  },
+  {
+    "id": "3412534551",
+    "title": "How It\u2019s Done",
+    "artist": "HUNTR/X",
+    "deezer_id": "3412534551",
+    "spotify_id": null,
+    "path": null,
+    "duration": 176,
+    "artwork_url": "https://cdn-images.dzcdn.net/images/cover/e54bda0628749119f7a9a05b71b40283/1000x1000-000000-80-0-0.jpg"
+  },
+  {
+    "id": "3412534631",
+    "title": "What It Sounds Like",
+    "artist": "HUNTR/X",
+    "deezer_id": "3412534631",
+    "spotify_id": null,
+    "path": null,
+    "duration": 250,
+    "artwork_url": "https://cdn-images.dzcdn.net/images/cover/e54bda0628749119f7a9a05b71b40283/1000x1000-000000-80-0-0.jpg"
   }
 ]

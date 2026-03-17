@@ -1,14 +1,6 @@
 {
   "whitelist_words": [
-    "lyrics"
+    "official video"
   ],
-  "blacklist_words": [
-    "live",
-    "remix",
-    "extended",
-    "acoustic",
-    "karaoke",
-    "cover",
-    "instrumental"
-  ]
+  "blacklist_words": []
 }
