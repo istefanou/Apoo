@@ -3427,24 +3427,24 @@
       "title": "ALL MY LOVE"
     },
     {
-      "id": "3412534581",
-      "title": "Golden",
       "artist": "HUNTR/X",
+      "artwork_url": "https://cdn-images.dzcdn.net/images/cover/e54bda0628749119f7a9a05b71b40283/1000x1000-000000-80-0-0.jpg",
       "deezer_id": "3412534581",
-      "spotify_id": null,
-      "path": null,
       "duration": 192,
-      "artwork_url": "https://cdn-images.dzcdn.net/images/cover/e54bda0628749119f7a9a05b71b40283/1000x1000-000000-80-0-0.jpg"
+      "id": "3412534581",
+      "path": null,
+      "spotify_id": null,
+      "title": "Golden"
     },
     {
-      "id": "3412534601",
-      "title": "Takedown",
       "artist": "HUNTR/X",
+      "artwork_url": "https://cdn-images.dzcdn.net/images/cover/e54bda0628749119f7a9a05b71b40283/1000x1000-000000-80-0-0.jpg",
       "deezer_id": "3412534601",
-      "spotify_id": null,
-      "path": null,
       "duration": 182,
-      "artwork_url": "https://cdn-images.dzcdn.net/images/cover/e54bda0628749119f7a9a05b71b40283/1000x1000-000000-80-0-0.jpg"
+      "id": "3412534601",
+      "path": null,
+      "spotify_id": null,
+      "title": "Takedown"
     }
   ]
 }

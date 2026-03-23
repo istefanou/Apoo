@@ -1,6 +1,4 @@
 {
-  "whitelist_words": [
-    "official video"
-  ],
+  "whitelist_words": [],
   "blacklist_words": []
 }
