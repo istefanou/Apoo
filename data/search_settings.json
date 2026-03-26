@@ -1,4 +1,6 @@
 {
   "whitelist_words": [],
-  "blacklist_words": []
+  "blacklist_words": [
+    "official"
+  ]
 }
