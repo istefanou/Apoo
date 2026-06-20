@@ -4373,6 +4373,30 @@ def api_lofi_debug_resolutions():
         "videos": videos
     })
 
+def _start_discovery_listener():
+    """UDP LAN discovery: responds to APOO_DISCOVER broadcasts so the Spetifoy app can find us."""
+    import socket
+
+    def _listen():
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.bind(('', 7001))
+            print("[Discovery] Listening on UDP :7001")
+            while True:
+                try:
+                    data, addr = sock.recvfrom(64)
+                    if data.strip() == b'APOO_DISCOVER':
+                        sock.sendto(b'APOO_HERE:7000', addr)
+                except Exception:
+                    pass
+        except Exception as e:
+            print(f"[Discovery] Could not start: {e}")
+
+    threading.Thread(target=_listen, daemon=True).start()
+
+_start_discovery_listener()
+
 if __name__ == "__main__":
     debug_mode = os.getenv("APOO_DEBUG", "0").strip().lower() in {"1", "true", "yes", "on"}
     app.run(host="0.0.0.0", port=7000, debug=debug_mode)
