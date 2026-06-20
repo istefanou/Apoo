@@ -483,32 +483,86 @@ def _spotify_client_credentials_token() -> Optional[str]:
         return None
 
 
-def _spotify_anonymous_token() -> Optional[str]:
-    """Get a short-lived Spotify web-player token for public resources.
+def _spotify_token_and_tracks_from_embed(playlist_id: str) -> tuple[Optional[str], Optional[str], list]:
+    """Extract an access token and initial track list from the Spotify embed page.
 
-    This uses the same endpoint the Spotify web player calls, so no developer
-    account or registered app is required.  The token works for reading any
-    public playlist via the standard /v1 API endpoints.
+    The Spotify embed page at embed.spotify.com is a Next.js SSR app that bakes
+    the playlist's first 100 tracks and a short-lived access token directly into
+    the __NEXT_DATA__ JSON blob — no developer credentials or authenticated session
+    required.  The access token can then be passed to the standard /v1 API to
+    paginate tracks beyond 100.
+
+    Returns (token, playlist_name, tracks_list).  tracks_list uses the same schema
+    as _spotify_import_via_api so callers can merge them seamlessly.
     """
     try:
+        url = f"https://embed.spotify.com/?uri=spotify:playlist:{playlist_id}"
         res = requests.get(
-            "https://open.spotify.com/get_access_token",
-            params={"reason": "transport", "productType": "web_player"},
+            url,
             headers={
                 "User-Agent": (
-                    "Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
                 ),
-                "Accept": "application/json",
             },
-            timeout=15,
+            timeout=20,
         )
-        if res.status_code == 200:
-            token = res.json().get("accessToken")
-            return token if token else None
+        if res.status_code != 200:
+            print(f"[Spotify embed] Unexpected status {res.status_code}")
+            return None, None, []
+
+        import json as _json
+
+        nd_match = re.search(
+            r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>',
+            res.text,
+            re.DOTALL,
+        )
+        if not nd_match:
+            print("[Spotify embed] __NEXT_DATA__ not found in embed page")
+            return None, None, []
+
+        page_data = _json.loads(nd_match.group(1))
+        state = page_data["props"]["pageProps"]["state"]
+        entity = state["data"]["entity"]
+
+        playlist_name = (entity.get("name") or entity.get("title") or "Imported Spotify Playlist").strip()
+
+        # Extract token embedded in the page state
+        state_str = _json.dumps(state)
+        token_match = re.search(r'"accessToken":\s*"([^"]+)"', state_str)
+        token = token_match.group(1) if token_match else None
+
+        raw_tracks = entity.get("trackList") or []
+        tracks = []
+        seen = set()
+        for item in raw_tracks:
+            uri = item.get("uri") or ""
+            m = re.search(r"spotify:track:([A-Za-z0-9]{22})", uri)
+            tid = m.group(1) if m else None
+            title = (item.get("title") or "Unknown title").strip()
+            artist = (item.get("subtitle") or "Unknown artist").strip()
+            if not title:
+                continue
+            key = tid or (title.lower(), artist.lower())
+            if key in seen:
+                continue
+            seen.add(key)
+            uid = tid or f"sp-{abs(hash((title, artist)))}"
+            tracks.append({
+                "id": uid,
+                "title": title,
+                "artist": artist,
+                "spotify_id": tid,
+                "path": None,
+            })
+
+        print(f"[Spotify embed] Got {len(tracks)} tracks, token={'yes' if token else 'no'}, name={playlist_name!r}")
+        return token, playlist_name, tracks
+
     except Exception as e:
-        print(f"[Spotify] Anonymous token fetch failed: {e}")
-    return None
+        print(f"[Spotify embed] Failed: {e}")
+        return None, None, []
 
 
 def _spotify_import_via_api(playlist_id: str, token: str, progress_id: Optional[str] = None, stage_label: str = "spotify-api"):
@@ -797,9 +851,9 @@ def _import_spotify_playlist_impl(url_or_id: str, progress_id: Optional[str] = N
     """
     Import a Spotify playlist. Tries (in order):
       1. Spotify Web API (if SPOTIFY_CLIENT_ID/SECRET configured)
-      2. Anonymous Spotify web-player token (public playlists, no credentials needed)
+      2. Spotify embed page — extracts the first 100 tracks + an access token from
+         __NEXT_DATA__ (no credentials required), then paginates the rest via the API
       3. Headless Chromium browser to scroll through the full virtual track list
-      4. Static HTML scrape (fallback, returns at most ~30 tracks)
     """
     playlist_id = parse_spotify_playlist_id(url_or_id)
     if not playlist_id:
@@ -820,18 +874,166 @@ def _import_spotify_playlist_impl(url_or_id: str, progress_id: Optional[str] = N
                 print(f"Spotify API import failed, falling back: {e}")
                 update_spotify_import_status(progress_id, state="running", stage="credentials-api", message="Spotify API credentials failed, trying the next import method...")
 
-        # 2. Anonymous web-player token (no credentials needed, works for public playlists)
-        update_spotify_import_status(progress_id, state="running", stage="anonymous-api", message="Trying anonymous Spotify access token...")
-        anon_token = _spotify_anonymous_token()
-        if anon_token:
-            try:
-                playlist_name, tracks, total = _spotify_import_via_api(playlist_id, anon_token, progress_id=progress_id, stage_label="anonymous-api")
-                if tracks:
-                    update_spotify_import_status(progress_id, state="complete", stage="done", message=f"Imported {len(tracks)} tracks with Spotify's public token.", collected_count=len(tracks), expected_total=total or len(tracks), progress=100, playlist_name=playlist_name)
-                    return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
-            except Exception as e:
-                print(f"Spotify anonymous API import failed, falling back: {e}")
-                update_spotify_import_status(progress_id, state="running", stage="anonymous-api", message="Anonymous token failed, falling back to browser import...")
+        # 2. Embed page approach — no credentials needed, works for any public playlist.
+        #    The embed SSR bakes the first 100 tracks + an access token into __NEXT_DATA__.
+        #    We use those tracks directly (no API call needed for them) and then use the
+        #    token to paginate any tracks beyond 100 via the standard /v1 API.
+        update_spotify_import_status(
+            progress_id,
+            state="running",
+            stage="embed-scrape",
+            message="Fetching Spotify playlist via embed page...",
+        )
+        embed_token, embed_name, embed_tracks = _spotify_token_and_tracks_from_embed(playlist_id)
+        if embed_tracks:
+            playlist_name = embed_name or "Imported Spotify Playlist"
+            tracks = list(embed_tracks)
+            seen_ids = {t["spotify_id"] for t in tracks if t.get("spotify_id")}
+            seen_keys = {(t["title"].lower(), t["artist"].lower()) for t in tracks}
+            total = None
+
+            update_spotify_import_status(
+                progress_id,
+                state="running",
+                stage="embed-scrape",
+                message=f"Got {len(tracks)} tracks from embed page. Checking for more...",
+                collected_count=len(tracks),
+                playlist_name=playlist_name,
+            )
+
+            # If we got exactly 100 tracks, there may be more — try API pagination first,
+            # then fall back to Selenium if the API is unavailable or rate-limited.
+            needs_selenium_for_rest = False
+            if embed_token and len(embed_tracks) >= 100:
+                try:
+                    api_headers = {"Authorization": f"Bearer {embed_token}"}
+
+                    # Fetch total count
+                    meta_res = requests.get(
+                        f"https://api.spotify.com/v1/playlists/{playlist_id}",
+                        headers=api_headers,
+                        params={"fields": "name,tracks(total)"},
+                        timeout=20,
+                    )
+                    if meta_res.status_code == 429:
+                        print("[Spotify embed] API rate-limited on metadata fetch; switching to Selenium for remaining tracks.")
+                        needs_selenium_for_rest = True
+                    elif meta_res.status_code == 200:
+                        meta = meta_res.json()
+                        total = int(((meta.get("tracks") or {}).get("total") or 0)) or None
+                        playlist_name = meta.get("name") or playlist_name
+                    else:
+                        print(f"[Spotify embed] Metadata fetch returned {meta_res.status_code}; switching to Selenium.")
+                        needs_selenium_for_rest = True
+
+                    if not needs_selenium_for_rest and total and total > len(tracks):
+                        offset = len(tracks)
+                        limit = 100
+                        while offset < (total or 9999):
+                            update_spotify_import_status(
+                                progress_id,
+                                state="running",
+                                stage="embed-api-page",
+                                message=f"Fetching Spotify tracks {offset}–{offset + limit} of {total}...",
+                                collected_count=len(tracks),
+                                expected_total=total,
+                                progress=int(len(tracks) / total * 100) if total else None,
+                                playlist_name=playlist_name,
+                            )
+                            page_res = requests.get(
+                                f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks",
+                                headers=api_headers,
+                                params={
+                                    "offset": offset,
+                                    "limit": limit,
+                                    "fields": "items(track(id,name,artists(name))),next,total",
+                                },
+                                timeout=25,
+                            )
+                            if page_res.status_code == 429:
+                                print(f"[Spotify embed] API rate-limited after {len(tracks)} tracks; switching to Selenium for the rest.")
+                                needs_selenium_for_rest = True
+                                break
+                            if page_res.status_code != 200:
+                                print(f"[Spotify embed] API page error {page_res.status_code}; switching to Selenium.")
+                                needs_selenium_for_rest = True
+                                break
+
+                            payload = page_res.json()
+                            items = payload.get("items") or []
+                            if not items:
+                                break
+                            for item in items:
+                                track = (item or {}).get("track") or {}
+                                tid = track.get("id")
+                                title = (track.get("name") or "Unknown title").strip()
+                                artists_list = track.get("artists") or []
+                                artist = ", ".join(a.get("name", "") for a in artists_list if a.get("name")).strip() or "Unknown artist"
+                                if tid and tid in seen_ids:
+                                    continue
+                                key = (title.lower(), artist.lower())
+                                if key in seen_keys:
+                                    continue
+                                if tid:
+                                    seen_ids.add(tid)
+                                seen_keys.add(key)
+                                uid = tid or f"sp-{abs(hash((title, artist)))}"
+                                tracks.append({"id": uid, "title": title, "artist": artist, "spotify_id": tid, "path": None})
+
+                            if not payload.get("next"):
+                                break
+                            offset += limit
+                except Exception as api_err:
+                    print(f"[Spotify embed] API pagination failed: {api_err}; switching to Selenium for remaining tracks.")
+                    needs_selenium_for_rest = True
+
+            # Selenium top-up: scrape full playlist and merge any tracks we're still missing.
+            if needs_selenium_for_rest:
+                update_spotify_import_status(
+                    progress_id,
+                    state="running",
+                    stage="selenium-topup",
+                    message=f"Anonymous API unavailable — using browser to fetch remaining tracks (have {len(tracks)} so far)...",
+                    collected_count=len(tracks),
+                    playlist_name=playlist_name,
+                )
+                try:
+                    _, selenium_tracks, selenium_total = _import_spotify_via_selenium(playlist_id, progress_id=progress_id)
+                    total = selenium_total or total
+                    for st in (selenium_tracks or []):
+                        tid = st.get("spotify_id")
+                        key = (st.get("title", "").lower(), st.get("artist", "").lower())
+                        if tid and tid in seen_ids:
+                            continue
+                        if key in seen_keys:
+                            continue
+                        if tid:
+                            seen_ids.add(tid)
+                        seen_keys.add(key)
+                        tracks.append(st)
+                    print(f"[Spotify] After Selenium top-up: {len(tracks)} tracks total.")
+                except Exception as sel_err:
+                    print(f"[Spotify] Selenium top-up failed: {sel_err} — returning {len(tracks)} tracks from embed.")
+
+            total = total or len(tracks)
+            update_spotify_import_status(
+                progress_id,
+                state="complete",
+                stage="done",
+                message=f"Imported {len(tracks)} of {total} Spotify tracks.",
+                collected_count=len(tracks),
+                expected_total=total,
+                progress=100,
+                playlist_name=playlist_name,
+            )
+            return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
+
+        update_spotify_import_status(
+            progress_id,
+            state="running",
+            stage="embed-scrape",
+            message="Embed page returned no tracks, falling back to browser import...",
+        )
 
         # 3. Selenium headless-browser path (gets full playlist, no credentials needed)
         try:
@@ -841,73 +1043,11 @@ def _import_spotify_playlist_impl(url_or_id: str, progress_id: Optional[str] = N
                 update_spotify_import_status(progress_id, state="complete", stage="done", message=f"Imported {len(tracks)} tracks from the Spotify page.", collected_count=len(tracks), expected_total=total or len(tracks), progress=100, playlist_name=playlist_name)
                 return jsonify({"name": playlist_name, "tracks": tracks, "total": total})
         except Exception as e:
-            print(f"Selenium Spotify import failed, falling back to HTML scrape: {e}")
-            update_spotify_import_status(progress_id, state="running", stage="html-fallback", message="Browser import failed, falling back to limited HTML scraping...")
+            print(f"Selenium Spotify import failed: {e}")
+            update_spotify_import_status(progress_id, state="running", stage="selenium-error", message=f"Browser import failed: {e}")
 
-        # 4. Static HTML scrape fallback (limited to ~30 tracks)
-        playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
-        header_profiles = [
-            {},
-            {"User-Agent": "Mozilla/5.0"},
-            {
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-                "Accept-Language": "en-US,en;q=0.9",
-            },
-        ]
-        page = ""
-        best_count = -1
-        for headers in header_profiles:
-            try:
-                res = requests.get(playlist_url, headers=headers, timeout=20)
-                res.raise_for_status()
-                candidate = res.text
-                count = len(set(re.findall(r"/track/([A-Za-z0-9]{22})", candidate)))
-                if count > best_count:
-                    page = candidate
-                    best_count = count
-            except Exception:
-                continue
-
-        if not page:
-            update_spotify_import_status(progress_id, state="error", stage="html-fallback", message="Failed to fetch the Spotify playlist page.")
-            return jsonify({"error": "Failed to fetch Spotify playlist page"}), 502
-
-        playlist_name = "Imported Spotify Playlist"
-        tracks = []
-        try:
-            from bs4 import BeautifulSoup
-            soup = BeautifulSoup(page, "html.parser")
-            h1 = soup.find("h1")
-            if h1:
-                playlist_name = h1.get_text(" ", strip=True) or playlist_name
-            seen = set()
-            for link in soup.select('a[href^="/track/"]'):
-                href = link.get("href") or ""
-                m = re.search(r"/track/([A-Za-z0-9]{22})", href)
-                if not m:
-                    continue
-                track_id = m.group(1)
-                if track_id in seen:
-                    continue
-                seen.add(track_id)
-                title = (link.get_text(" ", strip=True) or "Unknown title").strip()
-                artist = "Unknown artist"
-                tracks.append({"id": track_id, "title": title, "artist": artist,
-                                "spotify_id": track_id, "path": None})
-        except Exception:
-            pass
-
-        if not tracks:
-            update_spotify_import_status(progress_id, state="error", stage="html-fallback", message="Spotify page loaded, but no tracks were found.")
-            return jsonify({"error": "No tracks found on Spotify playlist page"}), 400
-
-        warning = (
-            "Only the first ~30 tracks could be fetched (static HTML limit). "
-            "The anonymous Spotify token also failed. "
-            "For the full playlist, configure SPOTIFY_CLIENT_ID/SECRET or install chromium-browser + chromedriver."
-        )
-        update_spotify_import_status(progress_id, state="complete", stage="done", message=f"Imported {len(tracks)} tracks via limited HTML fallback.", collected_count=len(tracks), expected_total=len(tracks), progress=100, playlist_name=playlist_name, warning=warning)
-        return jsonify({"name": playlist_name, "tracks": tracks, "warning": warning})
+        update_spotify_import_status(progress_id, state="error", stage="error", message="All Spotify import methods failed. No tracks could be retrieved.")
+        return jsonify({"error": "Failed to import Spotify playlist — all methods failed"}), 502
 
     except Exception as e:
         print("Spotify import error:", e)
