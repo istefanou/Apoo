@@ -2750,6 +2750,61 @@ def api_music_list():
         return jsonify({"error": str(e)}), 500
     return jsonify({"tracks": tracks, "count": len(tracks)})
 
+@app.route("/api/queue/load-playlist", methods=["POST"])
+def api_queue_load_playlist():
+    """Clear the queue, load a named playlist, and start playing (used by Spetifoy app)."""
+    data = request.get_json() or {}
+    name = (data.get("name") or "").strip()
+    if not name:
+        return jsonify({"error": "name is required"}), 400
+
+    playlists = load_json(PLAYLISTS_FILE, {})
+    if name not in playlists:
+        return jsonify({"error": f"Playlist '{name}' not found"}), 404
+
+    tracks = playlists[name]
+    if not tracks:
+        return jsonify({"error": f"Playlist '{name}' is empty"}), 400
+
+    player.clear_queue()
+
+    added = 0
+    for track_data in tracks:
+        title = track_data.get("title", "Unknown")
+        artist = track_data.get("artist", "Unknown")
+        track_id = track_data.get("id", "") or ""
+        path = track_data.get("path")
+
+        if not path or not os.path.exists(path):
+            path = find_local_track(title, artist, track_id)
+
+        if path:
+            player.add_to_queue(Track(
+                id=track_id,
+                title=title,
+                artist=artist,
+                path=path,
+                artwork_url=track_data.get("artwork_url"),
+            ))
+        else:
+            # add placeholder and kick off background download
+            placeholder_id = track_id or sanitize_filename(f"{artist} - {title}")
+            ph = Track(id=placeholder_id, title=title + " (Downloading)", artist=artist, path=None)
+            ph._downloading = True
+            player.add_to_queue(ph)
+            source_id = track_data.get("deezer_id") or track_data.get("spotify_id")
+            threading.Thread(
+                target=download_missing_song_from_youtube,
+                args=(title, artist, source_id),
+                daemon=True,
+            ).start()
+        added += 1
+
+    if added > 0:
+        player.play()
+
+    return jsonify({"status": "ok", "playlist": name, "tracks_queued": added})
+
 @app.route("/api/playlists/download", methods=["POST"])
 def api_download_playlist():
     """Create and serve a zip file of all tracks in a playlist."""
