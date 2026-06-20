@@ -2703,6 +2703,53 @@ def api_save_playlists():
     save_json(PLAYLISTS_FILE, data)
     return jsonify({"status": "ok"})
 
+
+@app.route("/api/playlists/add", methods=["POST"])
+def api_add_playlist():
+    """Add or replace a single named playlist (used by Spetifoy app)."""
+    data = request.get_json() or {}
+    name = (data.get("name") or "").strip()
+    tracks = data.get("tracks") or []
+    if not name:
+        return jsonify({"error": "name is required"}), 400
+    if not isinstance(tracks, list):
+        return jsonify({"error": "tracks must be a list"}), 400
+    playlists = load_json(PLAYLISTS_FILE, {})
+    playlists[name] = tracks
+    save_json(PLAYLISTS_FILE, playlists)
+    return jsonify({"status": "ok", "playlist": name, "track_count": len(tracks)})
+
+
+@app.route("/api/music/list", methods=["GET"])
+def api_music_list():
+    """List all available music files with metadata (used by Spetifoy app)."""
+    supported = {".mp3", ".wav", ".flac", ".m4a", ".ogg"}
+    tracks = []
+    try:
+        for filename in sorted(os.listdir(MUSIC_DIR)):
+            ext = os.path.splitext(filename)[1].lower()
+            if ext not in supported:
+                continue
+            path = os.path.join(MUSIC_DIR, filename)
+            if not os.path.isfile(path):
+                continue
+            base = os.path.splitext(filename)[0]
+            parts = base.split(" - ", 1)
+            if len(parts) == 2:
+                artist, title = parts[0].strip(), parts[1].strip()
+            else:
+                title, artist = base.strip(), ""
+            tracks.append({
+                "title": title,
+                "artist": artist,
+                "path": path,
+                "filename": filename,
+                "size": os.path.getsize(path),
+            })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    return jsonify({"tracks": tracks, "count": len(tracks)})
+
 @app.route("/api/playlists/download", methods=["POST"])
 def api_download_playlist():
     """Create and serve a zip file of all tracks in a playlist."""
