@@ -1,6 +1,14 @@
 {
   "whitelist_words": [],
   "blacklist_words": [
-    "official"
+    "live",
+    "nightcore",
+    "karaoke",
+    "reverb",
+    "8d",
+    "slowed",
+    "cover",
+    "remix",
+    "acoustic"
   ]
 }
