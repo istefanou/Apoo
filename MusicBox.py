@@ -1988,6 +1988,73 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
     return None
 
 
+def download_from_youtube_url(title: str, artist: str, youtube_url: str, deezer_id: Optional[str] = None, album: Optional[str] = None, year: Optional[str] = None, album_art_url: Optional[str] = None) -> Optional[str]:
+    """Download audio from a specific YouTube URL, saving as {artist} - {title}.mp3."""
+    safe_title = sanitize_filename(title)
+    safe_artist = sanitize_filename(artist)
+    final_mp3 = os.path.join(MUSIC_DIR, f"{safe_artist} - {safe_title}.mp3")
+
+    print(f"\n{'='*60}")
+    print(f"DOWNLOAD FROM URL: {artist} - {title}")
+    print(f"URL: {youtube_url}")
+    print(f"{'='*60}")
+
+    strategies = [
+        ["--extractor-args", "youtube:player_client=android"],
+        ["--extractor-args", "youtube:player_client=ios"],
+        ["--extractor-args", "youtube:player_client=web"],
+        [],
+    ]
+
+    with DOWNLOAD_SEMAPHORE:
+        for extra_args in strategies:
+            command = [
+                *resolve_yt_dlp_command(),
+                *extra_args,
+                "--extract-audio",
+                "--audio-format", "mp3",
+                "--audio-quality", "0",
+                "--no-playlist",
+                "--no-check-certificate",
+                "--output", os.path.join(MUSIC_DIR, f"{safe_artist} - {safe_title}.%(ext)s"),
+                youtube_url,
+            ]
+            print(f"Running: {' '.join(command)}")
+            try:
+                result = subprocess.run(command, shell=False, capture_output=True, text=True, timeout=120)
+                print(f"yt-dlp returned: {result.returncode}")
+                if result.returncode != 0:
+                    print(f"stderr: {result.stderr[:300]}")
+                if os.path.exists(final_mp3):
+                    downloaded_duration, duration_error = validate_track_path_duration(final_mp3)
+                    if duration_error:
+                        print(f"✗ Downloaded MP3 rejected: {duration_error}")
+                        try:
+                            os.remove(final_mp3)
+                        except Exception:
+                            pass
+                        continue
+                    print(f"✓ Downloaded from URL: {final_mp3}")
+                    break
+            except subprocess.TimeoutExpired:
+                print("✗ URL download timeout after 120s")
+            except Exception as e:
+                print(f"✗ URL download error: {e}")
+
+    if os.path.exists(final_mp3):
+        deezer_tag = str(deezer_id) if deezer_id and str(deezer_id).isdigit() else None
+        upsert_mp3_metadata(final_mp3, title, artist, album, year, album_art_url, deezer_tag)
+        print(f"\n{'='*60}")
+        print(f"✓ URL DOWNLOAD SUCCESS: {artist} - {title}")
+        print(f"{'='*60}\n")
+        return final_mp3
+
+    print(f"\n{'='*60}")
+    print(f"✗ URL DOWNLOAD FAILED: {artist} - {title}")
+    print(f"{'='*60}\n")
+    return None
+
+
 # ---------- Config ----------
 MUSIC_DIR = os.path.join(os.path.dirname(__file__), "music")
 LOFI_DIR = os.path.join(os.path.dirname(__file__), "lofi")
@@ -3336,6 +3403,102 @@ def api_delete_track():
         return jsonify({"error": str(e)}), 500
 
     return jsonify({"status": "ok"})
+
+
+@app.route("/api/queue/replace-track", methods=["POST"])
+def api_replace_track():
+    """Delete the wrong local file for a queued track and re-download the correct version."""
+    data = request.get_json() or {}
+    track_id = data.get("id")
+    title = data.get("title", "Unknown title")
+    artist = data.get("artist", "Unknown artist")
+    youtube_url = data.get("youtube_url")  # optional: use this URL instead of searching
+    deezer_id = data.get("deezer_id")
+    spotify_id = data.get("spotify_id")
+    artwork_url = data.get("artwork_url")
+
+    if not track_id:
+        return jsonify({"error": "track id required"}), 400
+
+    # Find old path in queue
+    old_path = None
+    with player.lock:
+        for t in player.queue:
+            if t.id == track_id:
+                old_path = t.path
+                break
+
+    if old_path is None:
+        return jsonify({"error": "track not found in queue"}), 404
+
+    # Delete old file (restricted to MUSIC_DIR)
+    if old_path:
+        try:
+            real_old = os.path.realpath(old_path)
+            music_real = os.path.realpath(MUSIC_DIR)
+            if real_old.startswith(music_real) and os.path.isfile(real_old):
+                os.remove(real_old)
+                print(f"[replace-track] Deleted old file: {real_old}")
+        except Exception as e:
+            print(f"[replace-track] Failed to delete old file: {e}")
+
+    # Also remove the standard expected output path when it differs from old_path
+    safe_title = sanitize_filename(title)
+    safe_artist = sanitize_filename(artist)
+    expected_path = os.path.join(MUSIC_DIR, f"{safe_artist} - {safe_title}.mp3")
+    if os.path.realpath(expected_path) != os.path.realpath(old_path or "") and os.path.exists(expected_path):
+        try:
+            os.remove(expected_path)
+            print(f"[replace-track] Deleted expected path: {expected_path}")
+        except Exception as e:
+            print(f"[replace-track] Failed to delete expected path: {e}")
+
+    # Swap queue entry for a downloading placeholder
+    placeholder_id = track_id
+    with player.lock:
+        for idx, t in enumerate(player.queue):
+            if t.id == track_id:
+                ph = Track(
+                    id=placeholder_id,
+                    title=title + " (Downloading)",
+                    artist=artist,
+                    path=None,
+                    deezer_id=deezer_id,
+                    spotify_id=spotify_id,
+                    artwork_url=artwork_url,
+                )
+                ph._downloading = True
+                player.queue[idx] = ph
+                break
+
+    source_id = deezer_id or spotify_id
+    album, year, album_art_url = get_track_metadata_for_download(title, artist, deezer_id)
+
+    def replace_and_download():
+        if youtube_url:
+            real_path = download_from_youtube_url(title, artist, youtube_url, deezer_id, album, year, album_art_url)
+        else:
+            real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url)
+
+        with player.lock:
+            for idx, t in enumerate(player.queue):
+                if getattr(t, "_downloading", False) and t.id == placeholder_id:
+                    if real_path:
+                        player.queue[idx] = Track(
+                            id=placeholder_id,
+                            title=title,
+                            artist=artist,
+                            path=real_path,
+                            deezer_id=deezer_id,
+                            spotify_id=spotify_id,
+                            artwork_url=artwork_url or album_art_url,
+                        )
+                    else:
+                        player.queue = [t2 for t2 in player.queue if not (getattr(t2, "_downloading", False) and t2.id == placeholder_id)]
+                    break
+
+    threading.Thread(target=replace_and_download, daemon=True).start()
+    return jsonify({"status": "replacing"})
 
 
 @app.route("/api/clear", methods=["POST"])

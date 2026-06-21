@@ -872,8 +872,17 @@ function renderTrackItem(container, track, isQueue = false) {
   actions.appendChild(playlistBtn);
   actions.appendChild(deleteBtn);
 
-  // Remove from queue (only in queue view)
+  // Remove from queue / Wrong Song (only in queue view)
   if (isQueue) {
+    const wrongSongBtn = document.createElement("button");
+    wrongSongBtn.className = "icon-btn icon-btn-warn";
+    wrongSongBtn.title = "Wrong song — remove file and re-search";
+    wrongSongBtn.textContent = "↩";
+    wrongSongBtn.addEventListener("click", () => {
+      showReplaceTrackDialog(resolvedTrack);
+    });
+    actions.appendChild(wrongSongBtn);
+
     const removeBtn = document.createElement("button");
     removeBtn.className = "icon-btn";
     removeBtn.title = "Remove from queue";
@@ -2221,6 +2230,135 @@ async function deleteLofiVideo(videoId) {
     alert(`Error: ${err.message}`);
   }
 }
+
+// ======================================================
+//  REPLACE TRACK DIALOG ("Wrong Song")
+// ======================================================
+
+let replaceTrackModal = null;
+
+function showReplaceTrackDialog(track) {
+  if (replaceTrackModal) {
+    replaceTrackModal.remove();
+    replaceTrackModal = null;
+  }
+
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+
+  const dialog = document.createElement("div");
+  dialog.className = "modal-dialog";
+
+  const titleEl = document.createElement("div");
+  titleEl.className = "modal-title";
+  titleEl.textContent = `Replace: "${track.title}"`;
+
+  const subtitleEl = document.createElement("div");
+  subtitleEl.className = "modal-subtitle";
+  subtitleEl.textContent = `by ${track.artist}`;
+
+  const descEl = document.createElement("div");
+  descEl.className = "modal-desc";
+  descEl.textContent = "This will delete the current file and download the correct version. How would you like to find it?";
+
+  const btnsRow = document.createElement("div");
+  btnsRow.className = "modal-btn-row";
+
+  const autoBtn = document.createElement("button");
+  autoBtn.className = "modal-btn modal-btn-primary";
+  autoBtn.textContent = "Auto Search";
+  autoBtn.title = "Re-search YouTube using blacklist/whitelist settings";
+
+  const manualBtn = document.createElement("button");
+  manualBtn.className = "modal-btn modal-btn-secondary";
+  manualBtn.textContent = "Paste YouTube URL";
+
+  btnsRow.appendChild(autoBtn);
+  btnsRow.appendChild(manualBtn);
+
+  const urlRow = document.createElement("div");
+  urlRow.className = "modal-url-row hidden";
+
+  const urlInput = document.createElement("input");
+  urlInput.type = "text";
+  urlInput.className = "modal-url-input";
+  urlInput.placeholder = "https://www.youtube.com/watch?v=...";
+
+  const confirmBtn = document.createElement("button");
+  confirmBtn.className = "modal-btn modal-btn-primary";
+  confirmBtn.textContent = "Download This URL";
+
+  urlRow.appendChild(urlInput);
+  urlRow.appendChild(confirmBtn);
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "modal-btn modal-btn-cancel";
+  cancelBtn.textContent = "Cancel";
+
+  dialog.appendChild(titleEl);
+  dialog.appendChild(subtitleEl);
+  dialog.appendChild(descEl);
+  dialog.appendChild(btnsRow);
+  dialog.appendChild(urlRow);
+  dialog.appendChild(cancelBtn);
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+  replaceTrackModal = overlay;
+
+  function closeModal() {
+    overlay.remove();
+    replaceTrackModal = null;
+  }
+
+  async function doReplace(youtubeUrl) {
+    closeModal();
+    const payload = {
+      id: track.id,
+      title: track.title,
+      artist: track.artist,
+      deezer_id: track.deezer_id || null,
+      spotify_id: track.spotify_id || null,
+      artwork_url: track.artwork_url || null,
+    };
+    if (youtubeUrl) {
+      payload.youtube_url = youtubeUrl;
+    }
+    const res = await apiPost("/api/queue/replace-track", payload);
+    if (res?.error) {
+      alert("Replace failed: " + res.error);
+      return;
+    }
+    await refreshState();
+  }
+
+  autoBtn.addEventListener("click", () => doReplace(null));
+
+  manualBtn.addEventListener("click", () => {
+    urlRow.classList.remove("hidden");
+    manualBtn.classList.add("hidden");
+    urlInput.focus();
+  });
+
+  confirmBtn.addEventListener("click", () => {
+    const url = urlInput.value.trim();
+    if (!url) {
+      urlInput.style.borderColor = "#e84040";
+      return;
+    }
+    doReplace(url);
+  });
+
+  urlInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") confirmBtn.click();
+    if (e.key === "Escape") closeModal();
+  });
+
+  cancelBtn.addEventListener("click", closeModal);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+}
+
 
 // Play lofi on device (server audio only)
 async function playLofiOnDevice(video) {

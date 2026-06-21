@@ -547,6 +547,124 @@ main {
   color: #e84040 !important;
 }
 
+.icon-btn-warn {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.icon-btn-warn:hover {
+  color: #f5a623 !important;
+}
+
+/* ---- Replace Track Modal ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-dialog {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.modal-subtitle {
+  font-size: 0.9rem;
+  color: #b3b3b3;
+  margin-top: -0.5rem;
+}
+
+.modal-desc {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.45;
+}
+
+.modal-btn-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.modal-btn {
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.modal-btn:hover {
+  opacity: 0.85;
+}
+
+.modal-btn.hidden {
+  display: none;
+}
+
+.modal-btn-primary {
+  background: #1db954;
+  color: #000;
+}
+
+.modal-btn-secondary {
+  background: #333;
+  color: #fff;
+}
+
+.modal-btn-cancel {
+  background: transparent;
+  color: #888;
+  border: 1px solid #444;
+  margin-top: 0.25rem;
+  align-self: flex-start;
+}
+
+.modal-url-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.modal-url-row.hidden {
+  display: none;
+}
+
+.modal-url-input {
+  flex: 1;
+  min-width: 0;
+  background: #111;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.modal-url-input:focus {
+  border-color: #1db954;
+}
+
 .playlist-body.hidden {
   display: none;
 }
