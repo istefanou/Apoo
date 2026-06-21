@@ -1046,8 +1046,18 @@ function renderState(state) {
       showReplaceTrackDialog(t, { isCurrent: true });
     });
 
+    const addToPlaylistCurrentBtn = document.createElement("button");
+    addToPlaylistCurrentBtn.className = "icon-btn";
+    addToPlaylistCurrentBtn.title = "Add to playlist";
+    addToPlaylistCurrentBtn.textContent = "📂";
+    addToPlaylistCurrentBtn.style.fontSize = "1.5em";
+    addToPlaylistCurrentBtn.addEventListener("click", () => {
+      openPlaylistPicker(t);
+    });
+
     container.appendChild(title);
     container.appendChild(wrongSongCurrentBtn);
+    container.appendChild(addToPlaylistCurrentBtn);
     container.appendChild(favBtn);
     currentTrackEl.appendChild(container);
 
@@ -1617,6 +1627,14 @@ function renderPlaylistsTab() {
       await refreshState();
     });
 
+    const addToPlaylistBtn = document.createElement("button");
+    addToPlaylistBtn.className = "playlist-row-add secondary";
+    addToPlaylistBtn.textContent = "📂";
+    addToPlaylistBtn.title = "Add to another playlist";
+    addToPlaylistBtn.addEventListener("click", () => {
+      openPlaylistPicker(t);
+    });
+
     const removeFromPlaylistBtn = document.createElement("button");
     removeFromPlaylistBtn.className = "playlist-row-add danger";
     removeFromPlaylistBtn.textContent = "✕";
@@ -1631,6 +1649,7 @@ function renderPlaylistsTab() {
 
     c5.appendChild(nextBtn);
     c5.appendChild(lastBtn);
+    c5.appendChild(addToPlaylistBtn);
     c5.appendChild(removeFromPlaylistBtn);
 
     row.appendChild(c1);
