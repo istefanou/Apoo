@@ -800,23 +800,31 @@ function renderTrackItem(container, track, isQueue = false) {
     actions.appendChild(durEl);
   }
 
-  // Queue Next
+  // Queue Next — moves if already in queue, adds otherwise
   const queueAddNextBtn = document.createElement("button");
   queueAddNextBtn.className = "icon-btn";
-  queueAddNextBtn.title = "Queue Next";
+  queueAddNextBtn.title = isQueue ? "Move to play next" : "Queue Next";
   queueAddNextBtn.textContent = "Next";
   queueAddNextBtn.addEventListener("click", async () => {
-    await addToQueueNext(resolvedTrack);
+    if (isQueue) {
+      await apiPost("/api/queue/move", { id: resolvedTrack.id, position: "next" });
+    } else {
+      await addToQueueNext(resolvedTrack);
+    }
     await refreshState();
   });
 
-  // Queue Last
+  // Queue Last — moves if already in queue, adds otherwise
   const queueAddLastBtn = document.createElement("button");
   queueAddLastBtn.className = "icon-btn";
-  queueAddLastBtn.title = "Queue Last";
+  queueAddLastBtn.title = isQueue ? "Move to end of queue" : "Queue Last";
   queueAddLastBtn.textContent = "Last";
   queueAddLastBtn.addEventListener("click", async () => {
-    await addToQueue(resolvedTrack);
+    if (isQueue) {
+      await apiPost("/api/queue/move", { id: resolvedTrack.id, position: "last" });
+    } else {
+      await addToQueue(resolvedTrack);
+    }
     await refreshState();
   });
 
@@ -966,6 +974,13 @@ function renderState(state) {
   }
 
 
+  // Reset frozen-progress cache on track change so a new track always starts at 0:00
+  if (resolvedCurrent?.id !== LAST_CURRENT?.id) {
+    LAST_ELAPSED = 0;
+    LAST_DURATION = resolvedCurrent?.duration || 0;
+    LAST_PROGRESS = 0;
+  }
+
   currentTrackEl.innerHTML = "";
 
   if (resolvedCurrent) {
@@ -1022,7 +1037,17 @@ function renderState(state) {
       favBtn.textContent = isFavorite(t.id) ? "♥" : "♡";
     });
     
+    const wrongSongCurrentBtn = document.createElement("button");
+    wrongSongCurrentBtn.className = "icon-btn icon-btn-warn";
+    wrongSongCurrentBtn.title = "Wrong song — skip, delete file and re-download";
+    wrongSongCurrentBtn.textContent = "↩";
+    wrongSongCurrentBtn.style.fontSize = "1.5em";
+    wrongSongCurrentBtn.addEventListener("click", () => {
+      showReplaceTrackDialog(t, { isCurrent: true });
+    });
+
     container.appendChild(title);
+    container.appendChild(wrongSongCurrentBtn);
     container.appendChild(favBtn);
     currentTrackEl.appendChild(container);
 
@@ -2237,7 +2262,7 @@ async function deleteLofiVideo(videoId) {
 
 let replaceTrackModal = null;
 
-function showReplaceTrackDialog(track) {
+function showReplaceTrackDialog(track, { isCurrent = false } = {}) {
   if (replaceTrackModal) {
     replaceTrackModal.remove();
     replaceTrackModal = null;
@@ -2312,18 +2337,23 @@ function showReplaceTrackDialog(track) {
 
   async function doReplace(youtubeUrl) {
     closeModal();
-    const payload = {
-      id: track.id,
-      title: track.title,
-      artist: track.artist,
-      deezer_id: track.deezer_id || null,
-      spotify_id: track.spotify_id || null,
-      artwork_url: track.artwork_url || null,
-    };
-    if (youtubeUrl) {
-      payload.youtube_url = youtubeUrl;
+    let res;
+    if (isCurrent) {
+      const payload = {};
+      if (youtubeUrl) payload.youtube_url = youtubeUrl;
+      res = await apiPost("/api/current/replace", payload);
+    } else {
+      const payload = {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        deezer_id: track.deezer_id || null,
+        spotify_id: track.spotify_id || null,
+        artwork_url: track.artwork_url || null,
+      };
+      if (youtubeUrl) payload.youtube_url = youtubeUrl;
+      res = await apiPost("/api/queue/replace-track", payload);
     }
-    const res = await apiPost("/api/queue/replace-track", payload);
     if (res?.error) {
       alert("Replace failed: " + res.error);
       return;

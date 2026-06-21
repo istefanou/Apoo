@@ -2540,6 +2540,10 @@ class Player:
             pygame.mixer.music.load(self.current.path)
             pygame.mixer.music.play()
 
+        # Reset pause state — a new track always starts playing from 0
+        self._is_paused = False
+        self._paused_elapsed = 0.0
+
         # Start timestamp
         self.current_start_ts = time.time()
         self.browser_elapsed = 0.0
@@ -3499,6 +3503,115 @@ def api_replace_track():
 
     threading.Thread(target=replace_and_download, daemon=True).start()
     return jsonify({"status": "replacing"})
+
+
+@app.route("/api/current/replace", methods=["POST"])
+def api_replace_current_track():
+    """Skip the currently playing track, delete its file, and re-download to end of queue."""
+    data = request.get_json() or {}
+    youtube_url = data.get("youtube_url")
+
+    with player.lock:
+        if not player.current:
+            return jsonify({"error": "nothing is playing"}), 400
+        current = player.current
+        title = current.title
+        artist = current.artist
+        old_path = current.path
+        deezer_id = current.deezer_id
+        spotify_id = current.spotify_id
+        artwork_url = current.artwork_url
+
+    # Skip to next immediately
+    player.next()
+
+    # Delete the wrong file (restricted to MUSIC_DIR)
+    if old_path:
+        try:
+            real_old = os.path.realpath(old_path)
+            music_real = os.path.realpath(MUSIC_DIR)
+            if real_old.startswith(music_real) and os.path.isfile(real_old):
+                os.remove(real_old)
+                print(f"[replace-current] Deleted: {real_old}")
+        except Exception as e:
+            print(f"[replace-current] Failed to delete: {e}")
+
+    # Also remove the expected output path if it differs
+    safe_title = sanitize_filename(title)
+    safe_artist = sanitize_filename(artist)
+    expected_path = os.path.join(MUSIC_DIR, f"{safe_artist} - {safe_title}.mp3")
+    if os.path.realpath(expected_path) != os.path.realpath(old_path or "") and os.path.exists(expected_path):
+        try:
+            os.remove(expected_path)
+            print(f"[replace-current] Deleted expected path: {expected_path}")
+        except Exception as e:
+            print(f"[replace-current] Failed to delete expected path: {e}")
+
+    source_id = deezer_id or spotify_id
+    album, year, album_art_url = get_track_metadata_for_download(title, artist, deezer_id)
+    placeholder_id = sanitize_filename(f"{artist} - {title}-replace")
+
+    ph = Track(
+        id=placeholder_id,
+        title=title + " (Downloading)",
+        artist=artist,
+        path=None,
+        deezer_id=deezer_id,
+        spotify_id=spotify_id,
+        artwork_url=artwork_url,
+    )
+    ph._downloading = True
+    with player.lock:
+        player.queue.append(ph)
+
+    def download_and_append():
+        if youtube_url:
+            real_path = download_from_youtube_url(title, artist, youtube_url, deezer_id, album, year, album_art_url)
+        else:
+            real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url)
+
+        with player.lock:
+            for idx, t in enumerate(player.queue):
+                if getattr(t, "_downloading", False) and t.id == placeholder_id:
+                    if real_path:
+                        player.queue[idx] = Track(
+                            id=placeholder_id,
+                            title=title,
+                            artist=artist,
+                            path=real_path,
+                            deezer_id=deezer_id,
+                            spotify_id=spotify_id,
+                            artwork_url=artwork_url or album_art_url,
+                        )
+                    else:
+                        player.queue = [t2 for t2 in player.queue if not (getattr(t2, "_downloading", False) and t2.id == placeholder_id)]
+                    break
+
+    threading.Thread(target=download_and_append, daemon=True).start()
+    return jsonify({"status": "replacing"})
+
+
+@app.route("/api/queue/move", methods=["POST"])
+def api_queue_move():
+    """Move a queued track to the front (next) or back (last) without duplicating it."""
+    data = request.get_json() or {}
+    track_id = data.get("id")
+    position = data.get("position")
+
+    if not track_id or position not in ("next", "last"):
+        return jsonify({"error": "id and position ('next' or 'last') required"}), 400
+
+    with player.lock:
+        idx = next((i for i, t in enumerate(player.queue) if t.id == track_id), None)
+        if idx is None:
+            return jsonify({"error": "track not found in queue"}), 404
+        track = player.queue.pop(idx)
+        if position == "next":
+            player.queue.insert(0, track)
+        else:
+            player.queue.append(track)
+
+    return jsonify({"status": "ok"})
 
 
 @app.route("/api/clear", methods=["POST"])
