@@ -38,5 +38,15 @@
     "path": null,
     "spotify_id": null,
     "title": "What It Sounds Like"
+  },
+  {
+    "id": "ROSAL\u00cdA_-_BIZCOCHITO-replace",
+    "title": "BIZCOCHITO",
+    "artist": "ROSAL\u00cdA",
+    "deezer_id": null,
+    "spotify_id": "4kXxEhuatrvwrTQycA7s9B",
+    "path": "/home/pi4/Projects/Apoo/music/ROSAL\u00cdA - BIZCOCHITO.mp3",
+    "duration": 109.58367346938776,
+    "artwork_url": "https://lastfm.freetls.fastly.net/i/u/300x300/ae581f3ad8e454ea973e91ae82d22d71.png"
   }
 ]
