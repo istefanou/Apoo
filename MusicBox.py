@@ -460,6 +460,380 @@ def parse_spotify_playlist_id(url_or_id: str) -> Optional[str]:
     return None
 
 
+def parse_apple_music_playlist_url(url_or_id: str) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    """Return (storefront, playlist_id, full_url) from an Apple Music playlist URL or raw ID.
+
+    Supports:
+      https://music.apple.com/us/playlist/summer-bbq/pl.da5a10df9f434614ab4bb48ee1b62c7e
+      pl.da5a10df9f434614ab4bb48ee1b62c7e  (raw ID, defaults to storefront 'us')
+    """
+    if not url_or_id:
+        return None, None, None
+    candidate = str(url_or_id).strip()
+
+    # Full URL with optional name slug
+    m = re.search(
+        r"music\.apple\.com/([a-z]{2,3})/playlist/(?:[^/?#]+/)?(pl\.[A-Za-z0-9_-]+)",
+        candidate, re.IGNORECASE,
+    )
+    if m:
+        return m.group(1).lower(), m.group(2), candidate
+
+    # Raw playlist ID
+    if re.match(r"^pl\.[A-Za-z0-9_-]+$", candidate, re.IGNORECASE):
+        return "us", candidate, f"https://music.apple.com/us/playlist/imported/{candidate}"
+
+    return None, None, None
+
+
+def detect_playlist_import_source(url: str) -> str:
+    """Return 'spotify', 'apple_music', 'deezer', or 'unknown' for a playlist URL."""
+    candidate = str(url or "").strip()
+    low = candidate.lower()
+    if "spotify.com" in low or low.startswith("spotify:") or re.fullmatch(r"[A-Za-z0-9]{22}", candidate):
+        return "spotify"
+    if "music.apple.com" in low or re.match(r"^pl\.[A-Za-z0-9_-]+$", candidate, re.IGNORECASE):
+        return "apple_music"
+    if "deezer.com" in low or candidate.isdigit():
+        return "deezer"
+    return "unknown"
+
+
+def _import_apple_music_playlist_impl(url: str, progress_id: Optional[str] = None):
+    """
+    Import an Apple Music playlist. Tries (in order):
+      1. Fetch the main page and extract JSON-LD schema.org track data
+      2. Fetch the embed page for structured data
+      3. Fetch the main page and try Ember FastBoot shoebox cache
+      4. Headless Chromium (Selenium) fallback
+    """
+    storefront, playlist_id, fetch_url = parse_apple_music_playlist_url(url)
+    if not playlist_id:
+        return jsonify({"error": "Invalid Apple Music playlist URL or ID"}), 400
+
+    playlist_name = "Imported Apple Music Playlist"
+
+    browser_headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        ),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+
+    def _tracks_from_ld_json(html_content: str) -> tuple[Optional[str], list]:
+        """Extract (playlist_name, tracks) from any JSON-LD blocks in the HTML."""
+        ld_matches = re.findall(
+            r'<script[^>]+type="application/ld\+json"[^>]*>(.*?)</script>',
+            html_content, re.DOTALL,
+        )
+        for ld_str in ld_matches:
+            try:
+                ld_data = json.loads(ld_str.strip())
+                items = ld_data if isinstance(ld_data, list) else [ld_data]
+                for item in items:
+                    if item.get("@type") in ("MusicPlaylist", "ItemList") and item.get("track"):
+                        name = item.get("name") or playlist_name
+                        tracks = []
+                        seen: set = set()
+                        for t in item["track"]:
+                            title = (t.get("name") or "").strip()
+                            artist_info = t.get("byArtist") or t.get("artist") or {}
+                            if isinstance(artist_info, dict):
+                                artist = (artist_info.get("name") or "").strip()
+                            elif isinstance(artist_info, list):
+                                artist = ", ".join(
+                                    a.get("name", "") for a in artist_info if isinstance(a, dict)
+                                ).strip()
+                            else:
+                                artist = str(artist_info).strip()
+                            if title:
+                                key = (title.lower(), artist.lower())
+                                if key not in seen:
+                                    seen.add(key)
+                                    tracks.append({
+                                        "id": f"am-{abs(hash(key))}",
+                                        "title": title,
+                                        "artist": artist,
+                                        "path": None,
+                                    })
+                        if tracks:
+                            return name, tracks
+            except Exception:
+                pass
+        return None, []
+
+    def _tracks_from_shoebox(html_content: str) -> tuple[Optional[str], list]:
+        """Extract (playlist_name, tracks) from Ember FastBoot shoebox cache."""
+        shoebox_match = re.search(
+            r'<script[^>]+type="fastboot/shoebox"[^>]*id="shoebox-media-api-cache"[^>]*>(.*?)</script>',
+            html_content, re.DOTALL,
+        )
+        if not shoebox_match:
+            return None, []
+        try:
+            shoebox = json.loads(shoebox_match.group(1))
+            for _key, cache_val in shoebox.items():
+                try:
+                    cache_data = json.loads(cache_val) if isinstance(cache_val, str) else cache_val
+                    if not isinstance(cache_data, dict):
+                        continue
+                    items = cache_data.get("data", [])
+                    if not isinstance(items, list):
+                        continue
+                    for item in items:
+                        if item.get("type") != "playlists":
+                            continue
+                        attrs = item.get("attributes", {})
+                        name = attrs.get("name") or playlist_name
+                        rels = item.get("relationships", {})
+                        track_items = (rels.get("tracks") or {}).get("data", [])
+                        tracks = []
+                        seen: set = set()
+                        for t in track_items:
+                            t_attrs = t.get("attributes", {})
+                            title = (t_attrs.get("name") or "").strip()
+                            artist = (t_attrs.get("artistName") or "").strip()
+                            if title:
+                                key = (title.lower(), artist.lower())
+                                if key not in seen:
+                                    seen.add(key)
+                                    tracks.append({
+                                        "id": f"am-{t.get('id', abs(hash(key)))}",
+                                        "title": title,
+                                        "artist": artist,
+                                        "path": None,
+                                    })
+                        if tracks:
+                            return name, tracks
+                except Exception:
+                    pass
+        except Exception as e:
+            print(f"[Apple Music] Shoebox parse failed: {e}")
+        return None, []
+
+    # Strategy 1 & 3: Main page then embed page; shoebox first (has artistName), JSON-LD as fallback
+    ld_json_fallback: Optional[tuple] = None  # (name, tracks) — kept if shoebox never fires
+    for attempt_url in [fetch_url, f"https://embed.music.apple.com/{storefront}/playlist/{playlist_id}"]:
+        try:
+            res = requests.get(attempt_url, headers=browser_headers, timeout=10)
+            if res.status_code != 200:
+                print(f"[Apple Music] {attempt_url} returned {res.status_code}")
+                continue
+            html = res.text
+
+            # Shoebox first — has full Apple Music API data including artistName
+            found_name, tracks = _tracks_from_shoebox(html)
+            if tracks:
+                print(f"[Apple Music] Got {len(tracks)} tracks via shoebox from {attempt_url}")
+                return jsonify({"name": found_name or playlist_name, "tracks": tracks, "total": len(tracks)})
+
+            # JSON-LD next — has track names but often no artist; stash and keep looking
+            found_name, tracks = _tracks_from_ld_json(html)
+            if tracks:
+                has_artists = any(t.get("artist") for t in tracks)
+                if has_artists:
+                    print(f"[Apple Music] Got {len(tracks)} tracks via JSON-LD from {attempt_url}")
+                    return jsonify({"name": found_name or playlist_name, "tracks": tracks, "total": len(tracks)})
+                elif ld_json_fallback is None:
+                    print(f"[Apple Music] JSON-LD found {len(tracks)} tracks but no artist names — stashing as fallback")
+                    ld_json_fallback = (found_name, tracks)
+
+        except Exception as e:
+            print(f"[Apple Music] Fetch failed for {attempt_url}: {e}")
+
+    # Strategy 4: Selenium headless browser
+    try:
+        import time as _time
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.chrome.service import Service
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+
+        opts = Options()
+        opts.add_argument("--headless=new")
+        opts.add_argument("--no-sandbox")
+        opts.add_argument("--disable-setuid-sandbox")
+        opts.add_argument("--disable-dev-shm-usage")
+        opts.add_argument("--disable-gpu")
+        opts.add_argument("--window-size=1280,900")
+
+        _chromedriver_candidates = [
+            os.environ.get("CHROMEDRIVER_BINARY", ""),
+            "/snap/bin/chromium.chromedriver",
+            "/usr/bin/chromedriver",
+        ]
+        _chromedriver_bin = next((p for p in _chromedriver_candidates if p and os.path.exists(p)), None)
+        if not _chromedriver_bin:
+            raise RuntimeError("chromedriver not found")
+
+        if "/snap/" not in _chromedriver_bin:
+            _chromium_candidates = [
+                os.environ.get("CHROMIUM_BINARY", ""),
+                "/usr/bin/chromium-browser",
+                "/usr/bin/chromium",
+            ]
+            _chromium_bin = next((p for p in _chromium_candidates if p and os.path.exists(p)), None)
+            if _chromium_bin:
+                opts.binary_location = _chromium_bin
+
+        update_spotify_import_status(
+            progress_id, state="running", stage="browser-launch",
+            message="Launching headless browser for Apple Music...",
+        )
+        print("[Apple Music] Launching headless browser...")
+        svc = Service(_chromedriver_bin)
+        driver = webdriver.Chrome(service=svc, options=opts)
+        try:
+            driver.get(fetch_url)
+
+            # Dynamic wait: proceed as soon as the first track row appears (up to 20s)
+            ROW_SELECTOR = "li[class*='songs-list-row']"
+            try:
+                WebDriverWait(driver, 20).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, ROW_SELECTOR))
+                )
+            except Exception:
+                # Page didn't render tracks — fall back to a brief wait and try page data
+                _time.sleep(3)
+
+            title_raw = driver.title or ""
+            if " - " in title_raw:
+                playlist_name = title_raw.split(" - ")[0].strip()
+
+            update_spotify_import_status(
+                progress_id, state="running", stage="browser-scrape",
+                message=f"Page loaded: \"{playlist_name}\" — reading tracks...",
+                playlist_name=playlist_name,
+            )
+
+            # After page load, retry shoebox/JSON-LD (they're more reliable if present)
+            page_source = driver.page_source
+            found_name, tracks = _tracks_from_shoebox(page_source)
+            if tracks:
+                update_spotify_import_status(
+                    progress_id, state="complete", stage="done",
+                    message=f"Imported {len(tracks)} tracks.",
+                    collected_count=len(tracks), expected_total=len(tracks), progress=100,
+                    playlist_name=found_name or playlist_name,
+                )
+                return jsonify({"name": found_name or playlist_name, "tracks": tracks, "total": len(tracks)})
+
+            found_name, tracks = _tracks_from_ld_json(page_source)
+            if tracks and any(t.get("artist") for t in tracks):
+                update_spotify_import_status(
+                    progress_id, state="complete", stage="done",
+                    message=f"Imported {len(tracks)} tracks.",
+                    collected_count=len(tracks), expected_total=len(tracks), progress=100,
+                    playlist_name=found_name or playlist_name,
+                )
+                return jsonify({"name": found_name or playlist_name, "tracks": tracks, "total": len(tracks)})
+
+            # DOM scraping — use `li[class*=…]` so we only match the row <li>, not its children
+            # Apple Music detail line is "Artist · Album" — we split on " · " to get the artist.
+            tracks_dict: dict = {}
+
+            rows = driver.find_elements(By.CSS_SELECTOR, ROW_SELECTOR)
+            if not rows:
+                rows = driver.find_elements(By.CSS_SELECTOR, "[data-testid='song-item']")
+
+            total_rows = len(rows)
+            update_spotify_import_status(
+                progress_id, state="running", stage="browser-scrape",
+                message=f"Reading {total_rows} track rows from \"{playlist_name}\"...",
+                expected_total=total_rows, playlist_name=playlist_name,
+            )
+
+            for i, row in enumerate(rows):
+                try:
+                    title = ""
+                    for sel in ["[class*='song-name']", "[class*='track-name']"]:
+                        try:
+                            title = (row.find_element(By.CSS_SELECTOR, sel).text or "").strip()
+                            if title:
+                                break
+                        except Exception:
+                            pass
+
+                    if not title:
+                        continue
+
+                    artist = ""
+                    for sel in ["[class*='song-detail']", "[class*='artist-name']",
+                                "[class*='artist']", "[class*='secondary']"]:
+                        try:
+                            raw = (row.find_element(By.CSS_SELECTOR, sel).text or "").strip()
+                            if raw:
+                                # Detail line may be "Artist · Album" — take only the artist part
+                                artist = raw.split(" · ")[0].strip()
+                                break
+                        except Exception:
+                            pass
+
+                    key = (title.lower(), artist.lower())
+                    if key not in tracks_dict:
+                        tracks_dict[key] = {
+                            "id": f"am-{abs(hash(key))}",
+                            "title": title,
+                            "artist": artist,
+                            "path": None,
+                        }
+
+                    if len(tracks_dict) % 10 == 0 and len(tracks_dict) > 0:
+                        update_spotify_import_status(
+                            progress_id, state="running", stage="browser-scrape",
+                            message=f"Found {len(tracks_dict)} tracks in \"{playlist_name}\"...",
+                            collected_count=len(tracks_dict),
+                            expected_total=total_rows,
+                            progress=int(len(tracks_dict) / max(total_rows, 1) * 100),
+                            playlist_name=playlist_name,
+                        )
+                except Exception:
+                    pass
+
+            if tracks_dict:
+                track_list = list(tracks_dict.values())
+                print(f"[Apple Music] Got {len(track_list)} tracks via Selenium DOM scraping")
+                update_spotify_import_status(
+                    progress_id, state="complete", stage="done",
+                    message=f"Imported {len(track_list)} tracks from \"{playlist_name}\".",
+                    collected_count=len(track_list), expected_total=len(track_list), progress=100,
+                    playlist_name=playlist_name,
+                )
+                return jsonify({"name": playlist_name, "tracks": track_list, "total": len(track_list)})
+        finally:
+            driver.quit()
+
+    except ImportError:
+        print("[Apple Music] Selenium not available for fallback")
+    except RuntimeError as e:
+        print(f"[Apple Music] Selenium setup failed: {e}")
+    except Exception as e:
+        print(f"[Apple Music] Selenium fallback failed: {e}")
+
+    # Last resort: use the title-only JSON-LD results we stashed earlier
+    if ld_json_fallback:
+        found_name, tracks = ld_json_fallback
+        print(f"[Apple Music] Using JSON-LD fallback: {len(tracks)} tracks (artists unknown)")
+        return jsonify({
+            "name": found_name or playlist_name,
+            "tracks": tracks,
+            "total": len(tracks),
+            "warning": "Artist names could not be extracted from this Apple Music playlist.",
+        })
+
+    return jsonify({
+        "error": (
+            "Could not extract tracks from this Apple Music playlist. "
+            "Apple Music requires authentication for most content — "
+            "make sure the playlist is publicly shared and try again."
+        )
+    }), 502
+
+
 def _spotify_client_credentials_token() -> Optional[str]:
     """Get Spotify app token when SPOTIFY_CLIENT_ID/SECRET are configured."""
     client_id = os.environ.get("SPOTIFY_CLIENT_ID")
@@ -1812,7 +2186,7 @@ def enrich_playlist_track(track: dict) -> dict:
     return enrich_track_for_ui(track)
 
 
-def download_missing_song_from_youtube(title: str, artist: str, source_id: Optional[str], album: str = None, year: str = None, album_art_url: str = None) -> Optional[str]:
+def download_missing_song_from_youtube(title: str, artist: str, source_id: Optional[str], album: str = None, year: str = None, album_art_url: str = None, skip_first: bool = False) -> Optional[str]:
     """
     Try top 5 YouTube search results.
     Download the first one that produces a valid MP3.
@@ -1867,10 +2241,14 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
 
     # Acquire semaphore to ensure only 1 download runs at a time
     with DOWNLOAD_SEMAPHORE:
-        # Try top 5 results with multiple strategies
-        for i in range(1, 6):
-            # Prefer lyric/official audio, and avoid common unwanted variants.
-            queries = [f"ytsearch{i}:{query}" for query in build_download_queries(title, artist)]
+        # Try top 5 results with multiple strategies.
+        # We use ytsearch5: once and --playlist-items N to target a specific result,
+        # so i=1 is result #1, i=2 is result #2, etc.
+        # skip_first=True (replace flow) starts at result #2 to avoid re-downloading
+        # the same wrong file that was just deleted.
+        start_i = 2 if skip_first else 1
+        for i in range(start_i, 6):
+            download_queries = build_download_queries(title, artist)
 
             # Try different extractor strategies to bypass bot detection
             strategies = [
@@ -1879,9 +2257,10 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
                 ["--extractor-args", "youtube:player_client=web"],
                 [],  # Fallback: no extra args
             ]
-            
-            for query in queries:
-                print(f"Trying YouTube result {i}: {query}")
+
+            for query in download_queries:
+                search_query = f"ytsearch5:{query}"
+                print(f"Trying YouTube result {i}: {search_query} (playlist-item {i})")
                 for idx, extra_args in enumerate(strategies):
                     # Download AUDIO ONLY for music (not video like lofi)
                     audio_template = f"{safe_artist} - {safe_title}.%(ext)s"
@@ -1891,15 +2270,14 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
                         "--extract-audio",
                         "--audio-format", "mp3",
                         "--audio-quality", "0",
-                        "--no-playlist",
-                        "--max-downloads", "1",
+                        "--playlist-items", str(i),
                         "--match-filter", (
                             f"duration > {MIN_TRACK_DURATION_SECONDS} & "
                             f"duration < {MAX_TRACK_DURATION_SECONDS}"
                         ),
                         "--no-check-certificate",
                         "--output", os.path.join(MUSIC_DIR, audio_template),
-                        query
+                        search_query
                     ]
 
                     # Run yt-dlp with timeout to prevent hanging
@@ -3482,7 +3860,7 @@ def api_replace_track():
         if youtube_url:
             real_path = download_from_youtube_url(title, artist, youtube_url, deezer_id, album, year, album_art_url)
         else:
-            real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url)
+            real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url, skip_first=True)
 
         with player.lock:
             for idx, t in enumerate(player.queue):
@@ -3568,7 +3946,7 @@ def api_replace_current_track():
         if youtube_url:
             real_path = download_from_youtube_url(title, artist, youtube_url, deezer_id, album, year, album_art_url)
         else:
-            real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url)
+            real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url, skip_first=True)
 
         with player.lock:
             for idx, t in enumerate(player.queue):
@@ -3871,6 +4249,56 @@ def api_spotify_import():
     progress_id = (data.get("progress_id") or "").strip() or None
     update_spotify_import_status(progress_id, state="running", stage="starting", message="Preparing Spotify import...", progress=0, collected_count=0, expected_total=None)
     return _import_spotify_playlist_impl(url, progress_id=progress_id)
+
+
+@app.route("/api/apple_music/import", methods=["POST"])
+def api_apple_music_import():
+    data = request.get_json() or {}
+    url = (data.get("url") or "").strip()
+    progress_id = (data.get("progress_id") or "").strip() or None
+    if not url:
+        return jsonify({"error": "Missing URL"}), 400
+    return _import_apple_music_playlist_impl(url, progress_id=progress_id)
+
+
+@app.route("/api/playlist/import", methods=["POST"])
+def api_playlist_import_autodetect():
+    """Auto-detect the music service from the URL and delegate to the right importer."""
+    data = request.get_json() or {}
+    url = (data.get("url") or "").strip()
+    progress_id = (data.get("progress_id") or "").strip() or None
+
+    if not url:
+        return jsonify({"error": "Missing URL"}), 400
+
+    source = detect_playlist_import_source(url)
+
+    if source == "spotify":
+        update_spotify_import_status(
+            progress_id,
+            state="running",
+            stage="starting",
+            message="Preparing Spotify import...",
+            progress=0,
+            collected_count=0,
+            expected_total=None,
+        )
+        return _import_spotify_playlist_impl(url, progress_id=progress_id)
+
+    if source == "apple_music":
+        return _import_apple_music_playlist_impl(url, progress_id=progress_id)
+
+    if source == "deezer":
+        return _import_deezer_playlist_impl(url)
+
+    return jsonify({
+        "error": (
+            "Unrecognized playlist URL. "
+            "Supported: Spotify (open.spotify.com), "
+            "Apple Music (music.apple.com), "
+            "Deezer (deezer.com)."
+        )
+    }), 400
 
 
 import threading

@@ -1516,6 +1516,7 @@ function renderPlaylistsTab() {
     for (const t of activeTracks) {
       await addToQueue(t);
     }
+    await apiPost("/api/play");
     await refreshState();
   });
 
@@ -1696,41 +1697,76 @@ if (btnCreatePlaylist) {
   });
 }
 
+function detectImportSource(url) {
+  const u = (url || "").trim().toLowerCase();
+  if (u.includes("spotify.com") || u.startsWith("spotify:") || /^[a-z0-9]{22}$/.test(u.trim())) return "spotify";
+  if (u.includes("music.apple.com") || /^pl\.[a-z0-9_-]+$/.test(u.trim())) return "apple_music";
+  if (u.includes("deezer.com") || /^\d+$/.test(u.trim())) return "deezer";
+  return "unknown";
+}
+
+function importSourceLabel(source) {
+  if (source === "spotify") return "Spotify";
+  if (source === "apple_music") return "Apple Music";
+  if (source === "deezer") return "Deezer";
+  return "Playlist";
+}
+
 if (btnImportSpotify) {
   btnImportSpotify.addEventListener("click", async () => {
-    const url = prompt("Enter Spotify playlist URL or ID:");
+    const url = prompt("Paste a Spotify, Apple Music, or Deezer playlist URL:");
     if (!url) return;
 
-    const progressId = `spotify-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    ACTIVE_SPOTIFY_IMPORT_ID = progressId;
+    const source = detectImportSource(url);
+    const label = importSourceLabel(source);
+    const isSpotify = source === "spotify";
+    const isApple = source === "apple_music";
+    // Both Spotify and Apple Music use the server-side progress status system
+    const needsPolling = isSpotify || isApple;
+    const progressId = needsPolling
+      ? `${source}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+      : null;
+
+    if (isSpotify) {
+      ACTIVE_SPOTIFY_IMPORT_ID = progressId;
+    }
     stopSpotifyImportPolling();
+
+    const slowNote = isApple ? " This may take up to 2 minutes." : "";
     setPlaylistImportStatus({
-      title: "Spotify Import",
+      title: `${label} Import`,
       meta: "Starting...",
-      message: "Preparing Spotify playlist import.",
+      message: `Preparing ${label} playlist import.${slowNote}`,
       progress: 4,
       state: "running",
     });
 
-    SPOTIFY_IMPORT_POLL_TIMER = window.setInterval(() => {
+    if (needsPolling && progressId) {
+      SPOTIFY_IMPORT_POLL_TIMER = window.setInterval(() => {
+        pollSpotifyImportStatus(progressId);
+      }, 900);
       pollSpotifyImportStatus(progressId);
-    }, 900);
-    pollSpotifyImportStatus(progressId);
+    }
 
     try {
-      const data = await apiPost("/api/spotify/import", { url, progress_id: progressId });
-      stopSpotifyImportPolling();
+      const payload = { url };
+      if (progressId) payload.progress_id = progressId;
+      const data = await apiPost("/api/playlist/import", payload);
+
+      if (needsPolling) stopSpotifyImportPolling();
 
       if (!data || !data.name || !Array.isArray(data.tracks)) {
-        ACTIVE_SPOTIFY_IMPORT_ID = null;
+        if (isSpotify) ACTIVE_SPOTIFY_IMPORT_ID = null;
+        if (needsPolling) stopSpotifyImportPolling();
+        const errMsg = data?.error || `Failed to import ${label} playlist.`;
         setPlaylistImportStatus({
-          title: "Spotify Import",
+          title: `${label} Import`,
           meta: "Failed",
-          message: data?.error ? `Failed to import Spotify playlist: ${data.error}` : "Failed to import Spotify playlist.",
+          message: errMsg,
           progress: 100,
           state: "error",
         });
-        alert(data?.error ? `Failed to import Spotify playlist: ${data.error}` : "Failed to import Spotify playlist.");
+        alert(errMsg);
         return;
       }
 
@@ -1744,11 +1780,12 @@ if (btnImportSpotify) {
       renderPlaylistsTab();
       savePlaylists();
 
-      ACTIVE_SPOTIFY_IMPORT_ID = null;
+      if (isSpotify) ACTIVE_SPOTIFY_IMPORT_ID = null;
+      if (needsPolling) stopSpotifyImportPolling();
       setPlaylistImportStatus({
-        title: `Spotify Import: ${name}`,
+        title: `${label} Import: ${name}`,
         meta: wasExisting ? "Playlist updated" : "Playlist imported",
-        message: `Stored ${data.tracks.length} tracks and synced the playlist with Spotify's latest version.`,
+        message: `Stored ${data.tracks.length} tracks.`,
         progress: 100,
         state: "complete",
       });
@@ -1758,16 +1795,18 @@ if (btnImportSpotify) {
         alert(data.warning);
       }
     } catch (e) {
-      stopSpotifyImportPolling();
-      ACTIVE_SPOTIFY_IMPORT_ID = null;
+      if (needsPolling) stopSpotifyImportPolling();
+      if (isSpotify) {
+        ACTIVE_SPOTIFY_IMPORT_ID = null;
+      }
       setPlaylistImportStatus({
-        title: "Spotify Import",
+        title: `${label} Import`,
         meta: "Failed",
-        message: `Failed to import Spotify playlist: ${e.message}`,
+        message: `Failed to import playlist: ${e.message}`,
         progress: 100,
         state: "error",
       });
-      alert(`Failed to import Spotify playlist: ${e.message}`);
+      alert(`Failed to import playlist: ${e.message}`);
     }
   });
 }

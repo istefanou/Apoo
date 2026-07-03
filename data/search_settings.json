@@ -1,6 +1,6 @@
 {
   "whitelist_words": [
-    "lyric video"
+    "lyrics"
   ],
   "blacklist_words": [
     "live",
