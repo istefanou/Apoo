@@ -40,13 +40,23 @@
     "title": "What It Sounds Like"
   },
   {
-    "id": "ROSAL\u00cdA_-_BIZCOCHITO-replace",
-    "title": "BIZCOCHITO",
     "artist": "ROSAL\u00cdA",
+    "artwork_url": "https://lastfm.freetls.fastly.net/i/u/300x300/ae581f3ad8e454ea973e91ae82d22d71.png",
     "deezer_id": null,
-    "spotify_id": "4kXxEhuatrvwrTQycA7s9B",
-    "path": "/home/pi4/Projects/Apoo/music/ROSAL\u00cdA - BIZCOCHITO.mp3",
     "duration": 109.58367346938776,
-    "artwork_url": "https://lastfm.freetls.fastly.net/i/u/300x300/ae581f3ad8e454ea973e91ae82d22d71.png"
+    "id": "ROSAL\u00cdA_-_BIZCOCHITO-replace",
+    "path": "/home/pi4/Projects/Apoo/music/ROSAL\u00cdA - BIZCOCHITO.mp3",
+    "spotify_id": "4kXxEhuatrvwrTQycA7s9B",
+    "title": "BIZCOCHITO"
+  },
+  {
+    "id": "4071873431",
+    "title": "Knees Now (Downloading)",
+    "artist": "Ash Reed Music",
+    "deezer_id": "4071873431",
+    "spotify_id": null,
+    "path": null,
+    "duration": null,
+    "artwork_url": "https://cdn-images.dzcdn.net/images/cover/ab58eadd31c512900220353eb46e6166/1000x1000-000000-80-0-0.jpg"
   }
 ]
