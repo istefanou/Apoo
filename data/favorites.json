@@ -50,13 +50,23 @@
     "title": "BIZCOCHITO"
   },
   {
+    "id": "Made_of_Marble_-_Living_At_The_Sea-replace",
+    "title": "Living At The Sea",
+    "artist": "Made of Marble",
+    "deezer_id": null,
+    "spotify_id": null,
+    "path": "/home/pi4/Projects/Apoo/music/Made_of_Marble - Living_At_The_Sea.mp3",
+    "duration": 268.98285714285714,
+    "artwork_url": null
+  },
+  {
     "id": "4071873431",
-    "title": "Knees Now (Downloading)",
+    "title": "Knees Now",
     "artist": "Ash Reed Music",
     "deezer_id": "4071873431",
     "spotify_id": null,
     "path": null,
-    "duration": null,
+    "duration": 242,
     "artwork_url": "https://cdn-images.dzcdn.net/images/cover/ab58eadd31c512900220353eb46e6166/1000x1000-000000-80-0-0.jpg"
   }
 ]
