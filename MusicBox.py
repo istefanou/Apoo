@@ -30,6 +30,9 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 PLAYLISTS_FILE = os.path.join(DATA_DIR, "playlists.json")
 FAVORITES_FILE = os.path.join(DATA_DIR, "favorites.json")
 SEARCH_SETTINGS_FILE = os.path.join(DATA_DIR, "search_settings.json")
+DOWNLOAD_DEBUG_FILE = os.path.join(DATA_DIR, "download_debug.json")
+DOWNLOAD_DEBUG_MAX_ENTRIES = 500
+DOWNLOAD_DEBUG_LOCK = threading.Lock()
 APOO_SERVICE_NAME = os.getenv("APOO_SERVICE_NAME", "smart_home_apoo.service")
 MAX_SETTINGS_JOURNAL_LINES = 1000
 SPOTIFY_IMPORT_STATUS_TTL_SECONDS = 1800
@@ -308,12 +311,18 @@ def format_search_term(term: str, exclude: bool = False) -> str:
     return f"-{cleaned}" if exclude else cleaned
 
 
-def build_download_queries(title: str, artist: str) -> list[str]:
-    """Build yt-dlp queries from persisted whitelist/blacklist settings."""
+def build_download_queries(title: str, artist: str, extra_whitelist: Optional[list[str]] = None, extra_blacklist: Optional[list[str]] = None) -> list[str]:
+    """Build yt-dlp queries from persisted whitelist/blacklist settings.
+
+    extra_whitelist/extra_blacklist are one-off keywords supplied by the
+    "correct this song" retry flow (not persisted to search_settings.json).
+    """
     settings = load_search_settings()
     base_query = f"{title} {artist}".strip()
-    whitelist = " ".join(filter(None, [format_search_term(term) for term in settings.get("whitelist_words", [])]))
-    blacklist = " ".join(filter(None, [format_search_term(term, exclude=True) for term in settings.get("blacklist_words", [])]))
+    whitelist_words = list(settings.get("whitelist_words", [])) + normalize_word_list(extra_whitelist)
+    blacklist_words = list(settings.get("blacklist_words", [])) + normalize_word_list(extra_blacklist)
+    whitelist = " ".join(filter(None, [format_search_term(term) for term in whitelist_words]))
+    blacklist = " ".join(filter(None, [format_search_term(term, exclude=True) for term in blacklist_words]))
 
     queries = []
     with_whitelist = " ".join(part for part in [base_query, whitelist, blacklist] if part).strip()
@@ -325,6 +334,70 @@ def build_download_queries(title: str, artist: str) -> list[str]:
         queries.append(fallback)
 
     return queries or [base_query]
+
+
+def download_debug_key(title: str, artist: str) -> str:
+    """Stable key for the download-debug log, based on title/artist."""
+    return f"name::{(title or '').strip().lower()}::{(artist or '').strip().lower()}"
+
+
+def load_download_debug() -> dict:
+    return load_json(DOWNLOAD_DEBUG_FILE, {})
+
+
+def save_download_debug_entry(key: str, entry: dict):
+    """Merge/persist one debug entry (query, top-5 candidates, chosen url) for a track."""
+    with DOWNLOAD_DEBUG_LOCK:
+        data = load_download_debug()
+        entry["updated_at"] = datetime.now().isoformat()
+        data[key] = entry
+        if len(data) > DOWNLOAD_DEBUG_MAX_ENTRIES:
+            oldest_keys = sorted(data.keys(), key=lambda k: data[k].get("updated_at", ""))[: len(data) - DOWNLOAD_DEBUG_MAX_ENTRIES]
+            for k in oldest_keys:
+                data.pop(k, None)
+        save_json(DOWNLOAD_DEBUG_FILE, data)
+
+
+def fetch_youtube_search_candidates(query: str, count: int = 5) -> list[dict]:
+    """Cheaply list the top N YouTube search results (no download) for debugging/correction.
+
+    Returns a list of {index, id, url, title, duration, uploader}. Best-effort only:
+    on any failure returns an empty list so callers can proceed without candidate data.
+    """
+    search_query = f"ytsearch{count}:{query}"
+    command = [
+        *resolve_yt_dlp_command(),
+        "--flat-playlist",
+        "--dump-json",
+        "--no-check-certificate",
+        search_query,
+    ]
+    try:
+        result = subprocess.run(command, shell=False, capture_output=True, text=True, timeout=30)
+    except Exception as e:
+        print(f"[download-debug] Candidate search failed: {e}")
+        return []
+
+    candidates = []
+    for i, line in enumerate(result.stdout.splitlines(), start=1):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            info = json.loads(line)
+        except Exception:
+            continue
+        video_id = info.get("id")
+        url = info.get("url") or (f"https://www.youtube.com/watch?v={video_id}" if video_id else None)
+        candidates.append({
+            "index": i,
+            "id": video_id,
+            "url": url,
+            "title": info.get("title"),
+            "duration": info.get("duration"),
+            "uploader": info.get("uploader") or info.get("channel"),
+        })
+    return candidates
 
 
 def get_track_cache_key(track: dict) -> str:
@@ -2186,7 +2259,7 @@ def enrich_playlist_track(track: dict) -> dict:
     return enrich_track_for_ui(track)
 
 
-def download_missing_song_from_youtube(title: str, artist: str, source_id: Optional[str], album: str = None, year: str = None, album_art_url: str = None, skip_first: bool = False) -> Optional[str]:
+def download_missing_song_from_youtube(title: str, artist: str, source_id: Optional[str], album: str = None, year: str = None, album_art_url: str = None, skip_first: bool = False, extra_whitelist: Optional[list[str]] = None, extra_blacklist: Optional[list[str]] = None) -> Optional[str]:
     """
     Try top 5 YouTube search results.
     Download the first one that produces a valid MP3.
@@ -2239,6 +2312,21 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
                         print(f"Failed to repair existing MP3 metadata: {e}")
             return final_mp3
 
+    debug_key = download_debug_key(title, artist)
+    primary_query = build_download_queries(title, artist, extra_whitelist, extra_blacklist)[0]
+    debug_candidates = fetch_youtube_search_candidates(primary_query, 5)
+    debug_entry = {
+        "title": title,
+        "artist": artist,
+        "query": primary_query,
+        "extra_whitelist": extra_whitelist or [],
+        "extra_blacklist": extra_blacklist or [],
+        "candidates": debug_candidates,
+        "chosen_index": None,
+        "chosen_url": None,
+        "download_success": False,
+    }
+
     # Acquire semaphore to ensure only 1 download runs at a time
     with DOWNLOAD_SEMAPHORE:
         # Try top 5 results with multiple strategies.
@@ -2247,8 +2335,9 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
         # skip_first=True (replace flow) starts at result #2 to avoid re-downloading
         # the same wrong file that was just deleted.
         start_i = 2 if skip_first else 1
+        success_query = None
         for i in range(start_i, 6):
-            download_queries = build_download_queries(title, artist)
+            download_queries = build_download_queries(title, artist, extra_whitelist, extra_blacklist)
 
             # Try different extractor strategies to bypass bot detection
             strategies = [
@@ -2302,6 +2391,7 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
                                 continue
 
                             print(f"✓ Downloaded MP3: {final_mp3}")
+                            success_query = query
                             break  # Success, exit strategy loop
                         else:
                             print(f"✗ MP3 not found at {final_mp3}")
@@ -2316,6 +2406,13 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
             # If we successfully downloaded, break out of result loop
             if os.path.exists(final_mp3):
                 print("Downloaded:", final_mp3)
+
+                chosen_candidate = next((c for c in debug_candidates if c["index"] == i), None)
+                debug_entry["chosen_index"] = i
+                debug_entry["chosen_query"] = success_query
+                debug_entry["chosen_url"] = (chosen_candidate or {}).get("url") if success_query == primary_query else None
+                debug_entry["download_success"] = True
+                save_download_debug_entry(debug_key, debug_entry)
 
                 deezer_tag = str(source_id) if source_id and str(source_id).isdigit() else None
                 metadata_written = upsert_mp3_metadata(
@@ -2359,6 +2456,7 @@ def download_missing_song_from_youtube(title: str, artist: str, source_id: Optio
 
             print(f"Result {i} failed, trying next…")
 
+    save_download_debug_entry(debug_key, debug_entry)
     print(f"\n{'='*60}")
     print(f"✗ DOWNLOAD FAILED: {artist} - {title}")
     print(f"All 5 YouTube search attempts failed")
@@ -2419,9 +2517,22 @@ def download_from_youtube_url(title: str, artist: str, youtube_url: str, deezer_
             except Exception as e:
                 print(f"✗ URL download error: {e}")
 
+    debug_key = download_debug_key(title, artist)
     if os.path.exists(final_mp3):
         deezer_tag = str(deezer_id) if deezer_id and str(deezer_id).isdigit() else None
         upsert_mp3_metadata(final_mp3, title, artist, album, year, album_art_url, deezer_tag)
+        prior_entry = load_download_debug().get(debug_key, {})
+        save_download_debug_entry(debug_key, {
+            **prior_entry,
+            "title": title,
+            "artist": artist,
+            "query": None,
+            "chosen_index": None,
+            "chosen_query": None,
+            "chosen_url": youtube_url,
+            "download_success": True,
+            "manual_url": True,
+        })
         print(f"\n{'='*60}")
         print(f"✓ URL DOWNLOAD SUCCESS: {artist} - {title}")
         print(f"{'='*60}\n")
@@ -3787,6 +3898,21 @@ def api_delete_track():
     return jsonify({"status": "ok"})
 
 
+@app.route("/api/download-debug", methods=["GET"])
+def api_download_debug():
+    """Return the last search/download debug info (query, top-5 candidates, chosen URL) for a track."""
+    title = request.args.get("title", "")
+    artist = request.args.get("artist", "")
+    if not title or not artist:
+        return jsonify({"error": "title and artist required"}), 400
+
+    key = download_debug_key(title, artist)
+    entry = load_download_debug().get(key)
+    if not entry:
+        return jsonify({"found": False})
+    return jsonify({"found": True, "entry": entry})
+
+
 @app.route("/api/queue/replace-track", methods=["POST"])
 def api_replace_track():
     """Delete the wrong local file for a queued track and re-download the correct version."""
@@ -3798,6 +3924,8 @@ def api_replace_track():
     deezer_id = data.get("deezer_id")
     spotify_id = data.get("spotify_id")
     artwork_url = data.get("artwork_url")
+    extra_whitelist = data.get("extra_whitelist") or []
+    extra_blacklist = data.get("extra_blacklist") or []
 
     if not track_id:
         return jsonify({"error": "track id required"}), 400
@@ -3860,7 +3988,10 @@ def api_replace_track():
         if youtube_url:
             real_path = download_from_youtube_url(title, artist, youtube_url, deezer_id, album, year, album_art_url)
         else:
-            real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url, skip_first=True)
+            real_path = download_missing_song_from_youtube(
+                title, artist, source_id, album, year, album_art_url,
+                skip_first=True, extra_whitelist=extra_whitelist, extra_blacklist=extra_blacklist,
+            )
 
         with player.lock:
             for idx, t in enumerate(player.queue):
@@ -3888,6 +4019,8 @@ def api_replace_current_track():
     """Skip the currently playing track, delete its file, and re-download to end of queue."""
     data = request.get_json() or {}
     youtube_url = data.get("youtube_url")
+    extra_whitelist = data.get("extra_whitelist") or []
+    extra_blacklist = data.get("extra_blacklist") or []
 
     with player.lock:
         if not player.current:
@@ -3946,7 +4079,10 @@ def api_replace_current_track():
         if youtube_url:
             real_path = download_from_youtube_url(title, artist, youtube_url, deezer_id, album, year, album_art_url)
         else:
-            real_path = download_missing_song_from_youtube(title, artist, source_id, album, year, album_art_url, skip_first=True)
+            real_path = download_missing_song_from_youtube(
+                title, artist, source_id, album, year, album_art_url,
+                skip_first=True, extra_whitelist=extra_whitelist, extra_blacklist=extra_blacklist,
+            )
 
         with player.lock:
             for idx, t in enumerate(player.queue):

@@ -2374,6 +2374,33 @@ function showReplaceTrackDialog(track, { isCurrent = false } = {}) {
   urlRow.appendChild(urlInput);
   urlRow.appendChild(confirmBtn);
 
+  // ---- Debug panel: last search query + top-5 candidates from the last download attempt ----
+  const debugPanel = document.createElement("div");
+  debugPanel.className = "modal-debug-panel";
+  debugPanel.textContent = "Loading last search info…";
+
+  // ---- Retry-with-keywords controls ----
+  const keywordsRow = document.createElement("div");
+  keywordsRow.className = "modal-keywords-row hidden";
+
+  const whitelistInput = document.createElement("input");
+  whitelistInput.type = "text";
+  whitelistInput.className = "modal-keywords-input";
+  whitelistInput.placeholder = "Add keywords (comma-separated), e.g. lyrics, official";
+
+  const blacklistInput = document.createElement("input");
+  blacklistInput.type = "text";
+  blacklistInput.className = "modal-keywords-input";
+  blacklistInput.placeholder = "Exclude keywords (comma-separated), e.g. remix, live";
+
+  const retryBtn = document.createElement("button");
+  retryBtn.className = "modal-btn modal-btn-secondary";
+  retryBtn.textContent = "Retry Search With Keywords";
+
+  keywordsRow.appendChild(whitelistInput);
+  keywordsRow.appendChild(blacklistInput);
+  keywordsRow.appendChild(retryBtn);
+
   const cancelBtn = document.createElement("button");
   cancelBtn.className = "modal-btn modal-btn-cancel";
   cancelBtn.textContent = "Cancel";
@@ -2383,6 +2410,8 @@ function showReplaceTrackDialog(track, { isCurrent = false } = {}) {
   dialog.appendChild(descEl);
   dialog.appendChild(btnsRow);
   dialog.appendChild(urlRow);
+  dialog.appendChild(keywordsRow);
+  dialog.appendChild(debugPanel);
   dialog.appendChild(cancelBtn);
   overlay.appendChild(dialog);
   document.body.appendChild(overlay);
@@ -2393,11 +2422,18 @@ function showReplaceTrackDialog(track, { isCurrent = false } = {}) {
     replaceTrackModal = null;
   }
 
-  async function doReplace(youtubeUrl) {
+  function parseKeywords(input) {
+    return input.value
+      .split(",")
+      .map((w) => w.trim())
+      .filter(Boolean);
+  }
+
+  async function doReplace(youtubeUrl, extra = {}) {
     closeModal();
     let res;
     if (isCurrent) {
-      const payload = {};
+      const payload = { ...extra };
       if (youtubeUrl) payload.youtube_url = youtubeUrl;
       res = await apiPost("/api/current/replace", payload);
     } else {
@@ -2408,6 +2444,7 @@ function showReplaceTrackDialog(track, { isCurrent = false } = {}) {
         deezer_id: track.deezer_id || null,
         spotify_id: track.spotify_id || null,
         artwork_url: track.artwork_url || null,
+        ...extra,
       };
       if (youtubeUrl) payload.youtube_url = youtubeUrl;
       res = await apiPost("/api/queue/replace-track", payload);
@@ -2441,10 +2478,80 @@ function showReplaceTrackDialog(track, { isCurrent = false } = {}) {
     if (e.key === "Escape") closeModal();
   });
 
+  retryBtn.addEventListener("click", () => {
+    doReplace(null, {
+      extra_whitelist: parseKeywords(whitelistInput),
+      extra_blacklist: parseKeywords(blacklistInput),
+    });
+  });
+
   cancelBtn.addEventListener("click", closeModal);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeModal();
   });
+
+  // Load debug info (last query + top-5 candidates) for this track so the user
+  // can see why the wrong song was picked and jump straight to another candidate.
+  (async () => {
+    try {
+      const res = await apiGet(
+        `/api/download-debug?title=${encodeURIComponent(track.title)}&artist=${encodeURIComponent(track.artist)}`
+      );
+      if (!res?.found) {
+        debugPanel.textContent = "No search history recorded for this track yet.";
+        keywordsRow.classList.remove("hidden");
+        return;
+      }
+
+      const entry = res.entry;
+      debugPanel.innerHTML = "";
+
+      const queryLine = document.createElement("div");
+      queryLine.className = "modal-debug-query";
+      queryLine.textContent = entry.query ? `Last search query: "${entry.query}"` : "Last correction used a manual URL.";
+      debugPanel.appendChild(queryLine);
+
+      const chosenLine = document.createElement("div");
+      chosenLine.className = "modal-debug-chosen";
+      chosenLine.textContent = entry.chosen_url
+        ? `Downloaded from: ${entry.chosen_url}${entry.chosen_index ? ` (result #${entry.chosen_index})` : ""}`
+        : "Downloaded track's exact source URL is unknown (matched via fallback query).";
+      debugPanel.appendChild(chosenLine);
+
+      const candidates = entry.candidates || [];
+      if (candidates.length) {
+        const list = document.createElement("div");
+        list.className = "modal-debug-candidates";
+        candidates.forEach((c) => {
+          const row = document.createElement("div");
+          row.className = "modal-debug-candidate-row";
+          if (entry.chosen_url && c.url === entry.chosen_url) {
+            row.classList.add("modal-debug-candidate-chosen");
+          }
+
+          const info = document.createElement("span");
+          info.className = "modal-debug-candidate-info";
+          const durationStr = c.duration ? `${Math.round(c.duration / 60)}:${String(Math.round(c.duration % 60)).padStart(2, "0")}` : "?";
+          info.textContent = `#${c.index} · ${c.title || "Unknown"} · ${c.uploader || "?"} · ${durationStr}`;
+
+          const useBtn = document.createElement("button");
+          useBtn.className = "modal-btn modal-btn-secondary modal-debug-use-btn";
+          useBtn.textContent = "Use This";
+          useBtn.addEventListener("click", () => doReplace(c.url));
+
+          row.appendChild(info);
+          row.appendChild(useBtn);
+          list.appendChild(row);
+        });
+        debugPanel.appendChild(list);
+      }
+
+      keywordsRow.classList.remove("hidden");
+    } catch (e) {
+      debugPanel.textContent = "Failed to load search debug info.";
+      keywordsRow.classList.remove("hidden");
+    }
+  })();
 }
 
 

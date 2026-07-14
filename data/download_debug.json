@@ -1,0 +1,118 @@
+{
+  "name::fairytale::alexander rybak": {
+    "title": "Fairytale",
+    "artist": "Alexander Rybak",
+    "query": "Fairytale Alexander Rybak lyrics \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic -live",
+    "extra_whitelist": [
+      "lyric video"
+    ],
+    "extra_blacklist": [
+      "live"
+    ],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "C2Y2a48a-DY",
+        "url": "https://www.youtube.com/watch?v=C2Y2a48a-DY",
+        "title": "Fairytale \u2013 Alexander Rybak | Aesthetic Music Video [Lyrics]",
+        "duration": 181.0,
+        "uploader": "EchoVerse"
+      },
+      {
+        "index": 2,
+        "id": "_UIndRNZ4a0",
+        "url": "https://www.youtube.com/watch?v=_UIndRNZ4a0",
+        "title": "fairytale song by Alexander Rybak and kim Bergseth lyric video",
+        "duration": 183.0,
+        "uploader": "THE BEAT HORIZION"
+      },
+      {
+        "index": 3,
+        "id": "F6OmmUhQt0Q",
+        "url": "https://www.youtube.com/watch?v=F6OmmUhQt0Q",
+        "title": "alexander rybakfairytale slowedreverb lyric video tiktok version",
+        "duration": 227.0,
+        "uploader": "Like Tiger Song"
+      },
+      {
+        "index": 4,
+        "id": "L1lFlHZPKw0",
+        "url": "https://www.youtube.com/watch?v=L1lFlHZPKw0",
+        "title": "~Fairytale~ GCMV || Alexander Rybak || a normal human",
+        "duration": 188.0,
+        "uploader": "a normal human"
+      },
+      {
+        "index": 5,
+        "id": "ueudJ1jfWh0",
+        "url": "https://www.youtube.com/watch?v=ueudJ1jfWh0",
+        "title": "Alexander Rybak \u2013 Fairytale (Lyric Video)",
+        "duration": 143.0,
+        "uploader": "c4 Lyrics"
+      }
+    ],
+    "chosen_index": 2,
+    "chosen_url": "https://www.youtube.com/watch?v=_UIndRNZ4a0",
+    "download_success": true,
+    "chosen_query": "Fairytale Alexander Rybak lyrics \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic -live",
+    "updated_at": "2026-07-14T22:09:08.568730"
+  },
+  "name::euphoria::loreen": {
+    "title": "Euphoria",
+    "artist": "Loreen",
+    "query": "Euphoria Loreen lyrics \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic -live",
+    "extra_whitelist": [
+      "lyric video"
+    ],
+    "extra_blacklist": [
+      "live"
+    ],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "8-e3ZIMig48",
+        "url": "https://www.youtube.com/watch?v=8-e3ZIMig48",
+        "title": "Loreen-Euphoria Lyric video (\u0447\u0438\u043a\u0456 \u0431\u0443\u043b\u043e\u0447\u043a\u0430)",
+        "duration": 180.0,
+        "uploader": "\u0427\u0438\u043a\u0456 \u0431\u0443\u043b\u043e\u0447\u043a\u0430 music muz"
+      },
+      {
+        "index": 2,
+        "id": "demHyjJn7v8",
+        "url": "https://www.youtube.com/watch?v=demHyjJn7v8",
+        "title": "Euphoria - Loreen (lyrics)",
+        "duration": 179.0,
+        "uploader": "TheLEDcreations"
+      },
+      {
+        "index": 3,
+        "id": "DH4UGrtpTpw",
+        "url": "https://www.youtube.com/watch?v=DH4UGrtpTpw",
+        "title": "Euphoria Loreen Lyrics",
+        "duration": 190.0,
+        "uploader": "Chlo\u00eb Janssens"
+      },
+      {
+        "index": 4,
+        "id": "s1MA8oO7iLY",
+        "url": "https://www.youtube.com/watch?v=s1MA8oO7iLY",
+        "title": "loreen Euphoria",
+        "duration": 221.0,
+        "uploader": "GhostGirl The weirdo"
+      },
+      {
+        "index": 5,
+        "id": "fkpmtzLHi-o",
+        "url": "https://www.youtube.com/watch?v=fkpmtzLHi-o",
+        "title": "loreen euphoria/\u03b5\u03c5\u03c6\u03bf\u03c1\u03af\u03b1 \u03bb\u03bf\u03c5\u03bb\u03bf\u03c5\u03b4\u03b9\u03ce\u03bd/\u0446\u0432\u0435\u0442\u043e\u0447\u043d\u0430\u044f \u044d\u0439\u0444\u043e\u0440\u0438\u044f",
+        "duration": 58.0,
+        "uploader": "\u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u044a\u0440 \u0414\u0435\u0431\u043b\u044c\u043e"
+      }
+    ],
+    "chosen_index": 2,
+    "chosen_url": "https://www.youtube.com/watch?v=demHyjJn7v8",
+    "download_success": true,
+    "chosen_query": "Euphoria Loreen lyrics \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic -live",
+    "updated_at": "2026-07-14T22:10:37.943579"
+  }
+}
