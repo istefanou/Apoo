@@ -114,5 +114,100 @@
     "download_success": true,
     "chosen_query": "Euphoria Loreen lyrics \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic -live",
     "updated_at": "2026-07-14T22:10:37.943579"
+  },
+  "name::lo que dej\u00e9 atr\u00e1s::rammor": {
+    "title": "lo que dej\u00e9 atr\u00e1s",
+    "artist": "Rammor",
+    "query": "lo que dej\u00e9 atr\u00e1s Rammor \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-07-17T23:47:20.164048"
+  },
+  "name::you don't need anyone::oskar med k,\u00a0kris. monda\u00e9": {
+    "title": "You Don't Need Anyone",
+    "artist": "oskar med k,\u00a0kris. monda\u00e9",
+    "query": "You Don't Need Anyone oskar med k,\u00a0kris. monda\u00e9 \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-07-17T23:49:10.175525"
+  },
+  "name::pumped up kicks::foster the people": {
+    "title": "Pumped Up Kicks",
+    "artist": "Foster The People",
+    "query": "Pumped Up Kicks Foster The People \"lyric video\" \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [
+      "Lyric video"
+    ],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "knqRA-zezs8",
+        "url": "https://www.youtube.com/watch?v=knqRA-zezs8",
+        "title": "Foster The People - Pumped Up Kicks (Lyrics)",
+        "duration": 221.0,
+        "uploader": "Lost Panda"
+      },
+      {
+        "index": 2,
+        "id": "PfvYMVVJez0",
+        "url": "https://www.youtube.com/watch?v=PfvYMVVJez0",
+        "title": "Foster the People - Pumped Up Kicks  (Lyric Video)",
+        "duration": 239.0,
+        "uploader": "SnowChill"
+      },
+      {
+        "index": 3,
+        "id": "rpTErkBEPu0",
+        "url": "https://www.youtube.com/watch?v=rpTErkBEPu0",
+        "title": "Foster The People - Pumped Up Kicks - Foster the People (Lyric Video)",
+        "duration": 257.0,
+        "uploader": "Lyrical Music"
+      },
+      {
+        "index": 4,
+        "id": "4qh8j2gisBo",
+        "url": "https://www.youtube.com/watch?v=4qh8j2gisBo",
+        "title": "Pumped Up Kicks by Foster The People | Lyrics",
+        "duration": 248.0,
+        "uploader": "kerr"
+      },
+      {
+        "index": 5,
+        "id": "ltLXYM3ON9g",
+        "url": "https://www.youtube.com/watch?v=ltLXYM3ON9g",
+        "title": "Foster The People - Pumped Up Kicks [Lyrics]",
+        "duration": 249.0,
+        "uploader": "Lyrics Man"
+      }
+    ],
+    "chosen_index": 2,
+    "chosen_url": "https://www.youtube.com/watch?v=PfvYMVVJez0",
+    "download_success": true,
+    "chosen_query": "Pumped Up Kicks Foster The People \"lyric video\" \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-18T00:03:17.580549"
+  },
+  "name::i think i'm addicted::oskar med k,\u00a0haley joelle": {
+    "title": "i think i'm addicted",
+    "artist": "oskar med k,\u00a0Haley Joelle",
+    "query": "i think i'm addicted oskar med k,\u00a0Haley Joelle \"lyric video\" \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [
+      "Lyric video"
+    ],
+    "extra_blacklist": [],
+    "candidates": [],
+    "chosen_index": 2,
+    "chosen_url": null,
+    "download_success": true,
+    "chosen_query": "i think i'm addicted oskar med k,\u00a0Haley Joelle -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-18T00:21:11.450849"
   }
 }
