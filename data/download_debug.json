@@ -209,5 +209,39 @@
     "download_success": true,
     "chosen_query": "i think i'm addicted oskar med k,\u00a0Haley Joelle -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "updated_at": "2026-07-18T00:21:11.450849"
+  },
+  "name::escapate::bellakos mafia mx,\u00a0grass kndla,\u00a0trauma,\u00a0aleks": {
+    "title": "Escapate",
+    "artist": "BELLAKOS MAFIA mx,\u00a0Grass Kndla,\u00a0Trauma,\u00a0Aleks",
+    "query": "Escapate BELLAKOS MAFIA mx,\u00a0Grass Kndla,\u00a0Trauma,\u00a0Aleks \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-07-24T22:00:12.010228"
+  },
+  "name::sere (remix)::spinall,\u00a0fireboy dml,\u00a06lack": {
+    "title": "Sere (Remix)",
+    "artist": "SPINALL,\u00a0Fireboy DML,\u00a06LACK",
+    "query": "Sere (Remix) SPINALL,\u00a0Fireboy DML,\u00a06LACK \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "xaMbRLPmsxg",
+        "url": "https://www.youtube.com/watch?v=xaMbRLPmsxg",
+        "title": "Rema Ft. Fireboy DML, Tiwa Savage & YKB - Oshofree (Official Video)",
+        "duration": 126.0,
+        "uploader": "RulerTv"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=xaMbRLPmsxg",
+    "download_success": true,
+    "chosen_query": "Sere (Remix) SPINALL,\u00a0Fireboy DML,\u00a06LACK \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-24T22:00:27.794788"
   }
 }
