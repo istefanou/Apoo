@@ -1,7 +1,5 @@
 {
-  "whitelist_words": [
-    "lyric video"
-  ],
+  "whitelist_words": [],
   "blacklist_words": [
     "live",
     "nightcore",

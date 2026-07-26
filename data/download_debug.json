@@ -243,5 +243,1149 @@
     "download_success": true,
     "chosen_query": "Sere (Remix) SPINALL,\u00a0Fireboy DML,\u00a06LACK \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "updated_at": "2026-07-24T22:00:27.794788"
+  },
+  "name::the power of prophecy::ramin djawadi": {
+    "title": "The Power of Prophecy",
+    "artist": "Ramin Djawadi",
+    "query": "The Power of Prophecy Ramin Djawadi \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "7HbVXCzJXJE",
+        "url": "https://www.youtube.com/watch?v=7HbVXCzJXJE",
+        "title": "Video comments to Christian Reindl   Risk It All ft  Ruuth Official Lyric Video # 2",
+        "duration": 523.0,
+        "uploader": "Lilly Nelson"
+      },
+      {
+        "index": 2,
+        "id": "CFRn0kSO4zA",
+        "url": "https://www.youtube.com/watch?v=CFRn0kSO4zA",
+        "title": "Targaryen Dance",
+        "duration": 115.0,
+        "uploader": "Ramin Djawadi - Topic"
+      },
+      {
+        "index": 3,
+        "id": "_ekmKJgzaLQ",
+        "url": "https://www.youtube.com/watch?v=_ekmKJgzaLQ",
+        "title": "GAME OF THRONES | WHEN THE SKY FALLS DOWN",
+        "duration": 290.0,
+        "uploader": "alyakaz"
+      },
+      {
+        "index": 4,
+        "id": "RNoPmdduYC0",
+        "url": "https://www.youtube.com/watch?v=RNoPmdduYC0",
+        "title": "The Blightstar Rises (Critical Role Ruidus Fan Theme)",
+        "duration": 125.0,
+        "uploader": "Astral Bard"
+      },
+      {
+        "index": 5,
+        "id": "IsBA4VRx278",
+        "url": "https://www.youtube.com/watch?v=IsBA4VRx278",
+        "title": "(GoT) Cersei Lannister || The Queen Of The Seven Kingdoms",
+        "duration": 509.0,
+        "uploader": "Zurik 23M"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=7HbVXCzJXJE",
+    "download_success": true,
+    "chosen_query": "The Power of Prophecy Ramin Djawadi \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:06:29.342167"
+  },
+  "name::protector of the realm::ramin djawadi": {
+    "title": "Protector of the Realm",
+    "artist": "Ramin Djawadi",
+    "query": null,
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "0_uJCUQcvkM",
+        "url": "https://www.youtube.com/watch?v=0_uJCUQcvkM",
+        "title": "Aegon's dream #houseofthedragon",
+        "duration": 143.0,
+        "uploader": "Random Stuff"
+      },
+      {
+        "index": 2,
+        "id": "CFRn0kSO4zA",
+        "url": "https://www.youtube.com/watch?v=CFRn0kSO4zA",
+        "title": "Targaryen Dance",
+        "duration": 115.0,
+        "uploader": "Ramin Djawadi - Topic"
+      },
+      {
+        "index": 3,
+        "id": "-O6luVyNaYA",
+        "url": "https://www.youtube.com/watch?v=-O6luVyNaYA",
+        "title": "House of the Dragon EP8 - Moment \u0e2a\u0e38\u0e14\u0e17\u0e49\u0e32\u0e22\u0e02\u0e2d\u0e07 King Viserys / Daemon \u0e44\u0e14\u0e49\u0e04\u0e39\u0e48\u0e41\u0e02\u0e48\u0e07\u0e15\u0e31\u0e27\u0e40\u0e1b\u0e34\u0e14\u0e17\u0e35\u0e48\u0e2a\u0e21\u0e19\u0e49\u0e33\u0e2a\u0e21\u0e40\u0e19\u0e37\u0e49\u0e2d",
+        "duration": 2253.0,
+        "uploader": "\u0e40\u0e25\u0e48\u0e32 by ptns"
+      },
+      {
+        "index": 4,
+        "id": "7B9myEMyB90",
+        "url": "https://www.youtube.com/watch?v=7B9myEMyB90",
+        "title": "Race 2016 OST Please Take Your Last Jump",
+        "duration": 145.0,
+        "uploader": "Ermi Ross"
+      },
+      {
+        "index": 5,
+        "id": "Q_pAV-5KK1Y",
+        "url": "https://www.youtube.com/watch?v=Q_pAV-5KK1Y",
+        "title": "[Spoilers] | Reaction Video | Game of Thrones Season 8 Episode 6 | The Finale",
+        "duration": 2651.0,
+        "uploader": "The Melodramatic Bookworm"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": "https://www.youtube.com/watch?v=fIDvKrUM1V0&list=RDfIDvKrUM1V0&start_radio=1",
+    "download_success": true,
+    "chosen_query": null,
+    "updated_at": "2026-07-26T13:26:00.147171",
+    "manual_url": true
+  },
+  "name::prologue::john williams": {
+    "title": "Prologue",
+    "artist": "John Williams",
+    "query": "Prologue John Williams \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "kNx50AjsCrs",
+        "url": "https://www.youtube.com/watch?v=kNx50AjsCrs",
+        "title": "War of The Worlds - Ray & Rachel",
+        "duration": 165.0,
+        "uploader": "Late Night Soundtracks"
+      },
+      {
+        "index": 2,
+        "id": "8AS-4tL59hc",
+        "url": "https://www.youtube.com/watch?v=8AS-4tL59hc",
+        "title": "Coming Together - Star Wars: The Rise of Skywalker (Highest Quality)",
+        "duration": 108.0,
+        "uploader": "Soundtrack Fan"
+      },
+      {
+        "index": 3,
+        "id": "xmaSbzj8X0k",
+        "url": "https://www.youtube.com/watch?v=xmaSbzj8X0k",
+        "title": "John Williams - Diagon Alley And The Gringotts Vault",
+        "duration": 246.0,
+        "uploader": "OST Movie Score"
+      },
+      {
+        "index": 4,
+        "id": "l3K_xg2lAMk",
+        "url": "https://www.youtube.com/watch?v=l3K_xg2lAMk",
+        "title": "07. Introducing Colin - John Williams",
+        "duration": 111.0,
+        "uploader": "Simply Great Music"
+      },
+      {
+        "index": 5,
+        "id": "t8D0RIx-orA",
+        "url": "https://www.youtube.com/watch?v=t8D0RIx-orA",
+        "title": "JFK Tribute",
+        "duration": 52.0,
+        "uploader": "Will's Corner"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=kNx50AjsCrs",
+    "download_success": true,
+    "chosen_query": "Prologue John Williams \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:07:10.012749"
+  },
+  "name::the prince that was promised::ramin djawadi": {
+    "title": "The Prince That Was Promised",
+    "artist": "Ramin Djawadi",
+    "query": null,
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "VHrn56Buf5o",
+        "url": "https://www.youtube.com/watch?v=VHrn56Buf5o",
+        "title": "The Prince that was Promised - A Prophesied Hero | Game of Thrones | A Song of Ice and Fire",
+        "duration": 237.0,
+        "uploader": "Asoiaf - Lore and History"
+      },
+      {
+        "index": 2,
+        "id": "CFRn0kSO4zA",
+        "url": "https://www.youtube.com/watch?v=CFRn0kSO4zA",
+        "title": "Targaryen Dance",
+        "duration": 115.0,
+        "uploader": "Ramin Djawadi - Topic"
+      },
+      {
+        "index": 3,
+        "id": "ImTFN9ILjt4",
+        "url": "https://www.youtube.com/watch?v=ImTFN9ILjt4",
+        "title": "(GoT) Jon Snow || Honor",
+        "duration": 221.0,
+        "uploader": "MedeRecord"
+      },
+      {
+        "index": 4,
+        "id": "t20l-hmPtqA",
+        "url": "https://www.youtube.com/watch?v=t20l-hmPtqA",
+        "title": "Game Of Thrones Season 8 Episode 3 Arya Fighting on the wall!",
+        "duration": 48.0,
+        "uploader": "DetonateK"
+      },
+      {
+        "index": 5,
+        "id": "OoIRZkGyJbs",
+        "url": "https://www.youtube.com/watch?v=OoIRZkGyJbs",
+        "title": "\u0627\u0642\u0648\u0649 \u0633\u0627\u0648\u0646\u062f \u062a\u0631\u0627\u0643 \u0639\u0628\u0631 \u0627\u0644\u062a\u0627\u0631\u064a\u062e \u0645\u0646 \u0641\u0644\u0645 last of mohicans",
+        "duration": 374.0,
+        "uploader": "\u0645\u0631\u062a\u0636\u0649 \u0627\u0644\u0633\u0627\u0639\u062f\u064a \u0639\u0627\u0634\u0642 \u0627\u0644\u0645\u0644\u0643\u064a"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": "https://www.youtube.com/watch?v=FJ_eHXN6gRg&list=RDFJ_eHXN6gRg&start_radio=1",
+    "download_success": true,
+    "chosen_query": null,
+    "updated_at": "2026-07-26T13:36:07.324086",
+    "manual_url": true
+  },
+  "name::all must choose::ramin djawadi": {
+    "title": "All Must Choose",
+    "artist": "Ramin Djawadi",
+    "query": "All Must Choose Ramin Djawadi \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "Hv6E7hwLomk",
+        "url": "https://www.youtube.com/watch?v=Hv6E7hwLomk",
+        "title": "Back to the Grind",
+        "duration": 229.0,
+        "uploader": "Ramin Djawadi - Topic"
+      },
+      {
+        "index": 2,
+        "id": "Qbbw-_U82PU",
+        "url": "https://www.youtube.com/watch?v=Qbbw-_U82PU",
+        "title": "Get In the Trunk",
+        "duration": 265.0,
+        "uploader": "Ramin Djawadi - Topic"
+      },
+      {
+        "index": 3,
+        "id": "6Orbphj4htM",
+        "url": "https://www.youtube.com/watch?v=6Orbphj4htM",
+        "title": "The Chosen One",
+        "duration": 155.0,
+        "uploader": "Ramin Djawadi - Topic"
+      },
+      {
+        "index": 4,
+        "id": "2Sla9ZCZaKM",
+        "url": "https://www.youtube.com/watch?v=2Sla9ZCZaKM",
+        "title": "Game of Thrones: Season 7 OST - Dragonstone (EP 01 Dany arrival)",
+        "duration": 302.0,
+        "uploader": "Game of Themes"
+      },
+      {
+        "index": 5,
+        "id": "u1eVeXaODeM",
+        "url": "https://www.youtube.com/watch?v=u1eVeXaODeM",
+        "title": "The Originals Season 2 TJ Stafford & Caitlin Parrott - Rise and fall",
+        "duration": 259.0,
+        "uploader": "BsoTheOriginals"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=Hv6E7hwLomk",
+    "download_success": true,
+    "chosen_query": "All Must Choose Ramin Djawadi \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:09:41.280370"
+  },
+  "name::leaving hogwarts::john williams": {
+    "title": "Leaving Hogwarts",
+    "artist": "John Williams",
+    "query": "Leaving Hogwarts John Williams \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "QuguYOq5AR0",
+        "url": "https://www.youtube.com/watch?v=QuguYOq5AR0",
+        "title": "18 - Leaving Hogwarts - Harry Potter and the Sorcerer's Stone Soundtrack",
+        "duration": 135.0,
+        "uploader": "HPotterMusic7"
+      },
+      {
+        "index": 2,
+        "id": "IwlOvM8R5sA",
+        "url": "https://www.youtube.com/watch?v=IwlOvM8R5sA",
+        "title": "Harry Potter Game OST Extended \u2013 Shrieking Shack",
+        "duration": 1835.0,
+        "uploader": "Sakura Hynan"
+      },
+      {
+        "index": 3,
+        "id": "odtNEXamBUM",
+        "url": "https://www.youtube.com/watch?v=odtNEXamBUM",
+        "title": "John Williams is sad",
+        "duration": 17.0,
+        "uploader": "Mr Bellamy"
+      },
+      {
+        "index": 4,
+        "id": "xmaSbzj8X0k",
+        "url": "https://www.youtube.com/watch?v=xmaSbzj8X0k",
+        "title": "John Williams - Diagon Alley And The Gringotts Vault",
+        "duration": 246.0,
+        "uploader": "OST Movie Score"
+      },
+      {
+        "index": 5,
+        "id": "Rmb-CsCC18g",
+        "url": "https://www.youtube.com/watch?v=Rmb-CsCC18g",
+        "title": "Improvisaci\u00f3n  - Halloween - Hedwig's Theme (From Harry Potter) Harmony River",
+        "duration": 55.0,
+        "uploader": "lightupyourdance"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": null,
+    "download_success": true,
+    "chosen_query": "Leaving Hogwarts John Williams -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:08:29.144688"
+  },
+  "name::the crown of jaehaerys::ramin djawadi": {
+    "title": "The Crown of Jaehaerys",
+    "artist": "Ramin Djawadi",
+    "query": null,
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "DvTL7118ZB8",
+        "url": "https://www.youtube.com/watch?v=DvTL7118ZB8",
+        "title": "House of The Dragon first 2 minutes S01E01",
+        "duration": 126.0,
+        "uploader": "asta_staria"
+      },
+      {
+        "index": 2,
+        "id": "7B9myEMyB90",
+        "url": "https://www.youtube.com/watch?v=7B9myEMyB90",
+        "title": "Race 2016 OST Please Take Your Last Jump",
+        "duration": 145.0,
+        "uploader": "Ermi Ross"
+      },
+      {
+        "index": 3,
+        "id": "XfjaiInPrXo",
+        "url": "https://www.youtube.com/watch?v=XfjaiInPrXo",
+        "title": "Race 2016 OST Those Are The Rules",
+        "duration": 125.0,
+        "uploader": "Ermi Ross"
+      },
+      {
+        "index": 4,
+        "id": "9lYU-a-QNHM",
+        "url": "https://www.youtube.com/watch?v=9lYU-a-QNHM",
+        "title": "What About Tonight",
+        "duration": 203.0,
+        "uploader": "Breathing Seasons - Topic"
+      },
+      {
+        "index": 5,
+        "id": "3P3QaGNoH14",
+        "url": "https://www.youtube.com/watch?v=3P3QaGNoH14",
+        "title": "Elaine (feat. Blxckie) - Loving You [Lyrics]",
+        "duration": 259.0,
+        "uploader": "Lyric Labs"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": "https://www.youtube.com/watch?v=C9bA5XPVye4&list=RDC9bA5XPVye4&start_radio=1",
+    "download_success": true,
+    "chosen_query": null,
+    "updated_at": "2026-07-26T13:30:26.840982",
+    "manual_url": true
+  },
+  "name::the fate of ophelia - loud luxury remix::taylor swift": {
+    "title": "The Fate of Ophelia - Loud Luxury Remix",
+    "artist": "Taylor Swift",
+    "query": "The Fate of Ophelia - Loud Luxury Remix Taylor Swift \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-07-26T11:11:39.267273"
+  },
+  "name::l no theme::hideki taniuchi": {
+    "title": "L no Theme",
+    "artist": "Hideki Taniuchi",
+    "query": "L no Theme Hideki Taniuchi \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "WKdheJMm1KE",
+        "url": "https://www.youtube.com/watch?v=WKdheJMm1KE",
+        "title": "Death note theme extended",
+        "duration": 1803.0,
+        "uploader": "Mahmoud Azimeh"
+      },
+      {
+        "index": 2,
+        "id": "vcVAgRSdocI",
+        "url": "https://www.youtube.com/watch?v=vcVAgRSdocI",
+        "title": "Mais um v\u00eddeo sobre o raluca | Light yagami/Kira",
+        "duration": 17.0,
+        "uploader": "Yanguito"
+      },
+      {
+        "index": 3,
+        "id": "yCN2na5HJ1k",
+        "url": "https://www.youtube.com/watch?v=yCN2na5HJ1k",
+        "title": "Where was the backrooms photo taken?",
+        "duration": 328.0,
+        "uploader": "Sploinkity!!!"
+      },
+      {
+        "index": 4,
+        "id": "uGr_R1vFll8",
+        "url": "https://www.youtube.com/watch?v=uGr_R1vFll8",
+        "title": "The Truth Is Out Here",
+        "duration": 216.0,
+        "uploader": "Thirteen Bled Promises - Topic"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": null,
+    "download_success": true,
+    "chosen_query": "L no Theme Hideki Taniuchi -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:12:08.141566"
+  },
+  "name::harry & hermione::nicholas hooper": {
+    "title": "Harry & Hermione",
+    "artist": "Nicholas Hooper",
+    "query": "Harry & Hermione Nicholas Hooper \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "aKJH5-t2SLg",
+        "url": "https://www.youtube.com/watch?v=aKJH5-t2SLg",
+        "title": "19. Of Love & War - Nicholas Hooper",
+        "duration": 79.0,
+        "uploader": "Simply Great Music"
+      },
+      {
+        "index": 2,
+        "id": "pY9lQSQ5ok0",
+        "url": "https://www.youtube.com/watch?v=pY9lQSQ5ok0",
+        "title": "Harry Potter And The Deathly Hallows Part 1 Track #23 Captured and Tortured",
+        "duration": 181.0,
+        "uploader": "Soundtrack960"
+      },
+      {
+        "index": 3,
+        "id": "YdoWXcMrS0g",
+        "url": "https://www.youtube.com/watch?v=YdoWXcMrS0g",
+        "title": "African Cats - Main Title Theme - Nicholas Hooper",
+        "duration": 104.0,
+        "uploader": "Film Music Fan"
+      },
+      {
+        "index": 4,
+        "id": "spyG8m83Le8",
+        "url": "https://www.youtube.com/watch?v=spyG8m83Le8",
+        "title": "African Cats Soundtrack - Layla's Theme - Nicholas Hooper",
+        "duration": 147.0,
+        "uploader": "Film Music Fan"
+      },
+      {
+        "index": 5,
+        "id": "xqGYxtMtBzc",
+        "url": "https://www.youtube.com/watch?v=xqGYxtMtBzc",
+        "title": "The Chosen One (Harry Potter)",
+        "duration": 351.0,
+        "uploader": "harmonicalaffection"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=aKJH5-t2SLg",
+    "download_success": true,
+    "chosen_query": "Harry & Hermione Nicholas Hooper \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:12:26.765659"
+  },
+  "name::zombie - (soundtrack version) from \"wednesday: season 2\"::wednesday addams": {
+    "title": "Zombie - (Soundtrack Version) from \"Wednesday: Season 2\"",
+    "artist": "Wednesday Addams",
+    "query": "Zombie - (Soundtrack Version) from \"Wednesday: Season 2\" Wednesday Addams \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "fTTcyOi7HZo",
+        "url": "https://www.youtube.com/watch?v=fTTcyOi7HZo",
+        "title": "The Addams Family Growing Up Full | Cartoon Wow",
+        "duration": 582.0,
+        "uploader": "Cartoon WOW"
+      },
+      {
+        "index": 2,
+        "id": "UbG8K_qKcQY",
+        "url": "https://www.youtube.com/watch?v=UbG8K_qKcQY",
+        "title": "Morticia and Gomez sing in the car | Wednesday",
+        "duration": 45.0,
+        "uploader": "Xscape"
+      },
+      {
+        "index": 3,
+        "id": "FqmCVV8F2Mo",
+        "url": "https://www.youtube.com/watch?v=FqmCVV8F2Mo",
+        "title": "Finger Family Wednesday Addams - Halloween Heroes | Kids Songs",
+        "duration": 97.0,
+        "uploader": "Do Re Mi - Kids Songs"
+      },
+      {
+        "index": 4,
+        "id": "R-ZAy8B_Hhs",
+        "url": "https://www.youtube.com/watch?v=R-ZAy8B_Hhs",
+        "title": "Back to School at Nevermore Academy | Study Music from Wednesday Season 2",
+        "duration": 1303.0,
+        "uploader": "SonySoundtracksVEVO"
+      },
+      {
+        "index": 5,
+        "id": "WAcSUEqBg4c",
+        "url": "https://www.youtube.com/watch?v=WAcSUEqBg4c",
+        "title": "Wednesday thinks Xavier is the monster MUST WATCH",
+        "duration": 120.0,
+        "uploader": "RGT clips"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": null,
+    "download_success": true,
+    "chosen_query": "Zombie - (Soundtrack Version) from \"Wednesday: Season 2\" Wednesday Addams -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:12:59.828840"
+  },
+  "name::beautiful things - acoustic::benson boone": {
+    "title": "Beautiful Things - Acoustic",
+    "artist": "Benson Boone",
+    "query": null,
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "M-hWZ8RnSmI",
+        "url": "https://www.youtube.com/watch?v=M-hWZ8RnSmI",
+        "title": "Post Malone ft. Sia | Beautiful Things ( Official Lyrics video)",
+        "duration": 248.0,
+        "uploader": "VYBEX"
+      },
+      {
+        "index": 2,
+        "id": "VwMkT2V0fUo",
+        "url": "https://www.youtube.com/watch?v=VwMkT2V0fUo",
+        "title": "Beautiful Things \ud83c\udf38\u2728 (GREATEST LOVE SONG)",
+        "duration": 160.0,
+        "uploader": "LYRIQON"
+      },
+      {
+        "index": 3,
+        "id": "t6hJvw6P5gw",
+        "url": "https://www.youtube.com/watch?v=t6hJvw6P5gw",
+        "title": "Chris Brown - Beautiful Things [ VIDEO ](2026)",
+        "duration": 236.0,
+        "uploader": "Rielzmusic. 328k"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": "https://www.youtube.com/watch?v=qKOMEWKrvb4&list=RDqKOMEWKrvb4&start_radio=1",
+    "download_success": true,
+    "chosen_query": null,
+    "updated_at": "2026-07-26T11:22:56.208115",
+    "manual_url": true
+  },
+  "name::experience (solo piano)::ludovico einaudi": {
+    "title": "Experience (Solo Piano)",
+    "artist": "Ludovico Einaudi",
+    "query": "Experience (Solo Piano) Ludovico Einaudi \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "6vEp5xhycl8",
+        "url": "https://www.youtube.com/watch?v=6vEp5xhycl8",
+        "title": "Experience - by Naman",
+        "duration": 426.0,
+        "uploader": "MusicaLifee"
+      },
+      {
+        "index": 2,
+        "id": "lAiseTc4oxc",
+        "url": "https://www.youtube.com/watch?v=lAiseTc4oxc",
+        "title": "NEOCLASSICA BY VLAD ROTBERG",
+        "duration": 30.0,
+        "uploader": "TixBox"
+      },
+      {
+        "index": 3,
+        "id": "STl1BZdGdSE",
+        "url": "https://www.youtube.com/watch?v=STl1BZdGdSE",
+        "title": "Our house  | piano songs beginner | skoove",
+        "duration": 49.0,
+        "uploader": "Mandei"
+      },
+      {
+        "index": 4,
+        "id": "JYXQQBJvexs",
+        "url": "https://www.youtube.com/watch?v=JYXQQBJvexs",
+        "title": "Inside My Dreams (solo piano Version)",
+        "duration": 185.0,
+        "uploader": "Greg Maroney"
+      },
+      {
+        "index": 5,
+        "id": "-ElQW-zHdQw",
+        "url": "https://www.youtube.com/watch?v=-ElQW-zHdQw",
+        "title": "Solva playing with piano",
+        "duration": 58.0,
+        "uploader": "MAOMBI DEBORAH "
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=6vEp5xhycl8",
+    "download_success": true,
+    "chosen_query": "Experience (Solo Piano) Ludovico Einaudi \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:13:52.040117"
+  },
+  "name::experience (reimagined)::ludovico einaudi": {
+    "title": "Experience (Reimagined)",
+    "artist": "Ludovico Einaudi",
+    "query": null,
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "ZQJ8sPaxwM4",
+        "url": "https://www.youtube.com/watch?v=ZQJ8sPaxwM4",
+        "title": "[VNYLT2022] Nh\u00ecn l\u1ea1i h\u00e0nh tr\u00ecnh T\u00e0i n\u0103ng tr\u1ebb Logistics Vi\u1ec7t Nam 2021",
+        "duration": 339.0,
+        "uploader": "Viet Nam Young Logistics Talents"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": "https://www.youtube.com/watch?v=eUDVUZZyA0M&list=RDeUDVUZZyA0M&start_radio=1",
+    "download_success": true,
+    "chosen_query": null,
+    "updated_at": "2026-07-26T14:11:30.253685",
+    "manual_url": true
+  },
+  "name::dai dai::shakira": {
+    "title": "Dai Dai",
+    "artist": "Shakira",
+    "query": "Dai Dai Shakira \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "Q_S6nROQWGk",
+        "url": "https://www.youtube.com/watch?v=Q_S6nROQWGk",
+        "title": "Shakira, Burna Boy - Dai Dai (Lyrics)",
+        "duration": 224.0,
+        "uploader": "Gseven Records"
+      },
+      {
+        "index": 2,
+        "id": "kErTlIOicN8",
+        "url": "https://www.youtube.com/watch?v=kErTlIOicN8",
+        "title": "Shakira & Burna Boy - Dai Dai (Lyrics) World Cup Song 2026",
+        "duration": 223.0,
+        "uploader": "R&B Adventure"
+      },
+      {
+        "index": 3,
+        "id": "4JgN2iw-kg4",
+        "url": "https://www.youtube.com/watch?v=4JgN2iw-kg4",
+        "title": "Shakira & Burna Boy - Dai Dai (Lyrics) World Cup Song 2026",
+        "duration": 234.0,
+        "uploader": "Afro Adventure"
+      },
+      {
+        "index": 4,
+        "id": "Cb7YVgzD508",
+        "url": "https://www.youtube.com/watch?v=Cb7YVgzD508",
+        "title": "Shakira & Burna Boy - Dai Dai (Lyrics) World Cup Song 2026",
+        "duration": 191.0,
+        "uploader": "Ai Song vibe"
+      },
+      {
+        "index": 5,
+        "id": "njfGpmH2sNc",
+        "url": "https://www.youtube.com/watch?v=njfGpmH2sNc",
+        "title": "Shakira, Burna Boy - Dai Dai (Lyrics) FIFA World Cup Song 2026",
+        "duration": 224.0,
+        "uploader": "RapVerse"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=Q_S6nROQWGk",
+    "download_success": true,
+    "chosen_query": "Dai Dai Shakira \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:14:46.153469"
+  },
+  "name::firework::katie perry": {
+    "title": "Firework",
+    "artist": "Katie Perry",
+    "query": null,
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "nptoQPUYIGg",
+        "url": "https://www.youtube.com/watch?v=nptoQPUYIGg",
+        "title": "36 Katy Perry \"Firework\" Official Lyric Video",
+        "duration": 229.0,
+        "uploader": "Goexplore"
+      },
+      {
+        "index": 2,
+        "id": "JQ85MihW0Ck",
+        "url": "https://www.youtube.com/watch?v=JQ85MihW0Ck",
+        "title": "Firework \u2013 Katy Perry | Lyric Video",
+        "duration": 235.0,
+        "uploader": "Southwest Tech Graphic & Web Design"
+      },
+      {
+        "index": 3,
+        "id": "rAAI1bcdDao",
+        "url": "https://www.youtube.com/watch?v=rAAI1bcdDao",
+        "title": "Katy Perry - Firework (Chipmunk Version)",
+        "duration": 229.0,
+        "uploader": "MsChipmunkOfficial"
+      },
+      {
+        "index": 4,
+        "id": "bKr-vck3fqg",
+        "url": "https://www.youtube.com/watch?v=bKr-vck3fqg",
+        "title": "Firework- Katy Perry (Lyric Video) | Lyric Zone",
+        "duration": 226.0,
+        "uploader": "Lyric Zone"
+      },
+      {
+        "index": 5,
+        "id": "xEvgGkVxPSQ",
+        "url": "https://www.youtube.com/watch?v=xEvgGkVxPSQ",
+        "title": "Lyric video Firework By Katy Perry",
+        "duration": 56.0,
+        "uploader": "GamerWolfDragonLive"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": "https://www.youtube.com/watch?v=2_PBpSirt3M&list=RD2_PBpSirt3M&start_radio=1",
+    "download_success": true,
+    "chosen_query": null,
+    "updated_at": "2026-07-26T11:21:49.465201",
+    "manual_url": true
+  },
+  "name::criminal::britney spears": {
+    "title": "Criminal",
+    "artist": "Britney Spears",
+    "query": "Criminal Britney Spears \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "GVIv4rULrys",
+        "url": "https://www.youtube.com/watch?v=GVIv4rULrys",
+        "title": "Britney Spears - \"Criminal\" Official Lyric Video",
+        "duration": 225.0,
+        "uploader": "Britney Spears"
+      },
+      {
+        "index": 2,
+        "id": "czMFfZ_Ekic",
+        "url": "https://www.youtube.com/watch?v=czMFfZ_Ekic",
+        "title": "Britney Spears - Criminal (Lyric Video)",
+        "duration": 245.0,
+        "uploader": "Fusion Clouds"
+      },
+      {
+        "index": 3,
+        "id": "xilji9UWsbI",
+        "url": "https://www.youtube.com/watch?v=xilji9UWsbI",
+        "title": "Britney Spears - Criminal (Lyric Video) | Remastered 4K (2160p)",
+        "duration": 225.0,
+        "uploader": "Remastered HD "
+      },
+      {
+        "index": 4,
+        "id": "i98_nguuhJo",
+        "url": "https://www.youtube.com/watch?v=i98_nguuhJo",
+        "title": "Britney Spears - Criminal (Lyrics)",
+        "duration": 224.0,
+        "uploader": "Vast"
+      },
+      {
+        "index": 5,
+        "id": "0GfJGijFpgM",
+        "url": "https://www.youtube.com/watch?v=0GfJGijFpgM",
+        "title": "Britney Spears - Criminal (lyrics) audio",
+        "duration": 224.0,
+        "uploader": "ARU"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=GVIv4rULrys",
+    "download_success": true,
+    "chosen_query": "Criminal Britney Spears \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:15:26.812358"
+  },
+  "name::burning blue::mariah the scientist": {
+    "title": "Burning Blue",
+    "artist": "Mariah the Scientist",
+    "query": "Burning Blue Mariah the Scientist \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "y7x-keFVaoQ",
+        "url": "https://www.youtube.com/watch?v=y7x-keFVaoQ",
+        "title": "Mariah the Scientist - Burning Blue (Lyrics)",
+        "duration": 228.0,
+        "uploader": "Ignite"
+      },
+      {
+        "index": 2,
+        "id": "IjRklS-V_Ms",
+        "url": "https://www.youtube.com/watch?v=IjRklS-V_Ms",
+        "title": "Burning Blue Lyrics \u2013 Marhia The Scientist | Official Lyric Video @dreamverse",
+        "duration": 206.0,
+        "uploader": "dreamverse"
+      },
+      {
+        "index": 3,
+        "id": "dL1HnUYXgVE",
+        "url": "https://www.youtube.com/watch?v=dL1HnUYXgVE",
+        "title": "Mariah The Scientist- Burning Blue~ No lyric Video",
+        "duration": 210.0,
+        "uploader": "R&BJamz!!!"
+      },
+      {
+        "index": 4,
+        "id": "sCOPWBiPc2M",
+        "url": "https://www.youtube.com/watch?v=sCOPWBiPc2M",
+        "title": "Mariah the Scientist - Burning Blue (Lyric Video)",
+        "duration": 206.0,
+        "uploader": "Buckles Laboratories"
+      },
+      {
+        "index": 5,
+        "id": "tpKmyo-BFjA",
+        "url": "https://www.youtube.com/watch?v=tpKmyo-BFjA",
+        "title": "Mariah the Scientist - Burning Blue (Lyrics) \ud83c\udfa4 I can feel it in the air",
+        "duration": 206.0,
+        "uploader": "sugarTap"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=y7x-keFVaoQ",
+    "download_success": true,
+    "chosen_query": "Burning Blue Mariah the Scientist \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:16:02.543480"
+  },
+  "name::the feeling::steve lacy": {
+    "title": "the feeling",
+    "artist": "Steve Lacy",
+    "query": "the feeling Steve Lacy \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "xWCHpq3gdBs",
+        "url": "https://www.youtube.com/watch?v=xWCHpq3gdBs",
+        "title": "Steve Lacy - the feeling (Lyrics)",
+        "duration": 276.0,
+        "uploader": "Urban Paradise"
+      },
+      {
+        "index": 2,
+        "id": "etfblmIeOvE",
+        "url": "https://www.youtube.com/watch?v=etfblmIeOvE",
+        "title": "Steve Lacy - the feeling (Lyrics) ",
+        "duration": 277.0,
+        "uploader": "Top 50 Lyrics"
+      },
+      {
+        "index": 3,
+        "id": "XpL52i9XV-M",
+        "url": "https://www.youtube.com/watch?v=XpL52i9XV-M",
+        "title": "Steve Lacy - the feeling (Lyrics)",
+        "duration": 277.0,
+        "uploader": "Ignite"
+      },
+      {
+        "index": 4,
+        "id": "0vaqMe5-esQ",
+        "url": "https://www.youtube.com/watch?v=0vaqMe5-esQ",
+        "title": "Steve Lacy - doom (Lyrics)",
+        "duration": 294.0,
+        "uploader": "Top 50 Lyrics"
+      },
+      {
+        "index": 5,
+        "id": "b50EAZvF_9o",
+        "url": "https://www.youtube.com/watch?v=b50EAZvF_9o",
+        "title": "Tokyo & Rio | Dark Red",
+        "duration": 173.0,
+        "uploader": "Mert \u00c7ebi"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=xWCHpq3gdBs",
+    "download_success": true,
+    "chosen_query": "the feeling Steve Lacy \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:16:24.163765"
+  },
+  "name::i knew it, i knew you (from \"toy story 5\")::taylor swift": {
+    "title": "I Knew It, I Knew You (From \"Toy Story 5\")",
+    "artist": "Taylor Swift",
+    "query": "I Knew It, I Knew You (From \"Toy Story 5\") Taylor Swift \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "s01cwZWzMuY",
+        "url": "https://www.youtube.com/watch?v=s01cwZWzMuY",
+        "title": "I KNEW IT, I KNEW YOU - Taylor Swift  from Disney and Pixar's Toy Story 5 (Lyric Video)",
+        "duration": 179.0,
+        "uploader": "Sunset & Midnight Lyrics"
+      },
+      {
+        "index": 2,
+        "id": "FXbFf7-AB8Y",
+        "url": "https://www.youtube.com/watch?v=FXbFf7-AB8Y",
+        "title": "Taylor Swift - I Knew It, I Knew You (Lyrics)",
+        "duration": 179.0,
+        "uploader": "Antonio House Music "
+      },
+      {
+        "index": 3,
+        "id": "8gI8X2MIE_U",
+        "url": "https://www.youtube.com/watch?v=8gI8X2MIE_U",
+        "title": "I knew it, I knew you - Taylor Swift   Lyric video ",
+        "duration": 182.0,
+        "uploader": "Riley makes lyric videos"
+      },
+      {
+        "index": 4,
+        "id": "1AXQZYisVRc",
+        "url": "https://www.youtube.com/watch?v=1AXQZYisVRc",
+        "title": "Taylor Swift - I Knew It, I Knew You (Lyric Video) [from Toy Story 5]",
+        "duration": 179.0,
+        "uploader": "Lyric Boost"
+      },
+      {
+        "index": 5,
+        "id": "K3v0TAd7dXY",
+        "url": "https://www.youtube.com/watch?v=K3v0TAd7dXY",
+        "title": "Taylor Swift - I Knew It, I Knew You [from Toy Story 5] (LYRICS)",
+        "duration": 184.0,
+        "uploader": "TopHit Lyrics"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=s01cwZWzMuY",
+    "download_success": true,
+    "chosen_query": "I Knew It, I Knew You (From \"Toy Story 5\") Taylor Swift \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T11:16:45.102241"
+  },
+  "name::\u03c0\u03ac\u03c1\u03c4\u03c5::billie kark": {
+    "title": "\u03a0\u03ac\u03c1\u03c4\u03c5",
+    "artist": "Billie Kark",
+    "query": null,
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "OnWniAGhL9Y",
+        "url": "https://www.youtube.com/watch?v=OnWniAGhL9Y",
+        "title": "02. \u0394\u03b5\u03bd \u0391\u03bd\u03c4\u03ad\u03c7\u03c9 - R.E.A.L. (\u03a3\u03c4\u03af\u03c7\u03bf\u03b9)",
+        "duration": 338.0,
+        "uploader": "Just Music"
+      },
+      {
+        "index": 2,
+        "id": "i3NbMbgNzZk",
+        "url": "https://www.youtube.com/watch?v=i3NbMbgNzZk",
+        "title": "Bury A Friend   -   Billie Eilish  ( lyrics )",
+        "duration": 1801.0,
+        "uploader": "lyrics of music "
+      },
+      {
+        "index": 3,
+        "id": "rGJ6Fhw4knA",
+        "url": "https://www.youtube.com/watch?v=rGJ6Fhw4knA",
+        "title": "Kela - \u039a\u03b1\u03b9 \u03c4\u03bf \u03be\u03ad\u03c1\u03c9",
+        "duration": 128.0,
+        "uploader": "\u039a74\u039c"
+      },
+      {
+        "index": 4,
+        "id": "oYHtvfAaen0",
+        "url": "https://www.youtube.com/watch?v=oYHtvfAaen0",
+        "title": "Yeh Ballet | Review | Inside Out | Netflix | Original Film | Manish Chauhan | Achintya Bose",
+        "duration": 339.0,
+        "uploader": "The Kcraft"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": "https://www.youtube.com/watch?v=teJ6mVN1fJ0&list=RDteJ6mVN1fJ0&start_radio=1",
+    "download_success": true,
+    "chosen_query": null,
+    "updated_at": "2026-07-26T12:31:46.962916",
+    "manual_url": true
+  },
+  "name::you're somebody else::flora cash": {
+    "title": "You're Somebody Else",
+    "artist": "Flora Cash",
+    "query": null,
+    "chosen_index": null,
+    "chosen_query": null,
+    "chosen_url": "https://www.youtube.com/watch?v=qVdPh2cBTN0&list=RDqVdPh2cBTN0&start_radio=1",
+    "download_success": true,
+    "manual_url": true,
+    "updated_at": "2026-07-26T12:42:53.815098"
+  },
+  "name::sailor song::gigi perez": {
+    "title": "Sailor Song",
+    "artist": "Gigi Perez",
+    "query": null,
+    "chosen_index": null,
+    "chosen_query": null,
+    "chosen_url": "https://www.youtube.com/watch?v=KZGWfHdfWQs&list=RDKZGWfHdfWQs&start_radio=1",
+    "download_success": true,
+    "manual_url": true,
+    "updated_at": "2026-07-26T13:16:34.071816"
+  },
+  "name::reign of the targaryens::ramin djawadi": {
+    "title": "Reign of the Targaryens",
+    "artist": "Ramin Djawadi",
+    "query": null,
+    "chosen_index": null,
+    "chosen_query": null,
+    "chosen_url": "https://www.youtube.com/watch?v=geJqFx7x5qI&list=RDgeJqFx7x5qI&start_radio=1",
+    "download_success": true,
+    "manual_url": true,
+    "updated_at": "2026-07-26T13:30:32.635520"
+  },
+  "name::light of the seven::ramin djawadi": {
+    "title": "Light of the Seven",
+    "artist": "Ramin Djawadi",
+    "query": "Light of the Seven Ramin Djawadi -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "LuLVQ8TPPts",
+        "url": "https://www.youtube.com/watch?v=LuLVQ8TPPts",
+        "title": "Light of the Seven - Ramin Djawadi (Game of Thrones)",
+        "duration": 84.0,
+        "uploader": "Conde X"
+      },
+      {
+        "index": 2,
+        "id": "QdNI1tl9VhY",
+        "url": "https://www.youtube.com/watch?v=QdNI1tl9VhY",
+        "title": "Light of the Seven \u2013 Ramin Djawadi | Sleep, Study, Relax | Black Screen",
+        "duration": 3857.0,
+        "uploader": "blackscreen_meditation"
+      },
+      {
+        "index": 3,
+        "id": "twRbxX_Qh8k",
+        "url": "https://www.youtube.com/watch?v=twRbxX_Qh8k",
+        "title": "game of thrones | lights of the seven #gameofthronesbgm #lightsoftheseven",
+        "duration": 590.0,
+        "uploader": "Tamizh cutz"
+      },
+      {
+        "index": 4,
+        "id": "ZaZ5UkZR1rg",
+        "url": "https://www.youtube.com/watch?v=ZaZ5UkZR1rg",
+        "title": "Light of the Seven (from \"Game of Thrones\")",
+        "duration": 68.0,
+        "uploader": "Astrid Lykke - Topic"
+      },
+      {
+        "index": 5,
+        "id": "aazknoSjFoI",
+        "url": "https://www.youtube.com/watch?v=aazknoSjFoI",
+        "title": "Game of Thrones  Season 6 OST Light of the Seven EP 10 Trial scene",
+        "duration": 590.0,
+        "uploader": "recycleamv"
+      }
+    ],
+    "chosen_index": 2,
+    "chosen_url": "https://www.youtube.com/watch?v=QdNI1tl9VhY",
+    "download_success": true,
+    "chosen_query": "Light of the Seven Ramin Djawadi -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-26T14:41:00.211253"
+  },
+  "name::time::hans zimmer": {
+    "title": "Time",
+    "artist": "Hans Zimmer",
+    "query": null,
+    "chosen_index": null,
+    "chosen_query": null,
+    "chosen_url": "https://www.youtube.com/watch?v=c56t7upa8Bk&list=RDc56t7upa8Bk&start_radio=1",
+    "download_success": true,
+    "manual_url": true,
+    "updated_at": "2026-07-26T17:47:48.532376"
+  },
+  "name::enchanted::joseph william morgan": {
+    "title": "Enchanted",
+    "artist": "Joseph William Morgan",
+    "query": null,
+    "chosen_index": null,
+    "chosen_query": null,
+    "chosen_url": "https://www.youtube.com/watch?v=uJRImJQmfo0&list=RDuJRImJQmfo0&start_radio=1",
+    "download_success": true,
+    "manual_url": true,
+    "updated_at": "2026-07-26T17:48:27.049768"
   }
 }

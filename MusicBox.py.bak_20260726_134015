@@ -3280,45 +3280,6 @@ def api_add_playlist():
     return jsonify({"status": "ok", "playlist": name, "track_count": len(tracks)})
 
 
-@app.route("/api/tracks/upload", methods=["POST"])
-def api_tracks_upload():
-    """Accept an audio file upload from the Spetifoy app and save it into MUSIC_DIR,
-    so a pushed playlist can reference this exact file (guaranteeing the version)
-    instead of relying on a title/artist search on this end."""
-    if "file" not in request.files:
-        return jsonify({"error": "Missing file"}), 400
-    upload = request.files["file"]
-    if not upload or not upload.filename:
-        return jsonify({"error": "Empty file"}), 400
-
-    title = (request.form.get("title") or "").strip()
-    artist = (request.form.get("artist") or "").strip()
-    ext = os.path.splitext(upload.filename)[1].lower()
-    if ext not in {".mp3", ".wav", ".flac", ".m4a", ".ogg"}:
-        ext = ".mp3"
-
-    if title and artist:
-        base_name = sanitize_filename(f"{artist} - {title}")
-    elif title:
-        base_name = sanitize_filename(title)
-    else:
-        base_name = sanitize_filename(os.path.splitext(upload.filename)[0]) or "upload"
-
-    os.makedirs(MUSIC_DIR, exist_ok=True)
-    dest_path = os.path.join(MUSIC_DIR, base_name + ext)
-    counter = 1
-    while os.path.exists(dest_path):
-        dest_path = os.path.join(MUSIC_DIR, f"{base_name} ({counter}){ext}")
-        counter += 1
-
-    try:
-        upload.save(dest_path)
-    except Exception as e:
-        return jsonify({"error": f"Failed to save upload: {e}"}), 500
-
-    return jsonify({"status": "ok", "path": dest_path, "filename": os.path.basename(dest_path)})
-
-
 @app.route("/api/music/list", methods=["GET"])
 def api_music_list():
     """List all available music files with metadata (used by Spetifoy app)."""
