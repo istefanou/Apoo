@@ -118,26 +118,36 @@
   "name::lo que dej\u00e9 atr\u00e1s::rammor": {
     "title": "lo que dej\u00e9 atr\u00e1s",
     "artist": "Rammor",
-    "query": "lo que dej\u00e9 atr\u00e1s Rammor \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "query": "lo que dej\u00e9 atr\u00e1s Rammor -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "extra_whitelist": [],
     "extra_blacklist": [],
     "candidates": [],
     "chosen_index": null,
     "chosen_url": null,
     "download_success": false,
-    "updated_at": "2026-07-17T23:47:20.164048"
+    "updated_at": "2026-07-27T23:55:15.702402"
   },
   "name::you don't need anyone::oskar med k,\u00a0kris. monda\u00e9": {
     "title": "You Don't Need Anyone",
     "artist": "oskar med k,\u00a0kris. monda\u00e9",
-    "query": "You Don't Need Anyone oskar med k,\u00a0kris. monda\u00e9 \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "query": "You Don't Need Anyone oskar med k,\u00a0kris. monda\u00e9 -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "extra_whitelist": [],
     "extra_blacklist": [],
-    "candidates": [],
-    "chosen_index": null,
-    "chosen_url": null,
-    "download_success": false,
-    "updated_at": "2026-07-17T23:49:10.175525"
+    "candidates": [
+      {
+        "index": 1,
+        "id": "2h_IfUqm4x8",
+        "url": "https://www.youtube.com/watch?v=2h_IfUqm4x8",
+        "title": "Wednesday Addams Dance Highlights #wednesday #wednesdaynetflix #wednesdayaddamsdancing ",
+        "duration": 162.0,
+        "uploader": "ZachAttack Wofford"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=2h_IfUqm4x8",
+    "download_success": true,
+    "chosen_query": "You Don't Need Anyone oskar med k,\u00a0kris. monda\u00e9 -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-27T23:55:55.779233"
   },
   "name::pumped up kicks::foster the people": {
     "title": "Pumped Up Kicks",
@@ -213,14 +223,14 @@
   "name::escapate::bellakos mafia mx,\u00a0grass kndla,\u00a0trauma,\u00a0aleks": {
     "title": "Escapate",
     "artist": "BELLAKOS MAFIA mx,\u00a0Grass Kndla,\u00a0Trauma,\u00a0Aleks",
-    "query": "Escapate BELLAKOS MAFIA mx,\u00a0Grass Kndla,\u00a0Trauma,\u00a0Aleks \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "query": "Escapate BELLAKOS MAFIA mx,\u00a0Grass Kndla,\u00a0Trauma,\u00a0Aleks -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "extra_whitelist": [],
     "extra_blacklist": [],
     "candidates": [],
     "chosen_index": null,
     "chosen_url": null,
     "download_success": false,
-    "updated_at": "2026-07-24T22:00:12.010228"
+    "updated_at": "2026-07-27T22:47:06.671200"
   },
   "name::sere (remix)::spinall,\u00a0fireboy dml,\u00a06lack": {
     "title": "Sere (Remix)",
@@ -628,14 +638,14 @@
   "name::the fate of ophelia - loud luxury remix::taylor swift": {
     "title": "The Fate of Ophelia - Loud Luxury Remix",
     "artist": "Taylor Swift",
-    "query": "The Fate of Ophelia - Loud Luxury Remix Taylor Swift \"lyric video\" -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "query": "The Fate of Ophelia - Loud Luxury Remix Taylor Swift -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "extra_whitelist": [],
     "extra_blacklist": [],
     "candidates": [],
     "chosen_index": null,
     "chosen_url": null,
     "download_success": false,
-    "updated_at": "2026-07-26T11:11:39.267273"
+    "updated_at": "2026-07-27T20:22:40.020014"
   },
   "name::l no theme::hideki taniuchi": {
     "title": "L no Theme",
@@ -1387,5 +1397,59 @@
     "download_success": true,
     "manual_url": true,
     "updated_at": "2026-07-26T17:48:27.049768"
+  },
+  "name::e85::don toliver": {
+    "title": "E85",
+    "artist": "Don Toliver",
+    "query": "E85 Don Toliver -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "eTFhKQmtuuw",
+        "url": "https://www.youtube.com/watch?v=eTFhKQmtuuw",
+        "title": "Don Toliver - E85 (Lyrics)",
+        "duration": 154.0,
+        "uploader": "Rap City"
+      },
+      {
+        "index": 2,
+        "id": "A76hX-OeVLA",
+        "url": "https://www.youtube.com/watch?v=A76hX-OeVLA",
+        "title": "E85 - Don Toliver (Extended)",
+        "duration": 250.0,
+        "uploader": "Tijn"
+      },
+      {
+        "index": 3,
+        "id": "MkTL94ncqKE",
+        "url": "https://www.youtube.com/watch?v=MkTL94ncqKE",
+        "title": "Don Toliver - E85 (Lyric Video)",
+        "duration": 154.0,
+        "uploader": "Heat Wave"
+      },
+      {
+        "index": 4,
+        "id": "gqI8p3IUmDM",
+        "url": "https://www.youtube.com/watch?v=gqI8p3IUmDM",
+        "title": "Don Toliver - E85 (Lyrics)",
+        "duration": 155.0,
+        "uploader": "HipHop Lyrics UK"
+      },
+      {
+        "index": 5,
+        "id": "8yMBrCV87Ns",
+        "url": "https://www.youtube.com/watch?v=8yMBrCV87Ns",
+        "title": "Don Toliver - E85 | Olive Choreography | DL Studio",
+        "duration": 30.0,
+        "uploader": "DANCE LIFESTYLE HK"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=eTFhKQmtuuw",
+    "download_success": true,
+    "chosen_query": "E85 Don Toliver -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-27T23:55:35.687616"
   }
 }
