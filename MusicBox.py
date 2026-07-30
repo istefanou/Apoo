@@ -4778,8 +4778,12 @@ def api_lofi_download():
             try:
                 # Acquire semaphore to ensure sequential downloads
                 with DOWNLOAD_SEMAPHORE:
-                    # Format priority: prefer formats that don't require ffmpeg merge to avoid Raspberry Pi timeout issues
+                    # Format priority: prefer H.264/AAC (avc1/mp4a) since that's what Chromecast
+                    # and virtually all TVs can hardware-decode — YouTube's best video is often
+                    # AV1 or VP9, which plays audio-only (no picture) when cast to most devices.
+                    # Falls back to codec-agnostic "best" formats if no H.264 stream is available.
                     formats = [
+                        "bestvideo[vcodec^=avc1][height>=1080]+bestaudio[acodec^=mp4a]/bestvideo[vcodec^=avc1]+bestaudio[acodec^=mp4a]/best[vcodec^=avc1]",
                         "bestvideo[height>=1080]+bestaudio/best[height>=0180]/bestvideo+bestaudio/best",
                     ]
 
@@ -5331,6 +5335,32 @@ def _start_discovery_listener():
 
 _start_discovery_listener()
 
+def _start_https_listener():
+    """Second listener on :7443 serving HTTPS with a self-signed cert.
+
+    Google Cast (and Chrome's native cast menu) only activates in a secure
+    context, so plain http://<ip>:7000 can never show a cast option. This
+    listener exists purely so the Lofi tab's cast button works, without
+    switching the primary :7000 HTTP port (used by the Spetifoy app and
+    other existing clients) over to HTTPS.
+    """
+    cert_path = os.path.join(os.path.dirname(__file__), "certs", "cert.pem")
+    key_path = os.path.join(os.path.dirname(__file__), "certs", "key.pem")
+    if not (os.path.exists(cert_path) and os.path.exists(key_path)):
+        print("[HTTPS] certs/cert.pem or certs/key.pem missing, skipping HTTPS listener")
+        return
+
+    def _serve():
+        try:
+            print("[HTTPS] Listening on :7443 (self-signed cert, for casting)")
+            app.run(host="0.0.0.0", port=7443, ssl_context=(cert_path, key_path),
+                     debug=False, use_reloader=False)
+        except Exception as e:
+            print(f"[HTTPS] Could not start: {e}")
+
+    threading.Thread(target=_serve, daemon=True).start()
+
 if __name__ == "__main__":
     debug_mode = os.getenv("APOO_DEBUG", "0").strip().lower() in {"1", "true", "yes", "on"}
+    _start_https_listener()
     app.run(host="0.0.0.0", port=7000, debug=debug_mode)

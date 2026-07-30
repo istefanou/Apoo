@@ -1,38 +1,180 @@
 // ===================== GOOGLE CAST =====================
 const btnCastLofi = document.getElementById("btn-cast-lofi");
-if (btnCastLofi && window.cast && window.cast.framework) {
-  btnCastLofi.style.display = "inline-block";
-} else if (btnCastLofi) {
+if (btnCastLofi) {
   btnCastLofi.style.display = "none";
 }
+// Per-card "Cast" buttons in the Lofi library grid; re-populated on every
+// renderLofiLibrary() call and shown/hidden together with btnCastLofi once
+// the Cast SDK finishes initializing.
+let lofiCastButtons = [];
 
-function castLofiVideo() {
-  if (!window.cast || !window.cast.framework) {
-    alert("Google Cast is not available in this browser.");
-    return;
+// The Cast SDK loads asynchronously and signals readiness via this global
+// callback (per Google's sender SDK docs) — checking window.cast.framework
+// synchronously at script-load time is too early and the button never appears.
+// Even inside this callback, cast.framework can still be a beat behind
+// isAvailable=true, so poll briefly rather than assuming it's ready.
+window["__onGCastApiAvailable"] = function (isAvailable) {
+  if (!isAvailable || !btnCastLofi) return;
+  waitForCastFramework();
+};
+
+function waitForCastFramework(retries) {
+  retries = retries || 0;
+  if (window.cast && window.cast.framework) {
+    window.cast.framework.CastContext.getInstance().setOptions({
+      receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+      autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+    });
+    btnCastLofi.style.display = "inline-block";
+    lofiCastButtons.forEach(btn => { btn.style.display = ""; });
+    setupCastRemoteControls();
+  } else if (retries < 20) {
+    setTimeout(() => waitForCastFramework(retries + 1), 150);
   }
-  const video = document.getElementById("lofi-video");
-  if (!video || !video.src) {
-    alert("No lofi video loaded.");
-    return;
-  }
-  const context = cast.framework.CastContext.getInstance();
-  context.setOptions({
-    receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
-    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+}
+
+// ----- Remote playback controls (play/pause, seek, volume, disconnect) -----
+// Reflects and drives the state of whatever the Cast receiver is currently
+// playing, via the SDK's RemotePlayer/RemotePlayerController pair.
+let castRemotePlayer = null;
+let castRemotePlayerController = null;
+let castSeekDragging = false;
+let castVolumeDragging = false;
+
+function formatCastTime(seconds) {
+  if (!isFinite(seconds) || seconds < 0) seconds = 0;
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+function setupCastRemoteControls() {
+  if (castRemotePlayer) return; // already set up
+  const controlsEl = document.getElementById("lofi-cast-controls");
+  const deviceNameEl = document.getElementById("lofi-cast-device-name");
+  const playPauseBtn = document.getElementById("btn-cast-playpause");
+  const muteBtn = document.getElementById("btn-cast-mute");
+  const stopBtn = document.getElementById("btn-cast-stop");
+  const seekEl = document.getElementById("lofi-cast-seek");
+  const volumeEl = document.getElementById("lofi-cast-volume");
+  const timeEl = document.getElementById("lofi-cast-time");
+  if (!controlsEl) return;
+
+  castRemotePlayer = new cast.framework.RemotePlayer();
+  castRemotePlayerController = new cast.framework.RemotePlayerController(castRemotePlayer);
+
+  castRemotePlayerController.addEventListener(
+    cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED,
+    () => {
+      if (castRemotePlayer.isConnected) {
+        controlsEl.classList.remove("hidden");
+        lofiVideo.pause(); // avoid playing locally + on the receiver at once
+        const session = cast.framework.CastContext.getInstance().getCurrentSession();
+        deviceNameEl.textContent = session ? session.getCastDevice().friendlyName : "device";
+      } else {
+        controlsEl.classList.add("hidden");
+      }
+    }
+  );
+
+  castRemotePlayerController.addEventListener(
+    cast.framework.RemotePlayerEventType.PLAYER_STATE_CHANGED,
+    () => {
+      playPauseBtn.textContent = castRemotePlayer.isPaused ? "▶" : "⏸";
+    }
+  );
+
+  castRemotePlayerController.addEventListener(
+    cast.framework.RemotePlayerEventType.DURATION_CHANGED,
+    () => {
+      if (!castSeekDragging) {
+        seekEl.max = castRemotePlayer.duration || 0;
+      }
+    }
+  );
+
+  castRemotePlayerController.addEventListener(
+    cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
+    () => {
+      if (!castSeekDragging) {
+        seekEl.value = castRemotePlayer.currentTime || 0;
+      }
+      timeEl.textContent = `${formatCastTime(castRemotePlayer.currentTime)} / ${formatCastTime(castRemotePlayer.duration)}`;
+    }
+  );
+
+  castRemotePlayerController.addEventListener(
+    cast.framework.RemotePlayerEventType.VOLUME_LEVEL_CHANGED,
+    () => {
+      if (!castVolumeDragging) {
+        volumeEl.value = castRemotePlayer.volumeLevel;
+      }
+    }
+  );
+
+  castRemotePlayerController.addEventListener(
+    cast.framework.RemotePlayerEventType.IS_MUTED_CHANGED,
+    () => {
+      muteBtn.textContent = castRemotePlayer.isMuted ? "🔇" : "🔊";
+    }
+  );
+
+  playPauseBtn.addEventListener("click", () => { castRemotePlayerController.playOrPause(); });
+  muteBtn.addEventListener("click", () => { castRemotePlayerController.muteOrUnmute(); });
+  stopBtn.addEventListener("click", () => {
+    cast.framework.CastContext.getInstance().endCurrentSession(true);
   });
-  const mediaInfo = new chrome.cast.media.MediaInfo(video.src, "video/mp4");
-  const request = new chrome.cast.media.LoadRequest(mediaInfo);
+
+  seekEl.addEventListener("input", () => { castSeekDragging = true; });
+  seekEl.addEventListener("change", () => {
+    castRemotePlayer.currentTime = Number(seekEl.value);
+    castRemotePlayerController.seek();
+    castSeekDragging = false;
+  });
+
+  volumeEl.addEventListener("input", () => {
+    castVolumeDragging = true;
+    castRemotePlayer.volumeLevel = Number(volumeEl.value);
+    castRemotePlayerController.setVolumeLevel();
+  });
+  volumeEl.addEventListener("change", () => { castVolumeDragging = false; });
+}
+
+function castVideoId(videoId) {
+  if (!window.cast || !window.cast.framework) {
+    alert("Google Cast is not available yet — still initializing, try again in a moment.");
+    return;
+  }
+  const context = window.cast.framework.CastContext.getInstance();
+  // The Chromecast device fetches this URL directly and has no way to click
+  // through a self-signed cert warning like a desktop browser does, so send
+  // it the plain-HTTP (:7000) URL even though this sender page runs on the
+  // HTTPS (:7443) origin required just to unlock the Cast API itself.
+  const mediaUrl = new URL(`/api/lofi/video/${videoId}`, window.location.href);
+  mediaUrl.protocol = "http:";
+  mediaUrl.port = "7000";
+  // requestSession() opens the browser's native Cast device picker, which
+  // scans the local network and lists available devices for the user to pick.
   context.requestSession().then(() => {
+    const mediaInfo = new chrome.cast.media.MediaInfo(mediaUrl.toString(), "video/mp4");
+    const request = new chrome.cast.media.LoadRequest(mediaInfo);
     context.getCurrentSession().loadMedia(request).then(
       () => {},
       (err) => { alert("Failed to cast: " + err); }
     );
+  }).catch((err) => {
+    if (err !== "cancel") alert("Cast session error: " + err);
   });
 }
 
 if (btnCastLofi) {
-  btnCastLofi.addEventListener("click", castLofiVideo);
+  btnCastLofi.addEventListener("click", () => {
+    if (!currentLofiVideoId) {
+      alert("No lofi video loaded.");
+      return;
+    }
+    castVideoId(currentLofiVideoId);
+  });
 }
 // ======================================================
 //  GLOBAL IN-MEMORY STATE (Option B)
@@ -131,6 +273,29 @@ tabs.forEach(tab => {
     }
   });
 });
+
+// Auto-select the Lofi tab when arriving via the "Open for Casting" link below.
+if (window.location.hash === "#lofi") {
+  document.getElementById("tab-lofi")?.click();
+}
+
+// Casting only works from a secure context (HTTPS or localhost) — plain
+// http://<lan-ip>:7000 can never show a Cast button no matter what, since
+// that's a browser-level restriction. Rather than making people retype the
+// URL, offer a one-click jump to the HTTPS mirror on :7443.
+const btnOpenCastPage = document.getElementById("btn-open-cast-page");
+if (btnOpenCastPage) {
+  if (!window.isSecureContext) {
+    btnOpenCastPage.classList.remove("hidden");
+    btnOpenCastPage.addEventListener("click", () => {
+      const castUrl = new URL(window.location.href);
+      castUrl.protocol = "https:";
+      castUrl.port = "7443";
+      castUrl.hash = "lofi";
+      window.open(castUrl.toString(), "_blank");
+    });
+  }
+}
 
 
 // ======================================================
@@ -2164,6 +2329,7 @@ async function loadLofiLibrary() {
 // Render lofi library grid
 function renderLofiLibrary(videos) {
   lofiLibrary.innerHTML = "";
+  lofiCastButtons = [];
   if (videos.length === 0) {
     lofiLibrary.innerHTML = "<p>No lofi videos yet. Add one using the YouTube URL above.</p>";
     return;
@@ -2235,22 +2401,29 @@ function renderLofiLibrary(videos) {
       
       const playBtn = document.createElement("button");
       playBtn.textContent = "▶ Play Video";
-      
+
+      const castBtn = document.createElement("button");
+      castBtn.textContent = "📺 Cast";
+      castBtn.style.display = (window.cast && window.cast.framework) ? "" : "none";
+      lofiCastButtons.push(castBtn);
+
       const playOnDeviceBtn = document.createElement("button");
-      playOnDeviceBtn.textContent = "🔊 Play on Server";
+      playOnDeviceBtn.textContent = "🔊 Play Audio";
       playOnDeviceBtn.style.background = "#1db954";
-      
+
       const deleteBtn = document.createElement("button");
       deleteBtn.textContent = "🗑 Delete";
       deleteBtn.className = "delete-btn";
-      
+
       if (!video.path) {
         playBtn.disabled = true;
+        castBtn.disabled = true;
         playOnDeviceBtn.disabled = true;
         deleteBtn.disabled = true;
         playBtn.textContent = "(Downloading)";
       } else {
         playBtn.addEventListener("click", () => { playLofiVideo(video); });
+        castBtn.addEventListener("click", () => { castVideoId(video.id); });
         playOnDeviceBtn.addEventListener("click", async () => { await playLofiOnDevice(video); });
         deleteBtn.addEventListener("click", async () => {
           if (confirm(`Delete ${video.title}?`)) {
@@ -2258,8 +2431,9 @@ function renderLofiLibrary(videos) {
           }
         });
       }
-      
+
       actions.appendChild(playBtn);
+      actions.appendChild(castBtn);
       actions.appendChild(playOnDeviceBtn);
       actions.appendChild(deleteBtn);
       card.appendChild(actions);
@@ -2269,7 +2443,10 @@ function renderLofiLibrary(videos) {
 }
 
 // Play lofi video in player
+let currentLofiVideoId = null;
+
 function playLofiVideo(video) {
+  currentLofiVideoId = video.id;
   lofiVideo.src = `/api/lofi/video/${video.id}`;
   lofiPlayerContainer.classList.remove("hidden");
   lofiVideo.play().catch(err => {

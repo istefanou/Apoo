@@ -27,3 +27,6 @@ data/*
 
 # Runtime logs
 logs/
+
+# Self-signed TLS cert/key for local HTTPS (cast support)
+certs/

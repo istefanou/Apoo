@@ -1367,6 +1367,24 @@ main {
   }
 }
 
+#btn-open-cast-page {
+  background: #333;
+  border: 1px solid #1db954;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#btn-open-cast-page:hover {
+  background: #1db954;
+}
+
+#btn-open-cast-page.hidden {
+  display: none;
+}
+
 #lofi-url-input {
   flex: 1;
   padding: 0.75rem;
@@ -1514,20 +1532,19 @@ main {
 
 .lofi-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.4rem;
   padding: 0.5rem;
 }
 
 .lofi-actions button {
-  flex: 1 1 calc(50% - 0.2rem);
-  min-width: 65px;
-  padding: 0.4rem;
+  width: 100%;
+  padding: 0.55rem;
   background: #333;
   border: none;
   color: #ffffff;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -1535,9 +1552,8 @@ main {
 
 @media (min-width: 768px) {
   .lofi-actions button {
-    font-size: 0.85rem;
-    min-width: 80px;
-    padding: 0.5rem;
+    font-size: 0.9rem;
+    padding: 0.6rem;
   }
 }
 
@@ -1623,13 +1639,86 @@ main {
 }
 
 @media (max-width: 480px) {
-  .cast-btn {
-    display: none;
-  }
-  
   .fullscreen-btn {
     right: 5rem;
   }
+}
+
+.lofi-cast-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  border-top: 1px solid #1db954;
+  padding: 0.75rem 1rem 1rem;
+  z-index: 1001;
+  box-sizing: border-box;
+}
+
+/* Keep page content from being hidden behind the fixed cast bar */
+body:has(#lofi-cast-controls:not(.hidden)) #view-lofi {
+  padding-bottom: 9rem;
+}
+
+.lofi-cast-controls.hidden {
+  display: none;
+}
+
+.lofi-cast-controls-title {
+  color: #fff;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.lofi-cast-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.lofi-cast-controls-row:last-child {
+  margin-bottom: 0;
+}
+
+.lofi-cast-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.lofi-cast-btn:hover {
+  background: #1db954;
+}
+
+.lofi-cast-btn.lofi-cast-stop {
+  margin-left: auto;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.lofi-cast-seek,
+.lofi-cast-volume {
+  flex: 1;
+  accent-color: #1db954;
+}
+
+.lofi-cast-volume {
+  max-width: 120px;
+}
+
+#lofi-cast-time {
+  color: #ccc;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Fullscreen mode adjustments */

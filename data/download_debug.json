@@ -1451,5 +1451,69 @@
     "download_success": true,
     "chosen_query": "E85 Don Toliver -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "updated_at": "2026-07-27T23:55:35.687616"
+  },
+  "name::am\u00e9lie::ins\u00f8mnia": {
+    "title": "Am\u00e9lie",
+    "artist": "ins\u00f8mnia",
+    "query": "Am\u00e9lie ins\u00f8mnia -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-07-30T12:00:21.994662"
+  },
+  "name::i can't go for that (no can do) (pomo remix)::daryl hall & john oates": {
+    "title": "I Can't Go for That (No Can Do) (Pomo Remix)",
+    "artist": "Daryl Hall & John Oates",
+    "query": "I Can't Go for That (No Can Do) (Pomo Remix) Daryl Hall & John Oates -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-07-30T12:01:18.274096"
+  },
+  "name::watermelon sugar::suroboi": {
+    "title": "Watermelon Sugar",
+    "artist": "suroboi",
+    "query": "Watermelon Sugar suroboi -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "nT_nQObTMBE",
+        "url": "https://www.youtube.com/watch?v=nT_nQObTMBE",
+        "title": "Romanticize the Little Things \u2600\ufe0f Morning House",
+        "duration": 3669.0,
+        "uploader": "Cotton Morning"
+      },
+      {
+        "index": 2,
+        "id": "j0zR2z_yFlw",
+        "url": "https://www.youtube.com/watch?v=j0zR2z_yFlw",
+        "title": "Slow Morning, Warm Light \u2600\ufe0f Bright Morning House Playlist",
+        "duration": 5180.0,
+        "uploader": "Cotton Morning"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-07-30T12:02:28.346114"
+  },
+  "name::once in a lifetime::dela utca": {
+    "title": "Once In A Lifetime",
+    "artist": "Dela Utca",
+    "query": null,
+    "chosen_index": null,
+    "chosen_query": null,
+    "chosen_url": "https://www.youtube.com/watch?v=vgKg0iInpTY&list=RDvgKg0iInpTY&start_radio=1",
+    "download_success": true,
+    "manual_url": true,
+    "updated_at": "2026-07-30T13:07:22.199897"
   }
 }
