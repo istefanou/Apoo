@@ -125,7 +125,7 @@
     "chosen_index": null,
     "chosen_url": null,
     "download_success": false,
-    "updated_at": "2026-07-27T23:55:15.702402"
+    "updated_at": "2026-07-31T23:19:00.577650"
   },
   "name::you don't need anyone::oskar med k,\u00a0kris. monda\u00e9": {
     "title": "You Don't Need Anyone",
@@ -645,7 +645,7 @@
     "chosen_index": null,
     "chosen_url": null,
     "download_success": false,
-    "updated_at": "2026-07-27T20:22:40.020014"
+    "updated_at": "2026-07-31T16:58:06.358599"
   },
   "name::l no theme::hideki taniuchi": {
     "title": "L no Theme",
@@ -1515,5 +1515,437 @@
     "download_success": true,
     "manual_url": true,
     "updated_at": "2026-07-30T13:07:22.199897"
+  },
+  "name::human again::genesis owusu": {
+    "title": "HUMAN AGAIN",
+    "artist": "Genesis Owusu",
+    "query": "HUMAN AGAIN Genesis Owusu -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "6OLYX5146_0",
+        "url": "https://www.youtube.com/watch?v=6OLYX5146_0",
+        "title": "Human AGAINMusic Video Lyrics",
+        "duration": 204.0,
+        "uploader": "StreetPlays"
+      },
+      {
+        "index": 2,
+        "id": "D98b1Te6rUI",
+        "url": "https://www.youtube.com/watch?v=D98b1Te6rUI",
+        "title": "GENESIS OWUSU - HUMAN AGAIN ft. KYE",
+        "duration": 198.0,
+        "uploader": "DJ SEU MUNIZ"
+      },
+      {
+        "index": 3,
+        "id": "z5niLtUg1-A",
+        "url": "https://www.youtube.com/watch?v=z5niLtUg1-A",
+        "title": "How Mike Posner Found Himself",
+        "duration": 1726.0,
+        "uploader": "Ricky G"
+      },
+      {
+        "index": 4,
+        "id": "0vz-zdntwns",
+        "url": "https://www.youtube.com/watch?v=0vz-zdntwns",
+        "title": "As I Am \u2014 Jazz Duet About Finding Love",
+        "duration": 341.0,
+        "uploader": "MAROKOZIk"
+      },
+      {
+        "index": 5,
+        "id": "6yvO4hHXsUk",
+        "url": "https://www.youtube.com/watch?v=6yvO4hHXsUk",
+        "title": "Songs of the week ! (Round II + how to listen to music)",
+        "duration": 861.0,
+        "uploader": "Shelly Novo"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=6OLYX5146_0",
+    "download_success": true,
+    "chosen_query": "HUMAN AGAIN Genesis Owusu -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-31T21:16:22.960228"
+  },
+  "name::dai dai::shakira,\u00a0burna boy": {
+    "title": "Dai Dai",
+    "artist": "Shakira,\u00a0Burna Boy",
+    "query": "Dai Dai Shakira,\u00a0Burna Boy -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "8fUI5ldg3SQ",
+        "url": "https://www.youtube.com/watch?v=8fUI5ldg3SQ",
+        "title": "Shakira & Burna Boy - Dai Dai (Lyrics)",
+        "duration": 224.0,
+        "uploader": "World of Healing"
+      },
+      {
+        "index": 2,
+        "id": "Mj_egvJ39FM",
+        "url": "https://www.youtube.com/watch?v=Mj_egvJ39FM",
+        "title": "Shakira, Burna Boy - Dai Dai (Letra)",
+        "duration": 224.0,
+        "uploader": "RetroWave FM"
+      },
+      {
+        "index": 3,
+        "id": "FKoeGqD1DBc",
+        "url": "https://www.youtube.com/watch?v=FKoeGqD1DBc",
+        "title": "Shakira, Burna Boy - Dai Dai (Official Video) Official",
+        "duration": 202.0,
+        "uploader": "Vibecraftmusic"
+      },
+      {
+        "index": 4,
+        "id": "Mbk8Vyf0cIA",
+        "url": "https://www.youtube.com/watch?v=Mbk8Vyf0cIA",
+        "title": "Shakira, Burna Boy - Dai Dai (video oficial) (Letra) (Official World Cup Song 2026)",
+        "duration": 230.0,
+        "uploader": "MusicPaul"
+      },
+      {
+        "index": 5,
+        "id": "aZZbbou0NGo",
+        "url": "https://www.youtube.com/watch?v=aZZbbou0NGo",
+        "title": "Shakira, Burna Boy - Dai Dai (Lyrics)",
+        "duration": 189.0,
+        "uploader": "Oryn Pop"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=8fUI5ldg3SQ",
+    "download_success": true,
+    "chosen_query": "Dai Dai Shakira,\u00a0Burna Boy -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-31T22:45:44.820307"
+  },
+  "name::shake it to the max (fly) - remix::moliy,\u00a0shenseea,\u00a0skillibeng,\u00a0silent addy": {
+    "title": "SHAKE IT TO THE MAX (FLY) - REMIX",
+    "artist": "MOLIY,\u00a0Shenseea,\u00a0Skillibeng,\u00a0Silent Addy",
+    "query": "SHAKE IT TO THE MAX (FLY) - REMIX MOLIY,\u00a0Shenseea,\u00a0Skillibeng,\u00a0Silent Addy -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "kFr5s99D6Yo",
+        "url": "https://www.youtube.com/watch?v=kFr5s99D6Yo",
+        "title": "shake it to the max edit audio / ednunivrse",
+        "duration": 21.0,
+        "uploader": "edn1univrse"
+      },
+      {
+        "index": 2,
+        "id": "pMuDrUB2GP8",
+        "url": "https://www.youtube.com/watch?v=pMuDrUB2GP8",
+        "title": "Shake it to the max ( fly ) - MOLIY & Silent Addy, Skillibeng, Shenseea [ audio edit ]",
+        "duration": 37.0,
+        "uploader": "Sweet Rhythm "
+      },
+      {
+        "index": 3,
+        "id": "zFawh0-nPmU",
+        "url": "https://www.youtube.com/watch?v=zFawh0-nPmU",
+        "title": "Kipaji Kids - Shake It To The Max ( Fly ) { Dance Video } MOLIY, Shenseea, Skillibeng, Silent Addy",
+        "duration": 56.0,
+        "uploader": "Kipaji Kids Dance Academy \ud83c\uddf0\ud83c\uddea "
+      },
+      {
+        "index": 4,
+        "id": "LO3Ls8IqFLo",
+        "url": "https://www.youtube.com/watch?v=LO3Ls8IqFLo",
+        "title": "Kipaji kids - Shake It To The Max ( Fly ) { Dance Video } MOLIY, Shenseea, Skillibeng, Silent Addy",
+        "duration": 32.0,
+        "uploader": "Kipaji Kids Dance Academy \ud83c\uddf0\ud83c\uddea "
+      },
+      {
+        "index": 5,
+        "id": "zgjeBG9lafk",
+        "url": "https://www.youtube.com/watch?v=zgjeBG9lafk",
+        "title": "8Town Dancers - Shake It To The Max ( Fly ) { Dance Video } MOLIY, Shenseea, Skillibeng, Silent Addy",
+        "duration": 53.0,
+        "uploader": "Kipaji Kids Dance Academy \ud83c\uddf0\ud83c\uddea "
+      }
+    ],
+    "chosen_index": 3,
+    "chosen_url": "https://www.youtube.com/watch?v=zFawh0-nPmU",
+    "download_success": true,
+    "chosen_query": "SHAKE IT TO THE MAX (FLY) - REMIX MOLIY,\u00a0Shenseea,\u00a0Skillibeng,\u00a0Silent Addy -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-31T22:46:29.054758"
+  },
+  "name::if you wanna party, come over to my house::fcukers": {
+    "title": "if you wanna party, come over to my house",
+    "artist": "Fcukers",
+    "query": "if you wanna party, come over to my house Fcukers -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "RXt8gRqPm3c",
+        "url": "https://www.youtube.com/watch?v=RXt8gRqPm3c",
+        "title": "Fcukers - if you wanna party, come over to my house (Instrumental)",
+        "duration": 172.0,
+        "uploader": "Radar Weekly Instrumentals \u2014 March 2026"
+      },
+      {
+        "index": 2,
+        "id": "lDQfxPoruVw",
+        "url": "https://www.youtube.com/watch?v=lDQfxPoruVw",
+        "title": "Fcukers - if you wanna party, come over to my house (Official Video)",
+        "duration": 176.0,
+        "uploader": "Justf6r"
+      },
+      {
+        "index": 3,
+        "id": "YLSMeY_IS-A",
+        "url": "https://www.youtube.com/watch?v=YLSMeY_IS-A",
+        "title": "horse murder party",
+        "duration": 48.0,
+        "uploader": "Doodled ShetPost"
+      },
+      {
+        "index": 4,
+        "id": "67VO6UumPgY",
+        "url": "https://www.youtube.com/watch?v=67VO6UumPgY",
+        "title": "Banger Fest 2000 | Fcukers - \u00f6 | ALBUM REVIEW",
+        "duration": 1813.0,
+        "uploader": "I Quit My Band"
+      },
+      {
+        "index": 5,
+        "id": "QJqHhQobyuo",
+        "url": "https://www.youtube.com/watch?v=QJqHhQobyuo",
+        "title": "IFQFM#20 (ALL \u2640\\FEMALE SPECIAL)",
+        "duration": 4246.0,
+        "uploader": "IFQFM"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=RXt8gRqPm3c",
+    "download_success": true,
+    "chosen_query": "if you wanna party, come over to my house Fcukers -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-31T22:46:45.062080"
+  },
+  "name::janice stfu::drake": {
+    "title": "Janice STFU",
+    "artist": "Drake",
+    "query": "Janice STFU Drake -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "WRxMabazFGk",
+        "url": "https://www.youtube.com/watch?v=WRxMabazFGk",
+        "title": "Drake - Janice STFU (Visualizer)",
+        "duration": 238.0,
+        "uploader": "Zain Adhami "
+      },
+      {
+        "index": 2,
+        "id": "urw-RIsLt4w",
+        "url": "https://www.youtube.com/watch?v=urw-RIsLt4w",
+        "title": "Janice STFU - Drake (Extended Intro)",
+        "duration": 291.0,
+        "uploader": "morry"
+      },
+      {
+        "index": 3,
+        "id": "G7iAefSKJTE",
+        "url": "https://www.youtube.com/watch?v=G7iAefSKJTE",
+        "title": "Janice STFU - Drake (852 hz)",
+        "duration": 240.0,
+        "uploader": "Joseph\u2019s Frequencies Pitched "
+      },
+      {
+        "index": 4,
+        "id": "OXflelXWHVk",
+        "url": "https://www.youtube.com/watch?v=OXflelXWHVk",
+        "title": "Drake - Janice STFU \uac00\uc0ac/\ud574\uc11d/lyrics",
+        "duration": 237.0,
+        "uploader": "\uc5d0\ub9ac\uc5b4"
+      },
+      {
+        "index": 5,
+        "id": "sM_mvVBjAIQ",
+        "url": "https://www.youtube.com/watch?v=sM_mvVBjAIQ",
+        "title": "Drake - JANICE STFU (Sub Espa\u00f1ol)",
+        "duration": 235.0,
+        "uploader": "jdswat"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=WRxMabazFGk",
+    "download_success": true,
+    "chosen_query": "Janice STFU Drake -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-31T22:47:13.808378"
+  },
+  "name::new religion::bebe rexha,\u00a0faithless": {
+    "title": "New Religion",
+    "artist": "Bebe Rexha,\u00a0Faithless",
+    "query": "New Religion Bebe Rexha,\u00a0Faithless -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "OT9FdP2Gua4",
+        "url": "https://www.youtube.com/watch?v=OT9FdP2Gua4",
+        "title": "Bebe Rexha & Faithless - New Religion [DFX acapellas]",
+        "duration": 169.0,
+        "uploader": "DFX ACAPELLAS"
+      },
+      {
+        "index": 2,
+        "id": "qWKdUG6zmCI",
+        "url": "https://www.youtube.com/watch?v=qWKdUG6zmCI",
+        "title": "Bebe Rexha & Faithless - New Religion (Extended Mix) (Instrumental)",
+        "duration": 250.0,
+        "uploader": "Dannylation"
+      },
+      {
+        "index": 3,
+        "id": "XASH3Gd__xE",
+        "url": "https://www.youtube.com/watch?v=XASH3Gd__xE",
+        "title": "Bebe Rexha & Faithless - New Religion (official Ai Visual)",
+        "duration": 254.0,
+        "uploader": "Sound Studio"
+      },
+      {
+        "index": 4,
+        "id": "iyKpRD1v7yU",
+        "url": "https://www.youtube.com/watch?v=iyKpRD1v7yU",
+        "title": "Bebe Rexha X Faithless - New Religion (Pro VS Noob VS Autoplay) ",
+        "duration": 829.0,
+        "uploader": "TilesHopGamer229"
+      },
+      {
+        "index": 5,
+        "id": "Z1TudushC_0",
+        "url": "https://www.youtube.com/watch?v=Z1TudushC_0",
+        "title": "Bebe Rexha & Faithless - New Religion (Extended Mix)",
+        "duration": 248.0,
+        "uploader": "DVJ FS"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=OT9FdP2Gua4",
+    "download_success": true,
+    "chosen_query": "New Religion Bebe Rexha,\u00a0Faithless -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-31T22:47:30.051555"
+  },
+  "name::pop dat thang::dababy": {
+    "title": "POP DAT THANG",
+    "artist": "DaBaby",
+    "query": "POP DAT THANG DaBaby -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "ejKV7q27jTw",
+        "url": "https://www.youtube.com/watch?v=ejKV7q27jTw",
+        "title": "POP DAT THANG - DaBaby - Easy [PIANO TUTORIAL]",
+        "duration": 177.0,
+        "uploader": "Top Piano Tutorials"
+      },
+      {
+        "index": 2,
+        "id": "IFdxV7Qlg54",
+        "url": "https://www.youtube.com/watch?v=IFdxV7Qlg54",
+        "title": "POP DAT THANG - DaBaby - Very Easy [PIANO TUTORIAL]",
+        "duration": 41.0,
+        "uploader": "Top Piano Tutorials"
+      },
+      {
+        "index": 3,
+        "id": "DGUVPIV3K74",
+        "url": "https://www.youtube.com/watch?v=DGUVPIV3K74",
+        "title": "#dababy Pop Dat Thang Song #funny #voicechanger #audio #beats ",
+        "duration": 7.0,
+        "uploader": "Derrickcool"
+      },
+      {
+        "index": 4,
+        "id": "OnopsnvZlfQ",
+        "url": "https://www.youtube.com/watch?v=OnopsnvZlfQ",
+        "title": "POP DAT THANG - DaBaby * Drums *",
+        "duration": 126.0,
+        "uploader": "Nilz stems LAB"
+      },
+      {
+        "index": 5,
+        "id": "kAyJQOEs45w",
+        "url": "https://www.youtube.com/watch?v=kAyJQOEs45w",
+        "title": "DABABY - POP DAT THANG l DANCE FILM / \ub3d9\uc544\ubc29\uc1a1\uc608\uc220\ub300\ud559\uad50 \uc601\uc0c1\uc81c\uc791\uacfc \ud544\ub984\uba54\uc774\ud0b9 \ud06c\ub8e8 ANVIL FORGE.lab",
+        "duration": 142.0,
+        "uploader": "TONEPJ"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=ejKV7q27jTw",
+    "download_success": true,
+    "chosen_query": "POP DAT THANG DaBaby -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-31T22:47:45.795543"
+  },
+  "name::nuevayol::bad bunny": {
+    "title": "NUEVAYoL",
+    "artist": "Bad Bunny",
+    "query": "NUEVAYoL Bad Bunny -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "3oHXSvo4lDs",
+        "url": "https://www.youtube.com/watch?v=3oHXSvo4lDs",
+        "title": "BAD BUNNY - NUEVAYoL (Letra/Lyrics) | DeB\u00cd TiRAR M\u00e1S FOToS",
+        "duration": 184.0,
+        "uploader": "Reggaeton Nation"
+      },
+      {
+        "index": 2,
+        "id": "LXLV0gdMglU",
+        "url": "https://www.youtube.com/watch?v=LXLV0gdMglU",
+        "title": "Lose Weight Dancing to Bad Bunny - Nuevayol | Fat Burn",
+        "duration": 205.0,
+        "uploader": "Kaji Pm"
+      },
+      {
+        "index": 3,
+        "id": "5CXShhTKjoo",
+        "url": "https://www.youtube.com/watch?v=5CXShhTKjoo",
+        "title": "Bad Bunny : NUEVAYoL ( Version Skyrock ) \ud83c\udfb6",
+        "duration": 186.0,
+        "uploader": "NadhirSkyrock1\ud83c\udfb6"
+      },
+      {
+        "index": 4,
+        "id": "CPdfvws-oXs",
+        "url": "https://www.youtube.com/watch?v=CPdfvws-oXs",
+        "title": "BAD BUNNY - NUEVAYoL (Official Music Video)",
+        "duration": 186.0,
+        "uploader": "Pure Vibes"
+      },
+      {
+        "index": 5,
+        "id": "q2iV5jggiFI",
+        "url": "https://www.youtube.com/watch?v=q2iV5jggiFI",
+        "title": "NUEVAYoL (INSTRUMeNTAL) - Bad Bunny",
+        "duration": 182.0,
+        "uploader": "DJKAYDAWG"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=3oHXSvo4lDs",
+    "download_success": true,
+    "chosen_query": "NUEVAYoL Bad Bunny -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-07-31T22:48:02.360994"
   }
 }
