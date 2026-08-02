@@ -1947,5 +1947,113 @@
     "download_success": true,
     "chosen_query": "NUEVAYoL Bad Bunny -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "updated_at": "2026-07-31T22:48:02.360994"
+  },
+  "name::me and the devil::soap&skin": {
+    "title": "Me and the Devil",
+    "artist": "Soap&Skin",
+    "query": "Me and the Devil Soap&Skin -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "z8LuxiUenNE",
+        "url": "https://www.youtube.com/watch?v=z8LuxiUenNE",
+        "title": "Soap&skin - Me and the Devil (Sub Espa\u00f1ol)",
+        "duration": 186.0,
+        "uploader": "\ud835\udd79 \ud835\udd94 \ud835\udd93 \ud835\udd8e \ud835\udd98"
+      },
+      {
+        "index": 2,
+        "id": "3ZPrpLs5gEY",
+        "url": "https://www.youtube.com/watch?v=3ZPrpLs5gEY",
+        "title": "\u0645\u0648\u0632\u06cc\u06a9 \u0648\u06cc\u062f\u06cc\u0648 Me And The Devil \u0627\u0632 Soap&Skin \u0628\u0627 \u062a\u0631\u062c\u0645\u0647 \u0641\u0627\u0631\u0633\u06cc.",
+        "duration": 191.0,
+        "uploader": "Ranger_Remix"
+      },
+      {
+        "index": 3,
+        "id": "weH8SWfv0gA",
+        "url": "https://www.youtube.com/watch?v=weH8SWfv0gA",
+        "title": "Me and the devil | SOAP&SKIN | Lyrics video",
+        "duration": 186.0,
+        "uploader": "7Melody"
+      },
+      {
+        "index": 4,
+        "id": "JpfMPxxZPlE",
+        "url": "https://www.youtube.com/watch?v=JpfMPxxZPlE",
+        "title": "soap&skin _ me and the devil  [ \u0645\u062a\u0631\u062c\u0645\u0629 + \u0628\u062f\u0648\u0646 \u0645\u0648\u0633\u064a\u0642\u0649 ]  \u0633\u0648\u0628 \u0623\u0646\u062f \u0633\u0643\u064a\u0646 _ \u0623\u0646\u0627 \u0648\u0627\u0644\u0634\u064a\u0637\u0627\u0646",
+        "duration": 154.0,
+        "uploader": "Evelyn songs"
+      },
+      {
+        "index": 5,
+        "id": "CZ7KKbSfWIw",
+        "url": "https://www.youtube.com/watch?v=CZ7KKbSfWIw",
+        "title": "Es totalmente para Yuuji - Me and the Devil - Soap&Skin - Jujutsu Kaisen -",
+        "duration": 181.0,
+        "uploader": "MusicTowers"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=z8LuxiUenNE",
+    "download_success": true,
+    "chosen_query": "Me and the Devil Soap&Skin -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-02T21:51:46.283494"
+  },
+  "name::all the things she said::t.a.t.u": {
+    "title": "All The Things She Said",
+    "artist": "t.A.T.u",
+    "query": "All The Things She Said t.A.T.u -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "Rn0lLmz8yXs",
+        "url": "https://www.youtube.com/watch?v=Rn0lLmz8yXs",
+        "title": "\u300a\u61f7\u820a\u6b4c\u66f2\u300bt.A.T.u - All The Thing She Said \u4e2d\u82f1\u6587\u6b4c\u8a5e\u7ffb\u8b6f",
+        "duration": 227.0,
+        "uploader": "\u8cc8\u65af\u6c40\u9594\u6211\u8001\u516c \u6b38\u563f"
+      },
+      {
+        "index": 2,
+        "id": "fW3ZjQYqr9k",
+        "url": "https://www.youtube.com/watch?v=fW3ZjQYqr9k",
+        "title": "t.A.T.u. ~ All The Things She Said (Subtitulado al Espa\u00f1ol & Ingl\u00e9s - Video HD)",
+        "duration": 238.0,
+        "uploader": "Xendrik Aunglend \u2671 Lyrics "
+      },
+      {
+        "index": 3,
+        "id": "3Q4TKf4kkmw",
+        "url": "https://www.youtube.com/watch?v=3Q4TKf4kkmw",
+        "title": "t.A.T.u. - All The Things She Said (ALTERNATIVE VIDEO)",
+        "duration": 230.0,
+        "uploader": "t.A.T.u. Clips"
+      },
+      {
+        "index": 4,
+        "id": "dBnREP5ni0M",
+        "url": "https://www.youtube.com/watch?v=dBnREP5ni0M",
+        "title": "[1 HOUR \ud83d\udd50 ] tATu - All The Things She Said (Lyrics)",
+        "duration": 3601.0,
+        "uploader": "Rawal"
+      },
+      {
+        "index": 5,
+        "id": "aMKK3-0CwZc",
+        "url": "https://www.youtube.com/watch?v=aMKK3-0CwZc",
+        "title": "[Lyrics - Vietsub] All the Things She Said - t.A.T.u. | Shane & Ilya - Heated Rivalry",
+        "duration": 214.0,
+        "uploader": "Ferbify"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=Rn0lLmz8yXs",
+    "download_success": true,
+    "chosen_query": "All The Things She Said t.A.T.u -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-02T21:52:08.279801"
   }
 }
