@@ -2055,5 +2055,113 @@
     "download_success": true,
     "chosen_query": "All The Things She Said t.A.T.u -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "updated_at": "2026-08-02T21:52:08.279801"
+  },
+  "name::victoria - the suite::martin phipps, benji merrison, medi\u00e6val b\u00e6bes": {
+    "title": "Victoria - The Suite",
+    "artist": "Martin Phipps, Benji Merrison, Medi\u00e6val B\u00e6bes",
+    "query": "Victoria - The Suite Martin Phipps, Benji Merrison, Medi\u00e6val B\u00e6bes -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "gQWr_E0ufrA",
+        "url": "https://www.youtube.com/watch?v=gQWr_E0ufrA",
+        "title": "Epis\u00f3dio 18 - Barroco: Escola da dualidade",
+        "duration": 3407.0,
+        "uploader": "De Cam\u00f5es A Clarice - Podcast"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-08-04T11:07:32.905629"
+  },
+  "name::dance monkey - piano version::daniele leoni": {
+    "title": "Dance Monkey - Piano Version",
+    "artist": "Daniele Leoni",
+    "query": "Dance Monkey - Piano Version Daniele Leoni -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "62JJ8Q2_XbQ",
+        "url": "https://www.youtube.com/watch?v=62JJ8Q2_XbQ",
+        "title": "Overture Sax Rudi Bisbini.mpg",
+        "duration": 106.0,
+        "uploader": "rudibisbini"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=62JJ8Q2_XbQ",
+    "download_success": true,
+    "chosen_query": "Dance Monkey - Piano Version Daniele Leoni -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-04T11:07:47.303304"
+  },
+  "name::vaughan williams: the lark ascending, for violin and orchestra (excerpt, opening)::ralph vaughan williams, sir adrian boult, new philharmonia orchestra": {
+    "title": "Vaughan Williams: The Lark Ascending, for Violin and Orchestra (Excerpt, Opening)",
+    "artist": "Ralph Vaughan Williams, Sir Adrian Boult, New Philharmonia Orchestra",
+    "query": "Vaughan Williams: The Lark Ascending, for Violin and Orchestra (Excerpt, Opening) Ralph Vaughan Williams, Sir Adrian Boult, New Philharmonia Orchestra -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "QlhOjc7o7GI",
+        "url": "https://www.youtube.com/watch?v=QlhOjc7o7GI",
+        "title": "Sir Adrian Boult rehearsing The Pilgrim's Progress of Vaughan Williams(originally on EMI LP SLS 959)",
+        "duration": 1622.0,
+        "uploader": "Rodders"
+      },
+      {
+        "index": 2,
+        "id": "jpIgjGj7rm4",
+        "url": "https://www.youtube.com/watch?v=jpIgjGj7rm4",
+        "title": "The Lark Ascending",
+        "duration": 804.0,
+        "uploader": "London Symphony Orchestra"
+      },
+      {
+        "index": 3,
+        "id": "UxLXVRzQt6o",
+        "url": "https://www.youtube.com/watch?v=UxLXVRzQt6o",
+        "title": "The Lark Ascending",
+        "duration": 809.0,
+        "uploader": "London Philharmonic Orchestra"
+      },
+      {
+        "index": 4,
+        "id": "5S-_yIwe47k",
+        "url": "https://www.youtube.com/watch?v=5S-_yIwe47k",
+        "title": "The Lark Ascending",
+        "duration": 897.0,
+        "uploader": "New Philharmonia Orchestra - Topic"
+      },
+      {
+        "index": 5,
+        "id": "uCNRQQCFeiA",
+        "url": "https://www.youtube.com/watch?v=uCNRQQCFeiA",
+        "title": "The Lark Ascending",
+        "duration": 788.0,
+        "uploader": "London Philharmonic Orchestra"
+      }
+    ],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-08-04T11:08:49.724731"
+  },
+  "name::misty mountains - from \"the hobbit: an unexpected journey\"::philippa boyens, david donaldson, david long, janet roddick, stephen roche, fran walsh, the city of prague philharmonic orchestra, evan jolly": {
+    "title": "Misty Mountains - From \"The Hobbit: An Unexpected Journey\"",
+    "artist": "Philippa Boyens, David Donaldson, David Long, Janet Roddick, Stephen Roche, Fran Walsh, The City of Prague Philharmonic Orchestra, Evan Jolly",
+    "query": "Misty Mountains - From \"The Hobbit: An Unexpected Journey\" Philippa Boyens, David Donaldson, David Long, Janet Roddick, Stephen Roche, Fran Walsh, The City of Prague Philharmonic Orchestra, Evan Jolly -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [],
+    "chosen_index": null,
+    "chosen_url": null,
+    "download_success": false,
+    "updated_at": "2026-08-04T11:09:46.957062"
   }
 }
