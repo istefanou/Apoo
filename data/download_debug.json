@@ -1462,7 +1462,7 @@
     "chosen_index": null,
     "chosen_url": null,
     "download_success": false,
-    "updated_at": "2026-08-05T10:00:52.231964"
+    "updated_at": "2026-08-21T20:58:11.922806"
   },
   "name::i can't go for that (no can do) (pomo remix)::daryl hall & john oates": {
     "title": "I Can't Go for That (No Can Do) (Pomo Remix)",
@@ -1474,7 +1474,7 @@
     "chosen_index": null,
     "chosen_url": null,
     "download_success": false,
-    "updated_at": "2026-07-30T12:01:18.274096"
+    "updated_at": "2026-08-21T20:59:06.819231"
   },
   "name::watermelon sugar::suroboi": {
     "title": "Watermelon Sugar",
@@ -1485,25 +1485,17 @@
     "candidates": [
       {
         "index": 1,
-        "id": "nT_nQObTMBE",
-        "url": "https://www.youtube.com/watch?v=nT_nQObTMBE",
-        "title": "Romanticize the Little Things \u2600\ufe0f Morning House",
-        "duration": 3669.0,
-        "uploader": "Cotton Morning"
-      },
-      {
-        "index": 2,
-        "id": "j0zR2z_yFlw",
-        "url": "https://www.youtube.com/watch?v=j0zR2z_yFlw",
-        "title": "Slow Morning, Warm Light \u2600\ufe0f Bright Morning House Playlist",
-        "duration": 5180.0,
-        "uploader": "Cotton Morning"
+        "id": "8nFdfw6rFV4",
+        "url": "https://www.youtube.com/watch?v=8nFdfw6rFV4",
+        "title": "Morning Lounge Chill House Playlist \u2600\ufe0f 1 Hour",
+        "duration": 3791.0,
+        "uploader": "Cotton Morning Playlist"
       }
     ],
     "chosen_index": null,
     "chosen_url": null,
     "download_success": false,
-    "updated_at": "2026-08-05T10:01:50.748218"
+    "updated_at": "2026-08-21T20:57:18.379792"
   },
   "name::once in a lifetime::dela utca": {
     "title": "Once In A Lifetime",
@@ -2163,5 +2155,675 @@
     "chosen_url": null,
     "download_success": false,
     "updated_at": "2026-08-04T11:09:46.957062"
+  },
+  "name::labour (the cacophony)::paris paloma": {
+    "title": "LABOUR (the cacophony)",
+    "artist": "Paris Paloma",
+    "query": "LABOUR (the cacophony) Paris Paloma -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "-q7hvQSB680",
+        "url": "https://www.youtube.com/watch?v=-q7hvQSB680",
+        "title": "Paris Paloma - LABOUR (the cacophony) (Lyrics)",
+        "duration": 248.0,
+        "uploader": "Mellifluous Lyrics"
+      },
+      {
+        "index": 2,
+        "id": "hcjDa4w-jLQ",
+        "url": "https://www.youtube.com/watch?v=hcjDa4w-jLQ",
+        "title": "Paris Paloma - labour (cacophony) (sped up)",
+        "duration": 187.0,
+        "uploader": "Jennie Vibes"
+      },
+      {
+        "index": 3,
+        "id": "1jVj0fnF83E",
+        "url": "https://www.youtube.com/watch?v=1jVj0fnF83E",
+        "title": "Keshi - LIMBO (Lyrics) labour - Paris Paloma | Miley Cyrus, Tom Odell (Mix)",
+        "duration": 897.0,
+        "uploader": "ChillDaze"
+      },
+      {
+        "index": 4,
+        "id": "gOedos-MQno",
+        "url": "https://www.youtube.com/watch?v=gOedos-MQno",
+        "title": "TVDU multifemale edit//labour/\u2606paris paloma\u2606",
+        "duration": 251.0,
+        "uploader": "hopes.sirexx"
+      },
+      {
+        "index": 5,
+        "id": "61t6Abv3D9g",
+        "url": "https://www.youtube.com/watch?v=61t6Abv3D9g",
+        "title": "PARIS PALOMA TOP 20 POPULAR SONGS A PLAYLIST",
+        "duration": 4427.0,
+        "uploader": "IKYK_LeeKnow"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=-q7hvQSB680",
+    "download_success": true,
+    "chosen_query": "LABOUR (the cacophony) Paris Paloma -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:12:08.476756"
+  },
+  "name::die with a smile (acoustic)::lady gaga": {
+    "title": "Die With A Smile (Acoustic)",
+    "artist": "Lady Gaga",
+    "query": "Die With A Smile (Acoustic) Lady Gaga -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "3TalxROUQKw",
+        "url": "https://www.youtube.com/watch?v=3TalxROUQKw",
+        "title": "Lady Gaga, Bruno Mars - Die With A Smile (Official Music Video)",
+        "duration": 253.0,
+        "uploader": "Please Subscribe And Support "
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=3TalxROUQKw",
+    "download_success": true,
+    "chosen_query": "Die With A Smile (Acoustic) Lady Gaga -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:12:32.606281"
+  },
+  "name::turn the lights off (radio edit)::kato": {
+    "title": "Turn The Lights Off (Radio Edit)",
+    "artist": "KATO",
+    "query": "Turn The Lights Off (Radio Edit) KATO -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "SbPqD6sf-C4",
+        "url": "https://www.youtube.com/watch?v=SbPqD6sf-C4",
+        "title": "Think About The Lights [KATO vs. Ice MC]",
+        "duration": 177.0,
+        "uploader": "kryst2line"
+      },
+      {
+        "index": 2,
+        "id": "yd5yYgpjK1s",
+        "url": "https://www.youtube.com/watch?v=yd5yYgpjK1s",
+        "title": "Kato & Jon - Turn the Lights Off ( Hindi Version ) ",
+        "duration": 175.0,
+        "uploader": "Shuvonil Music "
+      },
+      {
+        "index": 3,
+        "id": "aSbjs6YQBpY",
+        "url": "https://www.youtube.com/watch?v=aSbjs6YQBpY",
+        "title": "CRISWELL - Turn The Lights Off",
+        "duration": 291.0,
+        "uploader": "C R I S W E L L"
+      },
+      {
+        "index": 4,
+        "id": "oitTUHB6pjI",
+        "url": "https://www.youtube.com/watch?v=oitTUHB6pjI",
+        "title": "1080p Jon Hamm feat. Kato & Jon - Turn The Lights Off (Vladikus Extended radio edit ) [TikTok]ALL ",
+        "duration": 260.0,
+        "uploader": "Vladislav Farrakhov"
+      },
+      {
+        "index": 5,
+        "id": "2YiUUXhaZws",
+        "url": "https://www.youtube.com/watch?v=2YiUUXhaZws",
+        "title": "May 10 2010 Designers Avenue - Micha\u0142 Szulc Turn The Lights Off collection",
+        "duration": 594.0,
+        "uploader": "Marcin (mkamelg)"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=SbPqD6sf-C4",
+    "download_success": true,
+    "chosen_query": "Turn The Lights Off (Radio Edit) KATO -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:12:51.764073"
+  },
+  "name::firework::karolina protsenko": {
+    "title": "Firework",
+    "artist": "Karolina Protsenko",
+    "query": "Firework Karolina Protsenko -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "ufAc4h6UZzc",
+        "url": "https://www.youtube.com/watch?v=ufAc4h6UZzc",
+        "title": "What Truly Happened to Karolina Protsenko",
+        "duration": 878.0,
+        "uploader": "Tinselora Echo  "
+      },
+      {
+        "index": 2,
+        "id": "UOmLIZbGmRw",
+        "url": "https://www.youtube.com/watch?v=UOmLIZbGmRw",
+        "title": "Karolina Protsenko - My Love #karolinaprotsenko #karolinaprotsenkoviolin #violincover",
+        "duration": 7.0,
+        "uploader": "Karolina Protsenko Stories"
+      },
+      {
+        "index": 3,
+        "id": "Tn3xWfEpMGg",
+        "url": "https://www.youtube.com/watch?v=Tn3xWfEpMGg",
+        "title": "What REALLY Happened To Karolina Protsenko? The Truth Behind Her Journey",
+        "duration": 258.0,
+        "uploader": "Celevara Lens"
+      },
+      {
+        "index": 4,
+        "id": "9O5JZLG6tnQ",
+        "url": "https://www.youtube.com/watch?v=9O5JZLG6tnQ",
+        "title": "Karolina Protsenko (14 yrs) - Violin Sonata No.17 in C Major at Colburn School (Nov 21, 2022)",
+        "duration": 307.0,
+        "uploader": "SuperIntelligentOne's World"
+      },
+      {
+        "index": 5,
+        "id": "5vbP_g4Newk",
+        "url": "https://www.youtube.com/watch?v=5vbP_g4Newk",
+        "title": "Perth Royal show Awesome Fire works 2022",
+        "duration": 301.0,
+        "uploader": "Abhilash Baby"
+      }
+    ],
+    "chosen_index": 3,
+    "chosen_url": "https://www.youtube.com/watch?v=Tn3xWfEpMGg",
+    "download_success": true,
+    "chosen_query": "Firework Karolina Protsenko -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:13:38.362999"
+  },
+  "name::virile::suzane": {
+    "title": "Virile",
+    "artist": "Suzane",
+    "query": "Virile Suzane -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "qkbIsmSo7p0",
+        "url": "https://www.youtube.com/watch?v=qkbIsmSo7p0",
+        "title": "Je danse sur Virile de Suzane",
+        "duration": 186.0,
+        "uploader": "ADRI WOW\ud83d\ude0d\ud83d\udc4d"
+      },
+      {
+        "index": 2,
+        "id": "izWImpKBhsM",
+        "url": "https://www.youtube.com/watch?v=izWImpKBhsM",
+        "title": "Suzane, Virile (Tuto Piano)",
+        "duration": 93.0,
+        "uploader": "Les Touches du Succ\u00e8s"
+      },
+      {
+        "index": 3,
+        "id": "K0hXRfabNOw",
+        "url": "https://www.youtube.com/watch?v=K0hXRfabNOw",
+        "title": "Suzane - SLT l Projet chor\u00e9graphique",
+        "duration": 261.0,
+        "uploader": "AUNIX Studio"
+      },
+      {
+        "index": 4,
+        "id": "BujSr1OhY9I",
+        "url": "https://www.youtube.com/watch?v=BujSr1OhY9I",
+        "title": "VIRILES - KYNLAUS COMPANY : Teaser",
+        "duration": 68.0,
+        "uploader": "Aliz\u00e9 Hernandez | Cie Kynlaus"
+      },
+      {
+        "index": 5,
+        "id": "j8k_3xMiAKg",
+        "url": "https://www.youtube.com/watch?v=j8k_3xMiAKg",
+        "title": "The Unforgiving Yardstick/The Measure of a witch",
+        "duration": 55.0,
+        "uploader": "Fleur artefleur"
+      }
+    ],
+    "chosen_index": 2,
+    "chosen_url": "https://www.youtube.com/watch?v=izWImpKBhsM",
+    "download_success": true,
+    "chosen_query": "Virile Suzane -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:14:05.145483"
+  },
+  "name::somewhere only we know::keane": {
+    "title": "Somewhere Only We Know",
+    "artist": "Keane",
+    "query": "Somewhere Only We Know Keane -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "OHftHsnXpOg",
+        "url": "https://www.youtube.com/watch?v=OHftHsnXpOg",
+        "title": "Somewhere Only We Know - Keane (Lyrics) || Ed Sheeran, Rosa Linn (Mix Lyrics)",
+        "duration": 723.0,
+        "uploader": "Aurora Audio"
+      },
+      {
+        "index": 2,
+        "id": "gs-ht1uOuKA",
+        "url": "https://www.youtube.com/watch?v=gs-ht1uOuKA",
+        "title": "Keane - Somewhere Only We Know (Lyrics)",
+        "duration": 1022.0,
+        "uploader": "Deep Atmosphere"
+      },
+      {
+        "index": 3,
+        "id": "7k-xKEkB2Ag",
+        "url": "https://www.youtube.com/watch?v=7k-xKEkB2Ag",
+        "title": "Keane - Somewhere Only We Know - Easy Piano Tutorial",
+        "duration": 157.0,
+        "uploader": "PlayTheKeys"
+      },
+      {
+        "index": 4,
+        "id": "f815J50ITdA",
+        "url": "https://www.youtube.com/watch?v=f815J50ITdA",
+        "title": "Keane - Somewhere Only We Know 432 Hz",
+        "duration": 241.0,
+        "uploader": "OOPS! Channel"
+      },
+      {
+        "index": 5,
+        "id": "cSRPkXJIIok",
+        "url": "https://www.youtube.com/watch?v=cSRPkXJIIok",
+        "title": "Keane - Somewhere Only We Know (Lyrics)",
+        "duration": 1738.0,
+        "uploader": "Sing Along Studio"
+      }
+    ],
+    "chosen_index": 4,
+    "chosen_url": "https://www.youtube.com/watch?v=f815J50ITdA",
+    "download_success": true,
+    "chosen_query": "Somewhere Only We Know Keane -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:15:05.193786"
+  },
+  "name::yellowstone (holding you)::matt hansen": {
+    "title": "yellowstone (holding you)",
+    "artist": "Matt Hansen",
+    "query": "yellowstone (holding you) Matt Hansen -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "q5ZVw9U1oD4",
+        "url": "https://www.youtube.com/watch?v=q5ZVw9U1oD4",
+        "title": "Matt Hansen - yellowstone (holding you) (Lyrics)",
+        "duration": 193.0,
+        "uploader": "Lyrical Tunes"
+      },
+      {
+        "index": 2,
+        "id": "0XHKiZ3elPA",
+        "url": "https://www.youtube.com/watch?v=0XHKiZ3elPA",
+        "title": "Matt Hansen - Yellowstone (Sub.Espa\u00f1ol)",
+        "duration": 192.0,
+        "uploader": "Eternal \"_^ Music"
+      },
+      {
+        "index": 3,
+        "id": "bE6hjwYkIGg",
+        "url": "https://www.youtube.com/watch?v=bE6hjwYkIGg",
+        "title": "Rory | Doctor Who Fan Vid | \"yellowstone (holding you)\" by Matt Hansen",
+        "duration": 190.0,
+        "uploader": "Evie"
+      },
+      {
+        "index": 4,
+        "id": "Rv1FUD00N1E",
+        "url": "https://www.youtube.com/watch?v=Rv1FUD00N1E",
+        "title": "Let em go ( matt hansen ) 1 hour ",
+        "duration": 3528.0,
+        "uploader": "evemarie"
+      },
+      {
+        "index": 5,
+        "id": "OaEfX2liLc0",
+        "url": "https://www.youtube.com/watch?v=OaEfX2liLc0",
+        "title": "Kodukandip\u00e4evad 2025",
+        "duration": 192.0,
+        "uploader": "tiux19"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=q5ZVw9U1oD4",
+    "download_success": true,
+    "chosen_query": "yellowstone (holding you) Matt Hansen -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:15:22.187923"
+  },
+  "name::let me in::jared benjamin": {
+    "title": "LET ME IN",
+    "artist": "Jared Benjamin",
+    "query": "LET ME IN Jared Benjamin -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "iXCXvX6sqlg",
+        "url": "https://www.youtube.com/watch?v=iXCXvX6sqlg",
+        "title": "LET ME IN",
+        "duration": 23.0,
+        "uploader": "Jared Benjamin"
+      },
+      {
+        "index": 2,
+        "id": "CjH-ysl64pk",
+        "url": "https://www.youtube.com/watch?v=CjH-ysl64pk",
+        "title": "Jared Benjamin - Let Me In (Official Lyric Video) | REACTION",
+        "duration": 274.0,
+        "uploader": "Highly Combustible Reacts"
+      },
+      {
+        "index": 3,
+        "id": "fW6VrmMSsio",
+        "url": "https://www.youtube.com/watch?v=fW6VrmMSsio",
+        "title": "Die On Me",
+        "duration": 184.0,
+        "uploader": "Jared Benjamin"
+      },
+      {
+        "index": 4,
+        "id": "ZUcH2ov6Xi0",
+        "url": "https://www.youtube.com/watch?v=ZUcH2ov6Xi0",
+        "title": "Jared Benjamin - Let It Burn | Lyrics",
+        "duration": 158.0,
+        "uploader": "LyricsHarbor"
+      },
+      {
+        "index": 5,
+        "id": "lwlI1dh77wg",
+        "url": "https://www.youtube.com/watch?v=lwlI1dh77wg",
+        "title": "Jared Benjamin - Believe It (Tradu\u00e7\u00e3o/ Legendado)",
+        "duration": 172.0,
+        "uploader": "Midnightlegendas"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=iXCXvX6sqlg",
+    "download_success": true,
+    "chosen_query": "LET ME IN Jared Benjamin -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:15:52.956338"
+  },
+  "name::gangsta's paradise::coolio": {
+    "title": "Gangsta's Paradise",
+    "artist": "Coolio",
+    "query": "Gangsta's Paradise Coolio -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "hHOqKRfETtE",
+        "url": "https://www.youtube.com/watch?v=hHOqKRfETtE",
+        "title": "Coolio- Gangsta's Paradise (Starring Coolio and Michelle Pfeiffer)",
+        "duration": 249.0,
+        "uploader": "Michail Krasnoborov Rurikovich"
+      },
+      {
+        "index": 2,
+        "id": "nQWfrBfIVeU",
+        "url": "https://www.youtube.com/watch?v=nQWfrBfIVeU",
+        "title": "Coolio ft. L.V. - Gangsta's Paradise (pitch -1)",
+        "duration": 241.0,
+        "uploader": "Drake Yin's New Music Channel"
+      },
+      {
+        "index": 3,
+        "id": "JHnvWY44tt8",
+        "url": "https://www.youtube.com/watch?v=JHnvWY44tt8",
+        "title": "(ENG,KOR) Gangsta's Paradise - Coolio",
+        "duration": 241.0,
+        "uploader": "Namusae"
+      },
+      {
+        "index": 4,
+        "id": "c4LBNVi3J-U",
+        "url": "https://www.youtube.com/watch?v=c4LBNVi3J-U",
+        "title": "Coolio - Gangsta's Paradise (feat. L.V.) (PAL Pitched)",
+        "duration": 235.0,
+        "uploader": "Juan Pablo Rivera Zenteno"
+      },
+      {
+        "index": 5,
+        "id": "-aTnaVIEe1U",
+        "url": "https://www.youtube.com/watch?v=-aTnaVIEe1U",
+        "title": "Gangsta's Paradise COOLIO - 1995 - Dangerous Minds (Mentes Peligrosas)",
+        "duration": 243.0,
+        "uploader": "DinBelMon2020"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=hHOqKRfETtE",
+    "download_success": true,
+    "chosen_query": "Gangsta's Paradise Coolio -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:16:15.021695"
+  },
+  "name::don't tell your dreams::stosliv": {
+    "title": "Don't tell your dreams",
+    "artist": "STOSLIV",
+    "query": "Don't tell your dreams STOSLIV -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "5V4vlsFar20",
+        "url": "https://www.youtube.com/watch?v=5V4vlsFar20",
+        "title": "LOVIXX, STOSLIV - Don't tell your dreams (Lyrics)",
+        "duration": 142.0,
+        "uploader": "Vybez lyrics "
+      },
+      {
+        "index": 2,
+        "id": "nhmmPgP2xhk",
+        "url": "https://www.youtube.com/watch?v=nhmmPgP2xhk",
+        "title": "LOVIXX, STOSLIV - Don't Tell Your Dreams (Lyrics)",
+        "duration": 142.0,
+        "uploader": "Beatz"
+      },
+      {
+        "index": 3,
+        "id": "631YE3DH2SU",
+        "url": "https://www.youtube.com/watch?v=631YE3DH2SU",
+        "title": "(29-37Hz)LOVIXX, STOSLIV - Don't tell your dreams(V3NOM_Rebassed)",
+        "duration": 142.0,
+        "uploader": "V3NOM_Rebassed"
+      },
+      {
+        "index": 4,
+        "id": "pT5fp7HloNo",
+        "url": "https://www.youtube.com/watch?v=pT5fp7HloNo",
+        "title": "Don't Tell Your Dreams \u2013 LOVIXX ft. STOSLIV (Lyrics Video) | Official Lyrics",
+        "duration": 142.0,
+        "uploader": "NEX LYRICS "
+      },
+      {
+        "index": 5,
+        "id": "CwV8YVZc2hk",
+        "url": "https://www.youtube.com/watch?v=CwV8YVZc2hk",
+        "title": "LOVIXX, STOSLIV - Don't tell your dreams (Lyrics)",
+        "duration": 1393.0,
+        "uploader": "Lyriqo21"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=5V4vlsFar20",
+    "download_success": true,
+    "chosen_query": "Don't tell your dreams STOSLIV -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:16:29.539969"
+  },
+  "name::the night we met::joni fuller": {
+    "title": "The Night We Met",
+    "artist": "Joni Fuller",
+    "query": "The Night We Met Joni Fuller -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "cYiXZ0UrINY",
+        "url": "https://www.youtube.com/watch?v=cYiXZ0UrINY",
+        "title": "Francesca & John | The Night We Met. [Bridgerton Season 4]",
+        "duration": 209.0,
+        "uploader": "anavids."
+      },
+      {
+        "index": 2,
+        "id": "SzCmJLVsIyk",
+        "url": "https://www.youtube.com/watch?v=SzCmJLVsIyk",
+        "title": "The Night We Met (Lord Huron) from BRIDGERTON for String Quartet | SHEET MUSIC",
+        "duration": 188.0,
+        "uploader": "quartetpad "
+      },
+      {
+        "index": 3,
+        "id": "3Ki1UrSMacA",
+        "url": "https://www.youtube.com/watch?v=3Ki1UrSMacA",
+        "title": "Translucent",
+        "duration": 132.0,
+        "uploader": "Kaylie Smith"
+      },
+      {
+        "index": 4,
+        "id": "ZbEi8nbXwkY",
+        "url": "https://www.youtube.com/watch?v=ZbEi8nbXwkY",
+        "title": "\ud83c\udf11\ud83c\udf0c\ud83c\udf03 The night we met \ud83c\udf20 Music video in ACNH \ud83e\udd72 2-year special",
+        "duration": 213.0,
+        "uploader": "Luz Crosser"
+      },
+      {
+        "index": 5,
+        "id": "WskvQdWBIzE",
+        "url": "https://www.youtube.com/watch?v=WskvQdWBIzE",
+        "title": "fuller house - kimmy gives birth",
+        "duration": 149.0,
+        "uploader": "tea \u2022"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=cYiXZ0UrINY",
+    "download_success": true,
+    "chosen_query": "The Night We Met Joni Fuller -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:16:49.488868"
+  },
+  "name::the night we met::lord huron": {
+    "title": "The Night We Met",
+    "artist": "Lord Huron",
+    "query": "The Night We Met Lord Huron -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "gvwIsX8QePI",
+        "url": "https://www.youtube.com/watch?v=gvwIsX8QePI",
+        "title": "Lord Huron - The Night We Met (Magyarul)",
+        "duration": 209.0,
+        "uploader": "Narohub"
+      },
+      {
+        "index": 2,
+        "id": "kajQmqkr6tQ",
+        "url": "https://www.youtube.com/watch?v=kajQmqkr6tQ",
+        "title": "Lord Huron - The Night We Met (Lyrics) (Loop Video)",
+        "duration": 1769.0,
+        "uploader": "Cloudline Vibes"
+      },
+      {
+        "index": 3,
+        "id": "rsEQsJ1OLz4",
+        "url": "https://www.youtube.com/watch?v=rsEQsJ1OLz4",
+        "title": "Lord Huron - The Night We Met (1 Hour Loop)",
+        "duration": 3703.0,
+        "uploader": "Music on Loop"
+      },
+      {
+        "index": 4,
+        "id": "GZsAEryEy3M",
+        "url": "https://www.youtube.com/watch?v=GZsAEryEy3M",
+        "title": "Lord Huron - The Night We Met (Lyrics)",
+        "duration": 1280.0,
+        "uploader": "Happy chicks"
+      },
+      {
+        "index": 5,
+        "id": "8bQfV4_cxig",
+        "url": "https://www.youtube.com/watch?v=8bQfV4_cxig",
+        "title": "Lord Huron - The Night We Met (Lyrics)",
+        "duration": 209.0,
+        "uploader": "magnificent"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=gvwIsX8QePI",
+    "download_success": true,
+    "chosen_query": "The Night We Met Lord Huron -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:17:19.570811"
+  },
+  "name::untouched::the veronicas": {
+    "title": "Untouched",
+    "artist": "The Veronicas",
+    "query": "Untouched The Veronicas -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "YeeIAqnUU9U",
+        "url": "https://www.youtube.com/watch?v=YeeIAqnUU9U",
+        "title": "Untouched - The Veronicas 2007",
+        "duration": 254.0,
+        "uploader": "Jason Symons TV Music"
+      },
+      {
+        "index": 2,
+        "id": "XHlHDRrCHN4",
+        "url": "https://www.youtube.com/watch?v=XHlHDRrCHN4",
+        "title": "Untouched - The Veronicas (Radio Edit)",
+        "duration": 202.0,
+        "uploader": "Radio Effects"
+      },
+      {
+        "index": 3,
+        "id": "hDRHAvUnsc8",
+        "url": "https://www.youtube.com/watch?v=hDRHAvUnsc8",
+        "title": "Untouched - The Veronica\u2019s | Christos Tsiantoulas Choreography",
+        "duration": 37.0,
+        "uploader": "Christos Tsiantoulas"
+      },
+      {
+        "index": 4,
+        "id": "TJRsaUHCVxw",
+        "url": "https://www.youtube.com/watch?v=TJRsaUHCVxw",
+        "title": "The Veronicas \u2014 Untouched (FIFA 09 Official Soundtrack)",
+        "duration": 256.0,
+        "uploader": "FC Soundtracks"
+      },
+      {
+        "index": 5,
+        "id": "iTWJQSUwWGM",
+        "url": "https://www.youtube.com/watch?v=iTWJQSUwWGM",
+        "title": "UNTOUCHED - The Veronicas - ATREVETE A SO\u00d1AR",
+        "duration": 367.0,
+        "uploader": "Azael Shiller"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=YeeIAqnUU9U",
+    "download_success": true,
+    "chosen_query": "Untouched The Veronicas -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-21T22:17:53.717106"
   }
 }
