@@ -2825,5 +2825,815 @@
     "download_success": true,
     "chosen_query": "Untouched The Veronicas -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
     "updated_at": "2026-08-21T22:17:53.717106"
+  },
+  "name::gods::league of legends,\u00a0newjeans": {
+    "title": "GODS",
+    "artist": "League of Legends,\u00a0NewJeans",
+    "query": "GODS League of Legends,\u00a0NewJeans -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "QQAc7ZQL-bA",
+        "url": "https://www.youtube.com/watch?v=QQAc7ZQL-bA",
+        "title": "The Meaning Behind Worlds 2023 Music Video - GODS ft. NewJeans | League of Legends",
+        "duration": 232.0,
+        "uploader": "Domy"
+      },
+      {
+        "index": 2,
+        "id": "o4nL4U1SiCI",
+        "url": "https://www.youtube.com/watch?v=o4nL4U1SiCI",
+        "title": "[Kurd&Eng Sub] NewJeans - Gods \u2022League of Legends\u2022 | \u0648\u06d5\u0631\u06af\u06ce\u0695\u0627\u0646\u06ce\u06a9\u06cc \u0695\u0648\u0648\u0646 |",
+        "duration": 231.0,
+        "uploader": "Aya Kpop Queen"
+      },
+      {
+        "index": 3,
+        "id": "wDH0UDj41E8",
+        "url": "https://www.youtube.com/watch?v=wDH0UDj41E8",
+        "title": "GODS ft.NewJeans (\ub274\uc9c4\uc2a4) Worlds 2023 Anthem - League of Legends (Redemption Reacts) Welcome Back Curt!",
+        "duration": 783.0,
+        "uploader": "REDEMPTION 46"
+      },
+      {
+        "index": 4,
+        "id": "zpW-5X0xtbY",
+        "url": "https://www.youtube.com/watch?v=zpW-5X0xtbY",
+        "title": "GODS Magyar Felirattal - League of Legends Worlds 2023 Himnusz",
+        "duration": 265.0,
+        "uploader": "Meihara Fuyu"
+      },
+      {
+        "index": 5,
+        "id": "5K_Mho1ieCE",
+        "url": "https://www.youtube.com/watch?v=5K_Mho1ieCE",
+        "title": "Lirik Lagu GODS - NewJeans | League of Legends Worlds 2023 Anthem | Rilikku",
+        "duration": 219.0,
+        "uploader": "WLyrics"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=QQAc7ZQL-bA",
+    "download_success": true,
+    "chosen_query": "GODS League of Legends,\u00a0NewJeans -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:34:12.616955"
+  },
+  "name::rise::league of legends,\u00a0mako,\u00a0the word alive,\u00a0the glitch mob": {
+    "title": "RISE",
+    "artist": "League of Legends,\u00a0Mako,\u00a0The Word Alive,\u00a0The Glitch Mob",
+    "query": "RISE League of Legends,\u00a0Mako,\u00a0The Word Alive,\u00a0The Glitch Mob -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "q3JgiR0V4n0",
+        "url": "https://www.youtube.com/watch?v=q3JgiR0V4n0",
+        "title": "League of legends - RISE(lyrics) ft.The Glitch Mob, Mako, The Word Alive ",
+        "duration": 191.0,
+        "uploader": "INTRUSIC \ud83c\udfb6"
+      },
+      {
+        "index": 2,
+        "id": "7FrQZtp35uY",
+        "url": "https://www.youtube.com/watch?v=7FrQZtp35uY",
+        "title": "\u266b\u266b\u266b The Glitch Mob, Mako & The Word Alive : Rise (lyrics) | League of Legends Worlds 2018 \u266b\u266b\u266b",
+        "duration": 201.0,
+        "uploader": "Lyrics Slayer"
+      },
+      {
+        "index": 3,
+        "id": "IAxteg7d3vs",
+        "url": "https://www.youtube.com/watch?v=IAxteg7d3vs",
+        "title": "Rise - League Of Legends - ft The Glitch Mob, Mako and The Word Alive - Lyric Video",
+        "duration": 196.0,
+        "uploader": "Beanie_Afton_X3"
+      },
+      {
+        "index": 4,
+        "id": "KI9p21-3Tf0",
+        "url": "https://www.youtube.com/watch?v=KI9p21-3Tf0",
+        "title": "League of Legends - RISE (Lyrics) ft. The Glitch Mob, Mako, The Word Alive",
+        "duration": 194.0,
+        "uploader": "Aesthetic Lyrics Tune"
+      },
+      {
+        "index": 5,
+        "id": "VN98wPm1Jo0",
+        "url": "https://www.youtube.com/watch?v=VN98wPm1Jo0",
+        "title": "League of Legends - RISE (Lyrics) ft. The Glitch Mob, Mako, The Word Alive",
+        "duration": 201.0,
+        "uploader": "DeoyxLyrics"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=q3JgiR0V4n0",
+    "download_success": true,
+    "chosen_query": "RISE League of Legends,\u00a0Mako,\u00a0The Word Alive,\u00a0The Glitch Mob -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:35:11.268052"
+  },
+  "name::star walkin' (league of legends worlds anthem)::lil nas x": {
+    "title": "STAR WALKIN' (League of Legends Worlds Anthem)",
+    "artist": "Lil Nas X",
+    "query": "STAR WALKIN' (League of Legends Worlds Anthem) Lil Nas X -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "7a3J4oAHpaw",
+        "url": "https://www.youtube.com/watch?v=7a3J4oAHpaw",
+        "title": "Lil Nas X  _-_ STAR WALKIN' (paroles)",
+        "duration": 209.0,
+        "uploader": "Kerol Fx"
+      },
+      {
+        "index": 2,
+        "id": "GM3R7tdvzJc",
+        "url": "https://www.youtube.com/watch?v=GM3R7tdvzJc",
+        "title": "Lil Nas X ~ STAR WALKIN' League of Legends Worlds Anthem (Lyrics)",
+        "duration": 213.0,
+        "uploader": "Js Lyrics"
+      },
+      {
+        "index": 3,
+        "id": "vCEXf3HcuHA",
+        "url": "https://www.youtube.com/watch?v=vCEXf3HcuHA",
+        "title": "| STAR WALKIN' (League Of Legends World Anthem) -LIL NAS X | JUTUSTU KAISEN AMV",
+        "duration": 208.0,
+        "uploader": "JustAChillGuyChilling"
+      },
+      {
+        "index": 4,
+        "id": "rQZvFCQ-_AQ",
+        "url": "https://www.youtube.com/watch?v=rQZvFCQ-_AQ",
+        "title": "Lil Nas X - STAR WALKIN' (Lyrics) League of Legends Worlds Anthem  | 30mins Chill Music",
+        "duration": 1664.0,
+        "uploader": "Vibe Lyrics Jams"
+      },
+      {
+        "index": 5,
+        "id": "l05Lmrb03EM",
+        "url": "https://www.youtube.com/watch?v=l05Lmrb03EM",
+        "title": "Lil Nas X - STAR WALKIN' (League of Legends Worlds Anthem) [LYRICS]",
+        "duration": 211.0,
+        "uploader": "KMusic"
+      }
+    ],
+    "chosen_index": 3,
+    "chosen_url": "https://www.youtube.com/watch?v=vCEXf3HcuHA",
+    "download_success": true,
+    "chosen_query": "STAR WALKIN' (League of Legends Worlds Anthem) Lil Nas X -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:37:29.022055"
+  },
+  "name::heavy is the crown::linkin park": {
+    "title": "Heavy Is the Crown",
+    "artist": "Linkin Park",
+    "query": "Heavy Is the Crown Linkin Park -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "JgwZWbo43Xg",
+        "url": "https://www.youtube.com/watch?v=JgwZWbo43Xg",
+        "title": "Linkin Park - Heavy Is The Crown (Lyrics)",
+        "duration": 168.0,
+        "uploader": "VibesOnly"
+      },
+      {
+        "index": 2,
+        "id": "6a67R1ANvuw",
+        "url": "https://www.youtube.com/watch?v=6a67R1ANvuw",
+        "title": "Linkin Park - Heavy is the Crown | Lyrics",
+        "duration": 168.0,
+        "uploader": "riot wav"
+      },
+      {
+        "index": 3,
+        "id": "r-4KzMGAUYM",
+        "url": "https://www.youtube.com/watch?v=r-4KzMGAUYM",
+        "title": "Linkin Park - Heavy Is The Crown (Worlds Finals Version 2024) STUDIO VERSION",
+        "duration": 284.0,
+        "uploader": "MakeChesterProud [LPS]"
+      },
+      {
+        "index": 4,
+        "id": "nSwKQAtzrIM",
+        "url": "https://www.youtube.com/watch?v=nSwKQAtzrIM",
+        "title": "Linkin Park - Heavy is the Crown (String Sample)",
+        "duration": 20.0,
+        "uploader": "unksoldier2000"
+      },
+      {
+        "index": 5,
+        "id": "KFVp7dmbCrE",
+        "url": "https://www.youtube.com/watch?v=KFVp7dmbCrE",
+        "title": "Alvin and the Chipmunks - Heavy is the Crown (Linkin Park)",
+        "duration": 168.0,
+        "uploader": "cmlmonstar 007"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=JgwZWbo43Xg",
+    "download_success": true,
+    "chosen_query": "Heavy Is the Crown Linkin Park -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:37:46.398460"
+  },
+  "name::the line (from the series arcane league of legends)::twenty one pilots,\u00a0arcane,\u00a0league of legends": {
+    "title": "The Line (from the series Arcane League of Legends)",
+    "artist": "Twenty One Pilots,\u00a0Arcane,\u00a0League of Legends",
+    "query": "The Line (from the series Arcane League of Legends) Twenty One Pilots,\u00a0Arcane,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "5vDTHsnCnfQ",
+        "url": "https://www.youtube.com/watch?v=5vDTHsnCnfQ",
+        "title": "Twenty One Pilots - The Line - from Arcane - \"League of Legends\" - \u0645\u062a\u0631\u062c\u0645\u0629 - lyrics -",
+        "duration": 186.0,
+        "uploader": "vaxroz"
+      },
+      {
+        "index": 2,
+        "id": "rdlwTfHw_9E",
+        "url": "https://www.youtube.com/watch?v=rdlwTfHw_9E",
+        "title": "Twenty One Pilots- The Line Lyrics (From Arcane)",
+        "duration": 221.0,
+        "uploader": "JR Viral Hits"
+      },
+      {
+        "index": 3,
+        "id": "YJh32vFtX74",
+        "url": "https://www.youtube.com/watch?v=YJh32vFtX74",
+        "title": "Twenty One Pilots - The Line (from the series Arcane League of Legends) - Relaxing Version",
+        "duration": 182.0,
+        "uploader": "CuriousRealm"
+      },
+      {
+        "index": 4,
+        "id": "NIsfnN0qIw4",
+        "url": "https://www.youtube.com/watch?v=NIsfnN0qIw4",
+        "title": "Arcane 2 | THE LINE  | Twenty One Pilots | Lyric Video",
+        "duration": 217.0,
+        "uploader": "GloomY"
+      },
+      {
+        "index": 5,
+        "id": "cMBLjOyO5dU",
+        "url": "https://www.youtube.com/watch?v=cMBLjOyO5dU",
+        "title": "Twenty One Pilots - The Line (Lyrics) [Arcane]",
+        "duration": 191.0,
+        "uploader": "mars"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=5vDTHsnCnfQ",
+    "download_success": true,
+    "chosen_query": "The Line (from the series Arcane League of Legends) Twenty One Pilots,\u00a0Arcane,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:38:06.024175"
+  },
+  "name::come play (from the series arcane league of legends)::stray kids,\u00a0young miko,\u00a0arcane,\u00a0tom morello,\u00a0league of legends": {
+    "title": "Come Play (from the series Arcane League of Legends)",
+    "artist": "Stray Kids,\u00a0Young Miko,\u00a0Arcane,\u00a0Tom Morello,\u00a0League of Legends",
+    "query": "Come Play (from the series Arcane League of Legends) Stray Kids,\u00a0Young Miko,\u00a0Arcane,\u00a0Tom Morello,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "WYqBPjxy-y0",
+        "url": "https://www.youtube.com/watch?v=WYqBPjxy-y0",
+        "title": "[THAISUB] Come Play (from Arcane Season 2) - Stray Kids, Young Miko, Tom Morello",
+        "duration": 162.0,
+        "uploader": "MOODLY"
+      },
+      {
+        "index": 2,
+        "id": "Va2FxbNPaGY",
+        "url": "https://www.youtube.com/watch?v=Va2FxbNPaGY",
+        "title": "1 Hour Come Play - Stray Kids, Young Miko, Tom Morello | Koopa 85",
+        "duration": 3726.0,
+        "uploader": "Koopa 85"
+      },
+      {
+        "index": 3,
+        "id": "Jus7_j7qBiU",
+        "url": "https://www.youtube.com/watch?v=Jus7_j7qBiU",
+        "title": "Stray Kids & Young Miko 'Come Play' Lyrics [Arcane Season 2 OST] Color Coded Lyrics Han_Rom_Esp_Eng",
+        "duration": 168.0,
+        "uploader": "A3-4w Y\u0336o\u0336t\u0336t\u0336a\u0336b\u0336y\u0336"
+      },
+      {
+        "index": 4,
+        "id": "F-V5FRpNG8Y",
+        "url": "https://www.youtube.com/watch?v=F-V5FRpNG8Y",
+        "title": "Stray Kids, Young Miko, Arcane, Tom Morello, League of Legends - Come Play (vocals backing track)",
+        "duration": 165.0,
+        "uploader": "Voice Solo Tracks"
+      },
+      {
+        "index": 5,
+        "id": "SNwWh29mftI",
+        "url": "https://www.youtube.com/watch?v=SNwWh29mftI",
+        "title": "Come Play | Stray Kids, Young Miko, Tom Morello | Arcane Season 2 | 1H Loop seamless edit",
+        "duration": 3667.0,
+        "uploader": "Oui oui"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=WYqBPjxy-y0",
+    "download_success": true,
+    "chosen_query": "Come Play (from the series Arcane League of Legends) Stray Kids,\u00a0Young Miko,\u00a0Arcane,\u00a0Tom Morello,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:38:30.973130"
+  },
+  "name::phoenix::league of legends,\u00a0cailin russo,\u00a0chrissy costanza": {
+    "title": "Phoenix",
+    "artist": "League of Legends,\u00a0Cailin Russo,\u00a0Chrissy Costanza",
+    "query": "Phoenix League of Legends,\u00a0Cailin Russo,\u00a0Chrissy Costanza -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "A9P8oxhLw04",
+        "url": "https://www.youtube.com/watch?v=A9P8oxhLw04",
+        "title": "Phoenix by League of legends, Ft. Caitlin Russo, Chrissy Costanza",
+        "duration": 179.0,
+        "uploader": "\u2016\u27e9\u230aAngel\u2309\u27e8\u2016"
+      },
+      {
+        "index": 2,
+        "id": "IlezAarEsGs",
+        "url": "https://www.youtube.com/watch?v=IlezAarEsGs",
+        "title": "Cailin Russo - Chrissy Costanza - Phoenix | League of Legends (English lyrics - T\u00fcrk\u00e7e \u00e7eviri)",
+        "duration": 198.0,
+        "uploader": "Romy Lyrics"
+      },
+      {
+        "index": 3,
+        "id": "SUDgE1QAseE",
+        "url": "https://www.youtube.com/watch?v=SUDgE1QAseE",
+        "title": "League of Legends \u2012 Phoenix Lyrics ft  Cailin Russo, Chrissy Costanza",
+        "duration": 201.0,
+        "uploader": "herald joshua"
+      },
+      {
+        "index": 4,
+        "id": "AMmd8HieD1w",
+        "url": "https://www.youtube.com/watch?v=AMmd8HieD1w",
+        "title": "League of Legends - Phoenix ft  Cailin Russo and Chrissy Costanza  Worlds 2019",
+        "duration": 208.0,
+        "uploader": "Valkiriaiw"
+      },
+      {
+        "index": 5,
+        "id": "uNjIyMnlA7E",
+        "url": "https://www.youtube.com/watch?v=uNjIyMnlA7E",
+        "title": "League of Legends - Phoenix (Lyrics) ft. Cailin Russo, Chrissy Costanza",
+        "duration": 198.0,
+        "uploader": "Beatz"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=A9P8oxhLw04",
+    "download_success": true,
+    "chosen_query": "Phoenix League of Legends,\u00a0Cailin Russo,\u00a0Chrissy Costanza -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:38:46.268376"
+  },
+  "name::ma meilleure ennemie ft. coldplay::stromae,\u00a0pomme,\u00a0coldplay,\u00a0elyanna,\u00a0arcane,\u00a0league of legends": {
+    "title": "Ma Meilleure Ennemie ft. Coldplay",
+    "artist": "Stromae,\u00a0Pomme,\u00a0Coldplay,\u00a0Elyanna,\u00a0Arcane,\u00a0League of Legends",
+    "query": "Ma Meilleure Ennemie ft. Coldplay Stromae,\u00a0Pomme,\u00a0Coldplay,\u00a0Elyanna,\u00a0Arcane,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "M-1wrqzFAPs",
+        "url": "https://www.youtube.com/watch?v=M-1wrqzFAPs",
+        "title": "Stromae, Pomme, Elyanna - Ma Meilleure Ennemie ft. Coldplay (Paroles)",
+        "duration": 203.0,
+        "uploader": "Paroles Fran\u00e7aises"
+      },
+      {
+        "index": 2,
+        "id": "TimZ2MaxEFk",
+        "url": "https://www.youtube.com/watch?v=TimZ2MaxEFk",
+        "title": "Sonic & Nine - Ma Meilleure Ennemie ",
+        "duration": 38.0,
+        "uploader": "NIC"
+      },
+      {
+        "index": 3,
+        "id": "4PUwNwTL2Yw",
+        "url": "https://www.youtube.com/watch?v=4PUwNwTL2Yw",
+        "title": "Ma Meilleuere Ennemie || Animatiom meme oc",
+        "duration": 35.0,
+        "uploader": "CherryBee"
+      },
+      {
+        "index": 4,
+        "id": "YRtjtuZdDPo",
+        "url": "https://www.youtube.com/watch?v=YRtjtuZdDPo",
+        "title": "Ma meilleure ennemie ft. Coldplay  || Inhun 457 short edit",
+        "duration": 32.0,
+        "uploader": "The Paddock 111"
+      },
+      {
+        "index": 5,
+        "id": "-qOVpF0HjYw",
+        "url": "https://www.youtube.com/watch?v=-qOVpF0HjYw",
+        "title": "NO-Reacci\u00f3n a Ma Meilleure Ennemie #Coldplay #Stromae #Pomme #Jinx #Ekko #Arcane #timebomb",
+        "duration": 262.0,
+        "uploader": "Llamacornio rojo"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=M-1wrqzFAPs",
+    "download_success": true,
+    "chosen_query": "Ma Meilleure Ennemie ft. Coldplay Stromae,\u00a0Pomme,\u00a0Coldplay,\u00a0Elyanna,\u00a0Arcane,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:39:08.391821"
+  },
+  "name::pop/stars::k/da,\u00a0madison beer,\u00a0i-dle,\u00a0jaira burns,\u00a0league of legends": {
+    "title": "POP/STARS",
+    "artist": "K/DA,\u00a0Madison Beer,\u00a0i-dle,\u00a0Jaira Burns,\u00a0League of Legends",
+    "query": "POP/STARS K/DA,\u00a0Madison Beer,\u00a0i-dle,\u00a0Jaira Burns,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "ZUCSW5m9k0o",
+        "url": "https://www.youtube.com/watch?v=ZUCSW5m9k0o",
+        "title": "KDA   POPSTARS ft  Madison Beer, GI DLE, Jaira Burns Music Video   League of Legends",
+        "duration": 203.0,
+        "uploader": "Apostol Danilov"
+      },
+      {
+        "index": 2,
+        "id": "Z_d5kJl-MY0",
+        "url": "https://www.youtube.com/watch?v=Z_d5kJl-MY0",
+        "title": "K/DA, Madison Beer, (G)I-DLE, feat. Jaira Burns, League of Legends. - POP/STARS | Pop | K-pop",
+        "duration": 192.0,
+        "uploader": "Dead Inside"
+      },
+      {
+        "index": 3,
+        "id": "1n76Te_4wYY",
+        "url": "https://www.youtube.com/watch?v=1n76Te_4wYY",
+        "title": " \u00abK/DA \u2014 POP/STARS League of Legends ft. Madison Beer, (G)I-DLE, Jaira Burns\u00bb. #gameplay #anime ",
+        "duration": 194.0,
+        "uploader": "Tairneanach"
+      },
+      {
+        "index": 4,
+        "id": "8bDnJt0rGNo",
+        "url": "https://www.youtube.com/watch?v=8bDnJt0rGNo",
+        "title": "League Of Legends, K DA, Madison Beer, GI DLE, Jaira Burns \u2013 Pop Stars| Vua \u00c2m Nh\u1ea1c TBT",
+        "duration": 191.0,
+        "uploader": "Vua \u00c2m Nh\u1ea1c TBT"
+      },
+      {
+        "index": 5,
+        "id": "vNVF-oLFET8",
+        "url": "https://www.youtube.com/watch?v=vNVF-oLFET8",
+        "title": "Pop Stars | K/DA (Madison Beer, (G)I-DLE, Jaira Burns - League of Legends) [LEGENDADO/TRADU\u00c7\u00c3O]",
+        "duration": 189.0,
+        "uploader": "thunderstorm"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=ZUCSW5m9k0o",
+    "download_success": true,
+    "chosen_query": "POP/STARS K/DA,\u00a0Madison Beer,\u00a0i-dle,\u00a0Jaira Burns,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:39:19.987585"
+  },
+  "name::more::k/da,\u00a0madison beer,\u00a0i-dle,\u00a0lexie liu,\u00a0jaira burns,\u00a0seraphine,\u00a0league of legends": {
+    "title": "MORE",
+    "artist": "K/DA,\u00a0Madison Beer,\u00a0i-dle,\u00a0Lexie Liu,\u00a0Jaira Burns,\u00a0Seraphine,\u00a0League of Legends",
+    "query": "MORE K/DA,\u00a0Madison Beer,\u00a0i-dle,\u00a0Lexie Liu,\u00a0Jaira Burns,\u00a0Seraphine,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "8ZDa9Ulul90",
+        "url": "https://www.youtube.com/watch?v=8ZDa9Ulul90",
+        "title": "\u30101 Hour\u3011\u300cMORE \u300d\u2014 K/DA, Madison Beer, (G)I-DLE, Lexie Liu, Jaira Burns, Seraphine, League of Legends",
+        "duration": 3601.0,
+        "uploader": "Hour Versions"
+      },
+      {
+        "index": 2,
+        "id": "rnfQt0u6giY",
+        "url": "https://www.youtube.com/watch?v=rnfQt0u6giY",
+        "title": "KDA - MORE 60fps",
+        "duration": 232.0,
+        "uploader": "FrameForgerDynamo"
+      },
+      {
+        "index": 3,
+        "id": "NUrL4pDbZ90",
+        "url": "https://www.youtube.com/watch?v=NUrL4pDbZ90",
+        "title": "K/DA - MORE (Lyrics) ft. Madison Beer, (G)I-DLE, Lexie Liu, Jaira Burns, Seraphine",
+        "duration": 1559.0,
+        "uploader": "Music Katrina "
+      },
+      {
+        "index": 4,
+        "id": "mbMODfBQ1R0",
+        "url": "https://www.youtube.com/watch?v=mbMODfBQ1R0",
+        "title": "K/DA - MORE ft. Madison Beer, (G)I-DLE, Lexie Liu, Jaira Burns, Seraphine | KPOP Animation?!",
+        "duration": 402.0,
+        "uploader": "Dolleh"
+      },
+      {
+        "index": 5,
+        "id": "37F1MOwLVMI",
+        "url": "https://www.youtube.com/watch?v=37F1MOwLVMI",
+        "title": "K/DA - MORE (Reversed Music Video) ft. Madison Beer, (G)I-DLE, Lexie Liu, Jaira Burns, Seraphine",
+        "duration": 232.0,
+        "uploader": "Jesus Is Returning"
+      }
+    ],
+    "chosen_index": 2,
+    "chosen_url": "https://www.youtube.com/watch?v=rnfQt0u6giY",
+    "download_success": true,
+    "chosen_query": "MORE K/DA,\u00a0Madison Beer,\u00a0i-dle,\u00a0Lexie Liu,\u00a0Jaira Burns,\u00a0Seraphine,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:40:01.426431"
+  },
+  "name::villain::k/da,\u00a0madison beer,\u00a0kim petras,\u00a0league of legends": {
+    "title": "VILLAIN",
+    "artist": "K/DA,\u00a0Madison Beer,\u00a0Kim Petras,\u00a0League of Legends",
+    "query": "VILLAIN K/DA,\u00a0Madison Beer,\u00a0Kim Petras,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "mD3o8Qp0fN0",
+        "url": "https://www.youtube.com/watch?v=mD3o8Qp0fN0",
+        "title": "\u30101 Hour\u3011\u300cVILLAIN\u300d\u2014 K/DA \u00b7 Madison Beer \u00b7 Kim Petras \u00b7 League of Legends",
+        "duration": 3601.0,
+        "uploader": "Hour Versions"
+      },
+      {
+        "index": 2,
+        "id": "jnfdIn_grI0",
+        "url": "https://www.youtube.com/watch?v=jnfdIn_grI0",
+        "title": "K/DA - VILLAIN (Lyrics) ft. Madison Beer, Kim Petras, League of Legends",
+        "duration": 200.0,
+        "uploader": "DeepFrequency"
+      },
+      {
+        "index": 3,
+        "id": "ITPr7xnTNGc",
+        "url": "https://www.youtube.com/watch?v=ITPr7xnTNGc",
+        "title": "K/DA - VILLAIN ft. Madison Beer and Kim Petras Reaction Mashup",
+        "duration": 205.0,
+        "uploader": "QTE"
+      },
+      {
+        "index": 4,
+        "id": "RDu5fJJpZDI",
+        "url": "https://www.youtube.com/watch?v=RDu5fJJpZDI",
+        "title": "K/DA - VILLAIN ft. Madison Beer and Kim Petras (Official Video - Starring Evelynn) REACTION",
+        "duration": 629.0,
+        "uploader": "LTDRice Reacts"
+      },
+      {
+        "index": 5,
+        "id": "xtCM3Q7gAi4",
+        "url": "https://www.youtube.com/watch?v=xtCM3Q7gAi4",
+        "title": "Villain - k/da Madison beer and kim petras || edit audio",
+        "duration": 53.0,
+        "uploader": "KASHIF_EDITS"
+      }
+    ],
+    "chosen_index": 2,
+    "chosen_url": "https://www.youtube.com/watch?v=jnfdIn_grI0",
+    "download_success": true,
+    "chosen_query": "VILLAIN K/DA,\u00a0Madison Beer,\u00a0Kim Petras,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:40:39.449847"
+  },
+  "name::get jinxed::league of legends,\u00a0djerv": {
+    "title": "Get Jinxed",
+    "artist": "League of Legends,\u00a0Djerv",
+    "query": "Get Jinxed League of Legends,\u00a0Djerv -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "0iWm6ElzpQI",
+        "url": "https://www.youtube.com/watch?v=0iWm6ElzpQI",
+        "title": "Get Jinxed - League of Legends feat. Djerv [Tradu\u00e7\u00e3o]",
+        "duration": 149.0,
+        "uploader": "Dash"
+      },
+      {
+        "index": 2,
+        "id": "meDte4TrpWs",
+        "url": "https://www.youtube.com/watch?v=meDte4TrpWs",
+        "title": "Get Jinxed - League of Legends lyrics",
+        "duration": 150.0,
+        "uploader": "\u2661\ufe0eMusic\u2661\ufe0e"
+      },
+      {
+        "index": 3,
+        "id": "wHRnEHCSumM",
+        "url": "https://www.youtube.com/watch?v=wHRnEHCSumM",
+        "title": "Get Jinxed - League Of Legends - Arcane (Lyrics/Sub Espa\u00f1ol)",
+        "duration": 158.0,
+        "uploader": "Friki Music & Rol"
+      },
+      {
+        "index": 4,
+        "id": "Qz8LElvou5Q",
+        "url": "https://www.youtube.com/watch?v=Qz8LElvou5Q",
+        "title": "Lyrics | League of Legends & Djerv - Get Jinxed",
+        "duration": 152.0,
+        "uploader": "Dragonfire"
+      },
+      {
+        "index": 5,
+        "id": "kJ31KukznrA",
+        "url": "https://www.youtube.com/watch?v=kJ31KukznrA",
+        "title": "Jinx listening to \"Get Jinxed\" scene | Arcane - League of Legends in HD",
+        "duration": 75.0,
+        "uploader": "Average Media Enjoyer"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=0iWm6ElzpQI",
+    "download_success": true,
+    "chosen_query": "Get Jinxed League of Legends,\u00a0Djerv -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:41:13.644349"
+  },
+  "name::the baddest::k/da,\u00a0i-dle,\u00a0wolftyla,\u00a0bea miller,\u00a0league of legends": {
+    "title": "THE BADDEST",
+    "artist": "K/DA,\u00a0i-dle,\u00a0Wolftyla,\u00a0Bea Miller,\u00a0League of Legends",
+    "query": "THE BADDEST K/DA,\u00a0i-dle,\u00a0Wolftyla,\u00a0Bea Miller,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "nLyfr4DzrfE",
+        "url": "https://www.youtube.com/watch?v=nLyfr4DzrfE",
+        "title": "\u30101 Hour\u3011\u300cTHE BADDEST\u300d\u2014 K/DA \u00b7 (G)I-DLE \u00b7 Wolftyla \u00b7 Bea Miller \u00b7 League of Legends",
+        "duration": 3601.0,
+        "uploader": "Hour Versions"
+      },
+      {
+        "index": 2,
+        "id": "MgTQTgDNLs0",
+        "url": "https://www.youtube.com/watch?v=MgTQTgDNLs0",
+        "title": "K/DA - THE BADDEST ft. (G)I-DLE, Bea Miller, Wolftyla  | League of Legends-1 hour loop",
+        "duration": 3533.0,
+        "uploader": "1hourbeat"
+      },
+      {
+        "index": 3,
+        "id": "l4Mv1p3XlOw",
+        "url": "https://www.youtube.com/watch?v=l4Mv1p3XlOw",
+        "title": "[K/DA - THE BADDEST ft  GI DLE, Bea Miller, Wolftyla  # League of Legends]",
+        "duration": 176.0,
+        "uploader": "LOL- MUSIC"
+      },
+      {
+        "index": 4,
+        "id": "M7c8viRR3wY",
+        "url": "https://www.youtube.com/watch?v=M7c8viRR3wY",
+        "title": "\ud83d\udca5BTS React K/DA - THE BADDEST ft. (G) I-DLE, Bea Miller, Wolftyla (Video Oficial da Letra)",
+        "duration": 184.0,
+        "uploader": "Canal Idol React_\ud83c\udde7\ud83c\uddf7"
+      },
+      {
+        "index": 5,
+        "id": "krELZjl5ApQ",
+        "url": "https://www.youtube.com/watch?v=krELZjl5ApQ",
+        "title": "K/DA, (G)I-DLE & Wolftyla Feat. Bea Miller & /League of Legends \" THE BADDEST \" Audio/Mp3",
+        "duration": 165.0,
+        "uploader": "Heaven\u2019s KPOP Cloud"
+      }
+    ],
+    "chosen_index": 2,
+    "chosen_url": "https://www.youtube.com/watch?v=MgTQTgDNLs0",
+    "download_success": true,
+    "chosen_query": "THE BADDEST K/DA,\u00a0i-dle,\u00a0Wolftyla,\u00a0Bea Miller,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:41:47.357289"
+  },
+  "name::paranoia::heartsteel,\u00a0league of legends,\u00a0baekhyun,\u00a0tobi lou,\u00a0\u00f8zi,\u00a0cal scruby": {
+    "title": "PARANOIA",
+    "artist": "HEARTSTEEL,\u00a0League of Legends,\u00a0BAEKHYUN,\u00a0tobi lou,\u00a0\u00d8ZI,\u00a0Cal Scruby",
+    "query": "PARANOIA HEARTSTEEL,\u00a0League of Legends,\u00a0BAEKHYUN,\u00a0tobi lou,\u00a0\u00d8ZI,\u00a0Cal Scruby -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "4JL6FEqnyPc",
+        "url": "https://www.youtube.com/watch?v=4JL6FEqnyPc",
+        "title": "HEARTSTEEL - PARANOIA ft. BAEKHYUN, tobi lou, \u00d8ZI, and Cal Scruby Lyrics",
+        "duration": 227.0,
+        "uploader": "JR Viral Hits"
+      },
+      {
+        "index": 2,
+        "id": "2DG0aU94o9A",
+        "url": "https://www.youtube.com/watch?v=2DG0aU94o9A",
+        "title": "HEARTSTEEL \"PARANOIA\" (7 Members) Lyrics|You As A Member",
+        "duration": 231.0,
+        "uploader": "Jangchuu"
+      },
+      {
+        "index": 3,
+        "id": "VAlPmA9NfIk",
+        "url": "https://www.youtube.com/watch?v=VAlPmA9NfIk",
+        "title": "HEARTSTEEL - PARANOIA ft. BAEKHYUN, tobi lou, \u00d8ZI, and Cal Scruby | AMV",
+        "duration": 213.0,
+        "uploader": "Zorken \u5263\u58eb"
+      },
+      {
+        "index": 4,
+        "id": "3u4AdT8AB8M",
+        "url": "https://www.youtube.com/watch?v=3u4AdT8AB8M",
+        "title": "Loreheads React to HEARTSTEEL - PARANOIA ft. BAEKHYUN, tobi lou, \u00d8ZI, Cal Scruby - League of Legends",
+        "duration": 721.0,
+        "uploader": "League of Loreheads"
+      },
+      {
+        "index": 5,
+        "id": "e3JIifow2W0",
+        "url": "https://www.youtube.com/watch?v=e3JIifow2W0",
+        "title": "[Instrumental] HEARTSTEEL   PARANOIA ft  BAEKHYUN, tobi lou, \u00d8ZI, and Cal Scruby",
+        "duration": 200.0,
+        "uploader": "IFergot"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=4JL6FEqnyPc",
+    "download_success": true,
+    "chosen_query": "PARANOIA HEARTSTEEL,\u00a0League of Legends,\u00a0BAEKHYUN,\u00a0tobi lou,\u00a0\u00d8ZI,\u00a0Cal Scruby -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:42:16.414806"
+  },
+  "name::dynasties & dystopia - from the series arcane league of legends::denzel curry,\u00a0gizzle,\u00a0bren joy,\u00a0arcane,\u00a0league of legends": {
+    "title": "Dynasties & Dystopia - from the series Arcane League of Legends",
+    "artist": "Denzel Curry,\u00a0Gizzle,\u00a0Bren Joy,\u00a0Arcane,\u00a0League of Legends",
+    "query": "Dynasties & Dystopia - from the series Arcane League of Legends Denzel Curry,\u00a0Gizzle,\u00a0Bren Joy,\u00a0Arcane,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "extra_whitelist": [],
+    "extra_blacklist": [],
+    "candidates": [
+      {
+        "index": 1,
+        "id": "z2uuHoJ7iB0",
+        "url": "https://www.youtube.com/watch?v=z2uuHoJ7iB0",
+        "title": "Dynasties & Dystopia - Denzel Curry ft. Gizzle & Bren Joy Sub. Espa\u00f1ol Arcane Season 2",
+        "duration": 184.0,
+        "uploader": "The Monster Ghost"
+      },
+      {
+        "index": 2,
+        "id": "YsIt1VWgua4",
+        "url": "https://www.youtube.com/watch?v=YsIt1VWgua4",
+        "title": "Denzel Curry, Gizzle, Bren Joy - Dynasties & Dystopia (from Arcane League of Legends) [Lyrics]",
+        "duration": 179.0,
+        "uploader": "Hip Hop/R&B Lyrics"
+      },
+      {
+        "index": 3,
+        "id": "LGd9ysJhseg",
+        "url": "https://www.youtube.com/watch?v=LGd9ysJhseg",
+        "title": "Dynasties & Dystopia [AMV]",
+        "duration": 176.0,
+        "uploader": "J1NXp"
+      },
+      {
+        "index": 4,
+        "id": "S-eneKGfK1g",
+        "url": "https://www.youtube.com/watch?v=S-eneKGfK1g",
+        "title": "Denzel Curry, Gizzle, Bren Joy - Dynasties & Dystopia",
+        "duration": 178.0,
+        "uploader": "Thriv3"
+      },
+      {
+        "index": 5,
+        "id": "NT98uHQMCyE",
+        "url": "https://www.youtube.com/watch?v=NT98uHQMCyE",
+        "title": "Dynasties & Dystopia | Denzel Curry feat Gizzle, Bren Joy (Arcane) [LEGENDADO/TRADU\u00c7\u00c3O]",
+        "duration": 177.0,
+        "uploader": "thunderstorm"
+      }
+    ],
+    "chosen_index": 1,
+    "chosen_url": "https://www.youtube.com/watch?v=z2uuHoJ7iB0",
+    "download_success": true,
+    "chosen_query": "Dynasties & Dystopia - from the series Arcane League of Legends Denzel Curry,\u00a0Gizzle,\u00a0Bren Joy,\u00a0Arcane,\u00a0League of Legends -live -nightcore -karaoke -reverb -8d -slowed -cover -remix -acoustic",
+    "updated_at": "2026-08-28T23:43:24.220159"
   }
 }
