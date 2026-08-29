@@ -2345,24 +2345,28 @@ function renderLofiLibrary(videos) {
       thumbEl.className = "lofi-thumbnail";
       thumbEl.src = video.thumbnail;
     } else {
+      // Server-generated poster frame (a real still, not a black <video>).
+      // Works the same for .mp4/.webm/.mkv since ffmpeg makes the JPEG.
+      const ext = (video.ext || "mp4").toLowerCase();
+      const posterUrl = video.thumb || `/api/lofi/thumb/${encodeURIComponent(video.id)}`;
+
       thumbEl = document.createElement("video");
       thumbEl.className = "lofi-thumbnail";
-      // Use correct extension for preview
-      const ext = video.ext || "mp4";
-      thumbEl.src = `/api/lofi/video/${video.id}`;
-      thumbEl.type = `video/${ext}`;
+      thumbEl.src = `/api/lofi/video/${encodeURIComponent(video.id)}`;
+      thumbEl.poster = posterUrl;
+      thumbEl.preload = "none";      // show the poster until the user hovers
       thumbEl.muted = true;
       thumbEl.loop = true;
-      // Only enable preview if browser can play the format
-      let mime = "";
-      if (ext === "mp4") mime = "video/mp4";
-      else if (ext === "webm") mime = "video/webm";
-      else if (ext === "ogg") mime = "video/ogg";
-      else if (ext === "mov") mime = "video/quicktime";
-      else if (ext === "mkv") mime = "video/x-matroska";
+      thumbEl.playsInline = true;
+
+      // Live hover-preview only when the browser can actually decode the format;
+      // otherwise the poster image is all we show (e.g. .mkv).
+      const mime = {
+        mp4: "video/mp4", webm: "video/webm", ogg: "video/ogg", mov: "video/quicktime"
+      }[ext] || "";
       if (mime && thumbEl.canPlayType(mime) !== "") {
         card.addEventListener("mouseenter", () => { thumbEl.play().catch(() => {}); });
-        card.addEventListener("mouseleave", () => { thumbEl.pause(); thumbEl.currentTime = 0; });
+        card.addEventListener("mouseleave", () => { thumbEl.pause(); thumbEl.load(); });
       }
     }
     card.appendChild(thumbEl);

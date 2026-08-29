@@ -450,34 +450,61 @@ def run_yt_dlp(command_list):
     print("Running:", " ".join(cmd))
     subprocess.run(cmd, shell=False)
 
-def extract_audio_from_video(video_path: str, audio_path: str) -> bool:
-    """Extract audio from video file (MP4, etc) to MP3 using ffmpeg."""
+def extract_audio_from_video(video_path: str, audio_path: str, timeout: int = 7200) -> bool:
+    """Extract audio from a video file to MP3 using ffmpeg.
+
+    Writes to a temp file and renames on success so an interrupted run never
+    leaves a truncated ``.mp3`` behind (which would later look "already done").
+    """
     try:
         if not os.path.exists(video_path):
             return False
-        
+
         print(f"Extracting audio from {os.path.basename(video_path)}...")
-        
+        tmp_path = f"{audio_path}.partial.mp3"
+
         # Acquire semaphore to ensure sequential ffmpeg execution
         with DOWNLOAD_SEMAPHORE:
-            # Use ffmpeg to extract audio
+            # Run at idle priority so a long ambience-video transcode never
+            # starves playback / the web UI on the Pi.
+            nice_prefix = []
+            if shutil.which("nice"):
+                nice_prefix += ["nice", "-n", "19"]
+            if shutil.which("ionice"):
+                nice_prefix += ["ionice", "-c", "3"]
             cmd = [
-                "ffmpeg",
+                *nice_prefix,
+                "ffmpeg", "-nostdin",
                 "-i", video_path,
-                "-q:a", "0",  # Highest quality
-                "-map", "a",  # Extract audio only
-                "-y",  # Overwrite output file
-                audio_path
+                "-vn",         # no video
+                "-q:a", "2",   # ~190kbps VBR (libmp3lame) - transparent, smaller
+                "-map", "a:0", # first audio stream
+                "-y",
+                tmp_path,
             ]
-            
-            result = subprocess.run(cmd, shell=False, capture_output=True, text=True)
-            
-            if result.returncode == 0 and os.path.exists(audio_path):
+            try:
+                result = subprocess.run(
+                    cmd, shell=False, capture_output=True, text=True, timeout=timeout
+                )
+            except subprocess.TimeoutExpired:
+                print(f"✗ Audio extraction timed out after {timeout}s: {os.path.basename(video_path)}")
+                try:
+                    os.remove(tmp_path)
+                except OSError:
+                    pass
+                return False
+
+            if result.returncode == 0 and os.path.exists(tmp_path) and os.path.getsize(tmp_path) > 0:
+                os.replace(tmp_path, audio_path)
                 print(f"✓ Audio extracted to {os.path.basename(audio_path)}")
                 return True
-            else:
-                print(f"✗ Audio extraction failed: {result.stderr[:200]}")
-                return False
+
+            print(f"✗ Audio extraction failed: {result.stderr[:200]}")
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
+            return False
     except Exception as e:
         print(f"Error extracting audio: {e}")
         return False
@@ -2546,12 +2573,18 @@ def download_from_youtube_url(title: str, artist: str, youtube_url: str, deezer_
 
 # ---------- Config ----------
 MUSIC_DIR = os.path.join(os.path.dirname(__file__), "music")
-LOFI_DIR = os.path.join(os.path.dirname(__file__), "lofi")
+# Lofi / YouTube direct downloads live on the external USB disk.
+LOFI_DIR = "/mnt/usbdisk/MusicVideo/YoutubeDirectDownloads"
 FAV_FILE = os.path.join(os.path.dirname(__file__), "favorites.json")
 
 # Ensure directories exist
 os.makedirs(MUSIC_DIR, exist_ok=True)
-os.makedirs(LOFI_DIR, exist_ok=True)
+# Only create LOFI_DIR when its mount point is present, so we never write the
+# tree onto the SD card root while the USB disk is unmounted.
+if os.path.ismount("/mnt/usbdisk"):
+    os.makedirs(LOFI_DIR, exist_ok=True)
+elif not os.path.isdir(LOFI_DIR):
+    print(f"[LOFI] Warning: {LOFI_DIR} unavailable (usbdisk not mounted)")
 
 
 # ---------- Data models ----------
@@ -4486,6 +4519,160 @@ LOFI_IN_PROGRESS_FILE = os.path.join(DATA_DIR, "lofi_in_progress.json")
 LOFI_LOG_FILE = os.path.join(DATA_DIR, "lofi_debug.log")
 LOFI_TRACKING_LOCK = threading.Lock()
 
+# ---- Lofi preview thumbnails -------------------------------------------------
+# The lofi grid used to preview each entry with a bare <video> element, which
+# renders as a black rectangle until it buffers (and never renders at all for
+# formats the browser cannot decode, e.g. .mkv). Instead we grab one frame with
+# ffmpeg, cache it as a JPEG and serve that as the poster image.
+LOFI_THUMB_DIR = os.path.join(DATA_DIR, "lofi_thumbs")
+os.makedirs(LOFI_THUMB_DIR, exist_ok=True)
+LOFI_THUMB_LOCK = threading.Lock()
+LOFI_VIDEO_EXTS = (".mp4", ".webm", ".mkv", ".mov", ".avi", ".m4v")
+_LOFI_MIME_BY_EXT = {
+    ".mp4": "video/mp4", ".m4v": "video/mp4", ".webm": "video/webm",
+    ".mkv": "video/x-matroska", ".mov": "video/quicktime", ".avi": "video/x-msvideo",
+}
+
+
+def find_lofi_file(video_id: str):
+    """Return the full path of the lofi video whose basename is video_id, or None.
+
+    Historically only ``<id>.mp4`` was assumed; the library now also holds
+    .webm/.mkv/.mov files (they share the YoutubeDirectDownloads folder)."""
+    for ext in LOFI_VIDEO_EXTS:
+        candidate = os.path.join(LOFI_DIR, f"{video_id}{ext}")
+        if os.path.exists(candidate):
+            return candidate
+    return None
+
+
+def lofi_mimetype(path: str) -> str:
+    return _LOFI_MIME_BY_EXT.get(os.path.splitext(path)[1].lower(), "application/octet-stream")
+
+
+def generate_lofi_thumbnail(video_path: str, thumb_path: str) -> bool:
+    """Extract a representative frame from video_path into thumb_path (JPEG)."""
+    try:
+        duration = 0.0
+        try:
+            probe = subprocess.run(
+                ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                 "-of", "csv=p=0", video_path],
+                capture_output=True, text=True, timeout=15,
+            )
+            duration = float((probe.stdout or "").strip() or 0)
+        except Exception:
+            duration = 0.0
+
+        # Seek a little way in so we skip black intros / fade-ins.
+        seek = 30.0
+        if duration > 0:
+            seek = max(1.0, min(duration * 0.15, duration - 1.0, 120.0))
+
+        base_tail = ["-frames:v", "1", "-vf", "scale=480:-2", "-q:v", "4", thumb_path]
+        attempts = (
+            ["ffmpeg", "-nostdin", "-y", "-ss", f"{seek:.2f}", "-i", video_path, *base_tail],
+            ["ffmpeg", "-nostdin", "-y", "-i", video_path, *base_tail],  # fallback: first frame
+        )
+        for cmd in attempts:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
+            if result.returncode == 0 and os.path.exists(thumb_path) and os.path.getsize(thumb_path) > 0:
+                return True
+        lofi_log(f"thumb_failed file={os.path.basename(video_path)} err={result.stderr[:200].strip()}")
+        return False
+    except Exception as e:
+        print(f"[LOFI] thumbnail generation failed: {e}")
+        lofi_log(f"thumb_exception={e}")
+        return False
+
+
+def lofi_thumb_path_for(video_id: str) -> str:
+    return os.path.join(LOFI_THUMB_DIR, f"{video_id}.jpg")
+
+
+def ensure_lofi_thumbnail(video_id: str):
+    """Return a ready JPEG path for video_id, generating/refreshing it if needed."""
+    video_path = find_lofi_file(video_id)
+    if not video_path:
+        return None
+    thumb_path = lofi_thumb_path_for(video_id)
+    fresh = (
+        os.path.exists(thumb_path)
+        and os.path.getsize(thumb_path) > 0
+        and os.path.getmtime(thumb_path) >= os.path.getmtime(video_path)
+    )
+    if fresh:
+        return thumb_path
+    with LOFI_THUMB_LOCK:
+        # Re-check now that we hold the lock (another request may have built it).
+        if (
+            os.path.exists(thumb_path)
+            and os.path.getsize(thumb_path) > 0
+            and os.path.getmtime(thumb_path) >= os.path.getmtime(video_path)
+        ):
+            return thumb_path
+        if generate_lofi_thumbnail(video_path, thumb_path):
+            return thumb_path
+    return None
+
+
+def warm_lofi_thumbnails():
+    """Background pass: build any missing lofi thumbnails so the grid fills in."""
+    try:
+        if not os.path.isdir(LOFI_DIR):
+            return
+        for filename in os.listdir(LOFI_DIR):
+            if filename.lower().endswith(LOFI_VIDEO_EXTS):
+                ensure_lofi_thumbnail(os.path.splitext(filename)[0])
+    except Exception as e:
+        lofi_log(f"thumb_warm_error={e}")
+
+
+_LOFI_AUDIO_WARMING = threading.Lock()
+
+
+def warm_lofi_audio():
+    """Background pass: pre-extract the ``<name>.mp3`` sidecar for every lofi
+    video that lacks one.
+
+    Apoo plays lofi *audio* on the device from that MP3; without it, the first
+    "Play Audio" click would block the HTTP request for minutes while ffmpeg
+    transcodes a multi-hour ambience video. Doing it ahead of time (smallest
+    files first) keeps playback instant."""
+    if not _LOFI_AUDIO_WARMING.acquire(blocking=False):
+        return  # a warm pass is already running
+    try:
+        if not os.path.isdir(LOFI_DIR):
+            return
+        # Clear leftovers from a run that was killed mid-extraction.
+        for leftover in os.listdir(LOFI_DIR):
+            if leftover.endswith(".partial.mp3"):
+                try:
+                    os.remove(os.path.join(LOFI_DIR, leftover))
+                except OSError:
+                    pass
+        pending = []
+        for filename in os.listdir(LOFI_DIR):
+            if not filename.lower().endswith(LOFI_VIDEO_EXTS):
+                continue
+            video_path = os.path.join(LOFI_DIR, filename)
+            audio_path = os.path.splitext(video_path)[0] + ".mp3"
+            if not os.path.exists(audio_path):
+                try:
+                    pending.append((os.path.getsize(video_path), video_path, audio_path))
+                except OSError:
+                    pass
+        for _, video_path, audio_path in sorted(pending):
+            if os.path.exists(audio_path):
+                continue
+            lofi_log(f"audio_warm_start file={os.path.basename(video_path)}")
+            ok = extract_audio_from_video(video_path, audio_path)
+            lofi_log(f"audio_warm_done ok={ok} file={os.path.basename(video_path)}")
+    except Exception as e:
+        lofi_log(f"audio_warm_error={e}")
+    finally:
+        _LOFI_AUDIO_WARMING.release()
+
 def _node_works(node_path: str) -> bool:
     try:
         result = subprocess.run([node_path, "--version"], capture_output=True, text=True, timeout=2)
@@ -4949,10 +5136,10 @@ def api_lofi_clear_in_progress():
 def api_lofi_list():
     """Get list of downloaded lofi videos."""
     videos = []
-    
+
     if os.path.exists(LOFI_DIR):
         for filename in os.listdir(LOFI_DIR):
-            if filename.endswith(('.mp4', '.webm', '.mkv', '.mov', '.avi')):
+            if filename.lower().endswith(LOFI_VIDEO_EXTS):
                 video_id, ext = os.path.splitext(filename)
                 path = os.path.join(LOFI_DIR, filename)
                 videos.append({
@@ -4960,23 +5147,46 @@ def api_lofi_list():
                     "title": video_id,  # Could be enhanced to store metadata
                     "path": path,
                     "filename": filename,
-                    "ext": ext[1:]  # without dot
+                    "ext": ext[1:].lower(),  # without dot
+                    "thumb": f"/api/lofi/thumb/{requests.utils.quote(video_id)}",
                 })
-    
+
+    # Build any missing preview thumbnails / audio sidecars in the background so
+    # neither the grid nor the first "Play Audio" click has to wait on ffmpeg.
+    if videos:
+        threading.Thread(target=warm_lofi_thumbnails, daemon=True).start()
+        threading.Thread(target=warm_lofi_audio, daemon=True).start()
+
     return jsonify({"videos": videos})
+
+
+@app.route("/api/lofi/thumb/<video_id>", methods=["GET"])
+def api_lofi_thumb(video_id):
+    """Serve a cached JPEG poster frame for a lofi video (generated on demand)."""
+    try:
+        if not find_lofi_file(video_id):
+            return jsonify({"error": "Video not found"}), 404
+        thumb_path = ensure_lofi_thumbnail(video_id)
+        if thumb_path and os.path.exists(thumb_path):
+            resp = send_file(thumb_path, mimetype="image/jpeg", conditional=True)
+            resp.headers["Cache-Control"] = "public, max-age=86400"
+            return resp
+        return jsonify({"error": "thumbnail unavailable"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/lofi/video/<video_id>", methods=["GET"])
 def api_lofi_video(video_id):
     """Serve a lofi video file."""
     try:
-        video_path = os.path.join(LOFI_DIR, f"{video_id}.mp4")
-        
-        if not os.path.exists(video_path):
+        video_path = find_lofi_file(video_id)
+
+        if not video_path:
             return jsonify({"error": "Video not found"}), 404
-        
+
         # Serve video with range support for seeking
-        return send_file(video_path, mimetype="video/mp4", conditional=True)
+        return send_file(video_path, mimetype=lofi_mimetype(video_path), conditional=True)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -4985,12 +5195,19 @@ def api_lofi_video(video_id):
 def api_lofi_delete(video_id):
     """Delete a lofi video."""
     try:
-        video_path = os.path.join(LOFI_DIR, f"{video_id}.mp4")
-        
-        if not os.path.exists(video_path):
+        video_path = find_lofi_file(video_id)
+
+        if not video_path:
             return jsonify({"error": "Video not found"}), 404
-        
+
         os.remove(video_path)
+        # Drop the cached preview thumbnail too (it is just a cache).
+        thumb_path = lofi_thumb_path_for(video_id)
+        try:
+            if os.path.exists(thumb_path):
+                os.remove(thumb_path)
+        except OSError:
+            pass
         return jsonify({"status": "ok"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
