@@ -3667,17 +3667,22 @@ def find_local_track(title: str, artist: str, track_id: str) -> Optional[str]:
 
 @app.route("/media/by-path", methods=["GET"])
 def media_by_path():
-    """Serve audio files by absolute path, restricted to MUSIC_DIR.
+    """Serve audio files by absolute path, restricted to MUSIC_DIR / LOFI_DIR.
     Uses conditional responses to support Range requests for streaming.
     """
     path = request.args.get("path")
     if not path:
         return jsonify({"error": "missing path"}), 400
     try:
-        # Resolve and restrict to MUSIC_DIR
+        # Resolve and restrict to one of the allowed roots. Lofi audio (the
+        # extracted .mp3 sidecars) lives under LOFI_DIR on the USB disk, so the
+        # browser <audio> element needs it whitelisted too.
         real = os.path.realpath(path)
-        music_root = os.path.realpath(MUSIC_DIR)
-        if not real.startswith(music_root):
+        allowed_roots = [
+            os.path.realpath(MUSIC_DIR) + os.sep,
+            os.path.realpath(LOFI_DIR) + os.sep,
+        ]
+        if not any(real.startswith(root) for root in allowed_roots):
             return jsonify({"error": "forbidden"}), 403
         if not os.path.exists(real):
             return jsonify({"error": "not found"}), 404
